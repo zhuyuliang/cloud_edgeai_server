@@ -1,0 +1,144 @@
+{% extends "app/base_site.html" %}
+{% load static %}
+
+{% block title %} {{ page_title }} {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <style>
+    /* 筛选区与强调数字（表格/按钮用全局 ctrl-table / ctrl-btn / ctrl-action） */
+    .xc_filters { display: flex; align-items: center; gap: 18px; margin-bottom: 15px; flex-wrap: wrap; }
+    .xc_filter-group { display: flex; align-items: center; gap: 6px; }
+    .xc_filter-label { font-size: 13px; color: var(--eai-text-secondary); }
+    .xc_filter-group .eai-select { min-width: 110px; }
+    .xc_filter-group .eai-input { width: 160px; }
+    .xc_num { font-weight: bold; color: var(--eai-primary); }
+    /* 单元格内容与表头居中保持一致 */
+    .count-table td { text-align: center; }
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+              <h3><i class="fa fa-calculator" style="margin-right:2px"></i> {{ page_title }}</h3>
+              <span id="top_loading" style="display:none;">
+                <img src="/static/images/load.gif" alt="loading">加载中
+              </span>
+            </div>
+            <div class="dash-panel-body">
+              <div class="xc_filters">
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">节点:</label>
+                  <select id="select_node" class="eai-select">
+                    <option value="">选择全部</option>
+                    {% for node in nodes %}
+                    <option value="{{ node.code }}">{{ node.nickname }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">布控:</label>
+                  <input type="text" id="input_control" class="eai-input" placeholder="布控编号/名称">
+                </div>
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">任务:</label>
+                  <input type="text" id="input_task" class="eai-input" placeholder="任务名">
+                </div>
+              </div>
+
+              <div class="ctrl-table-wrapper">
+                <table class="ctrl-table count-table">
+                  <thead>
+                    <tr>
+                      <th>节点</th><th>布控编号</th><th>算法任务</th><th>当前计数</th><th>进入数</th><th>离开数</th><th>累计总量</th><th>清零策略</th><th>上次清零</th><th>更新时间</th><th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="data"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script>
+    const RESET_STRATEGY_NAMES = {manual: '手动清零', hourly: '每小时清零', daily: '每日清零', weekly: '每周清零', monthly: '每月清零'};
+
+    // 提示反馈 xcAlert/myAlert 由全局 toast.js 提供
+
+    function f_loadData() {
+      $("#top_loading").show();
+      $.ajax({
+        url: '/alarm/openStatisticIndex',
+        type: "get",
+        dataType: "json",
+        error: function () { $("#top_loading").hide(); myAlert("网络异常！", "error"); },
+        success: function (res) {
+          $("#top_loading").hide();
+          if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
+          let nodeFilter = $("#select_node").val();
+          let controlFilter = $("#input_control").val().trim().toLowerCase();
+          let taskFilter = $("#input_task").val().trim().toLowerCase();
+          let data = res.data.filter(d => {
+            if (nodeFilter && d.node_code !== nodeFilter) return false;
+            if (controlFilter && !((d.control_code || '').toLowerCase().includes(controlFilter))) return false;
+            if (taskFilter && !((d.task_name || '').toLowerCase().includes(taskFilter))) return false;
+            return true;
+          });
+          if (!data.length) { $("#data").html("<tr class='empty-row'><td colspan='11'>暂无计数数据</td></tr>"); return; }
+          let html = "";
+          for (let d of data) {
+            html += `<tr>`;
+            html += `<td>${d.node_nickname || d.node_code}</td>`;
+            html += `<td>${d.control_code}</td>`;
+            html += `<td>${d.task_name}</td>`;
+            html += `<td class="xc_num">${d.count}</td>`;
+            html += `<td>${d.enter_num}</td>`;
+            html += `<td>${d.leave_num}</td>`;
+            html += `<td class="xc_num">${d.total_num}</td>`;
+            html += `<td>${RESET_STRATEGY_NAMES[d.reset_strategy] || '手动清零'}</td>`;
+            html += `<td>${d.last_reset_time || '-'}</td>`;
+            html += `<td>${d.update_time || '-'}</td>`;
+            let taskEsc = String(d.task_name || '').replace(/'/g, "\\'");
+            html += `<td><button class="ctrl-action" onclick='f_resetCount(${JSON.stringify(d).replace(/'/g, "&#39;")})'>清零</button> <button class="ctrl-action" onclick="f_goHistory('${d.node_code}','${d.control_code}','${taskEsc}')">历史</button></td>`;
+            html += `</tr>`;
+          }
+          $("#data").html(html);
+        }
+      });
+    }
+
+    function f_goHistory(nodeCode, controlCode, taskName) {
+      window.location.href = '/alarm/count/history?node_code=' + encodeURIComponent(nodeCode) +
+          '&control_code=' + encodeURIComponent(controlCode) +
+          '&task_name=' + encodeURIComponent(taskName || '');
+    }
+
+    function f_resetCount(d) {
+      if (!confirm(`确认将节点【${d.node_nickname || d.node_code}】布控【${d.control_code}】任务【${d.task_name}】的计数清零？`)) return;
+      $.post("/alarm/openResetCount", {
+        node_code: d.node_code,
+        control_code: d.control_code,
+        task_name: d.task_name,
+      }, function (res) {
+        if (1000 === res.code) { myAlert("清零成功", "success"); f_loadData(); }
+        else myAlert(res.msg, "error");
+      }, "json");
+    }
+
+    $("#select_node").change(f_loadData);
+    $("#input_control,#input_task").on("input", f_loadData);
+
+    $(function () { f_loadData(); });
+  </script>
+{% endblock javascripts %}

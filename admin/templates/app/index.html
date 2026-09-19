@@ -1,0 +1,644 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} 控制面板 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+
+    <!-- Row 1: KPI 概览（数据源 /index/getDashboardData） -->
+    <div class="row kpi-row">
+        <div class="col-md-3 col-sm-6 col-xs-12 kpi-col">
+          <div class="kpi-card kpi-info">
+            <div class="kpi-icon"><i class="fa fa-server"></i></div>
+            <div class="kpi-main">
+              <div class="kpi-label">节点总数</div>
+              <div class="kpi-value" id="kpi_node_total">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12 kpi-col">
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-icon"><i class="fa fa-video-camera"></i></div>
+            <div class="kpi-main">
+              <div class="kpi-label">视频流总数</div>
+              <div class="kpi-value" id="kpi_stream_total">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12 kpi-col">
+          <div class="kpi-card kpi-danger">
+            <div class="kpi-icon"><i class="fa fa-bell-o"></i></div>
+            <div class="kpi-main">
+              <div class="kpi-label">今日告警</div>
+              <div class="kpi-value" id="kpi_alarm_total">--</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12 kpi-col">
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-icon"><i class="fa fa-exclamation-circle"></i></div>
+            <div class="kpi-main">
+              <div class="kpi-label">今日未处理</div>
+              <div class="kpi-value" id="kpi_alarm_unhandle">--</div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Row 2: 系统资源图表（数据源 /open/getIndex，6s 轮询） -->
+    <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel dash-cpu">
+            <div class="dash-panel-head">
+              <h3>CPU利用率</h3>
+              <span class="dash-metric" id="metric_cpu">0%</span>
+            </div>
+            <div class="dash-panel-body">
+                <div id="cpuCharts" style="height:200px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel dash-mem">
+            <div class="dash-panel-head">
+              <h3>内存利用率</h3>
+              <span class="dash-metric" id="metric_mem">0%</span>
+            </div>
+            <div class="dash-panel-body">
+                <div id="memoryCharts" style="height:200px"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel dash-disk">
+            <div class="dash-panel-head">
+              <h3>存储利用率</h3>
+              <span class="dash-metric" id="metric_disk">0%</span>
+            </div>
+            <div class="dash-panel-body">
+                <div id="diskCharts" style="height:200px"></div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Row 3: 服务器 / 系统 / 版本信息 -->
+    <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+              <h3>流媒体服务器</h3>
+            </div>
+            <div class="dash-panel-body">
+              <table class="table table-hover">
+                <tbody>
+                 <tr>
+                    <th scope="row">进程状态</th>
+                    <th scope="row" id="zlm_process_state">离线</th>
+                  </tr>
+                 <tr>
+                    <th scope="row">在线视频</th>
+                    <th scope="row" id="zlm_total_media_count">0</th>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+                <h3>系统信息</h3>
+            </div>
+            <div class="dash-panel-body">
+              <table class="table table-hover">
+                <tbody>
+
+
+                  <tr>
+                    <th scope="row">机器</th>
+                    <th scope="row" id="os_machine_node">Machine</th>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">系统</th>
+                    <th scope="row" id="os_system_name">System</th>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">运行</th>
+                    <th scope="row" id="os_run_date_str">00:00:00</th>
+                  </tr>
+                    <tr>
+                    <th scope="row">CPU</th>
+                    <th scope="row" id="os_cpu_used_rate">0%</th>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">内存</th>
+                    <th scope="row" id="os_virtual_mem_used_rate">0%</th>
+                  </tr>
+
+                   <tr>
+                    <th scope="row">存储</th>
+                    <th scope="row" id="os_disk_used_rate">0%</th>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+                <h3>版本信息</h3>
+            </div>
+            <div class="dash-panel-body">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th scope="row">版本</th>
+                    <th scope="row" id="project_version">Version</th>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+         <!--版本检测弹窗start -->
+          <div id="checkVersionDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h4 class="modal-title" >发现新版本</h4>
+              </div>
+              <div class="modal-body">
+                <div style="padding: 5px 20px;">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                          <th>版本号</th>
+                        <th>更新时间</th>
+                        <th>更新内容</th>
+                      </tr>
+                    </thead>
+                    <tbody id="checkVersionData">
+
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+               <div class="modal-footer">
+                    <button type="button"  class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" onclick="f_downloadNewVersion()" class="btn btn-primary">下载新版本</button>
+                  </div>
+
+            </div>
+          </div>
+        </div>
+      <!--版本检测弹窗end -->
+
+    </div>
+
+
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super}}
+
+<script src="/static/lib/highcharts/highcharts.js"></script>
+<script src="/static/lib/highcharts/modules/exporting.js"></script>
+<script src="/static/lib/highcharts-plugins/highcharts-zh_CN.js"></script>
+<script>
+        let eleCheckVersionDialog = $("#checkVersionDialog");
+        let eleCheckVersionData = $("#checkVersionData");
+        let downloadNewVersionUrl = "";
+
+        // 头部核心指标
+        let eleMetricCpu = $("#metric_cpu");
+        let eleMetricMem = $("#metric_mem");
+        let eleMetricDisk = $("#metric_disk");
+
+        // KPI 卡
+        let eleKpiNodeTotal = $("#kpi_node_total");
+        let eleKpiStreamTotal = $("#kpi_stream_total");
+        let eleKpiAlarmTotal = $("#kpi_alarm_total");
+        let eleKpiAlarmUnhandle = $("#kpi_alarm_unhandle");
+
+        Highcharts.setOptions({
+            global: {
+                    useUTC: false
+            }
+        });
+        function activeLastPointToolip(chart) {
+            let points = chart.series[0].points;
+            chart.tooltip.refresh(points[points.length -1]);
+        }
+        let cpuCharts = Highcharts.chart('cpuCharts', {
+            exporting:{
+                enabled:false //隐藏右上角菜单
+            },
+            credits:{
+                enabled:false//隐藏右下角logo
+            },
+            chart: {
+                type: 'spline',
+                marginRight: 10,
+                events: {
+                    load: function () {
+                        let chart = this;
+                        activeLastPointToolip(chart);
+                    }
+                }
+            },
+            title: {
+                    text: null
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+            },
+             yAxis: [{
+                min:0,
+                title: {
+                    text: null
+                },
+                showFirstLabel: true
+            }],
+            tooltip: {
+                    formatter: function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                                    Highcharts.numberFormat(this.y, 2);
+
+
+                    }
+            },
+            legend: {
+                    enabled: false //隐藏底部类别名称
+            },
+            series: [{
+                    name: 'CPU利用率',
+                    color: '#2a80eb',
+                    data: (function () {
+                            // 生成随机值
+                            var data = [],
+                                    time = (new Date()).getTime(),
+                                    i;
+                            for (i = -9; i <= 0; i += 1) {
+                                    data.push({
+                                            x: time + i * 1000,
+                                            y: 0 //Math.random()
+                                    });
+                            }
+
+                            return data;
+                    }())
+            }]
+        });
+        let memoryCharts = Highcharts.chart('memoryCharts', {
+            exporting:{
+                enabled:false //隐藏右上角菜单
+            },
+            credits:{
+                enabled:false//隐藏右下角logo
+            },
+            chart: {
+                type: 'spline',
+                marginRight: 10,
+                events: {
+                    load: function () {
+                        let chart = this;
+                        activeLastPointToolip(chart);
+                    }
+                }
+            },
+            title: {
+                text: null
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+            },
+             yAxis: [{ // 第一个 Y 轴，放置在左边（默认在坐标）
+                title: {
+                    text: null
+                },
+                showFirstLabel: true
+            }],
+            tooltip: {
+                    formatter: function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                                    Highcharts.numberFormat(this.y, 2);
+                    }
+            },
+            legend: {
+                    enabled: false
+            },
+            series: [{
+                    name: '内存利用率',
+                    color: '#faad14',
+                    data: (function () {
+                            // 生成随机值
+                            let data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                            for (i = -9; i <= 0; i += 1) {
+                                    data.push({
+                                            x: time + i * 1000,
+                                            y: 0 //Math.random()
+                                    });
+                            }
+                            return data;
+                    }())
+            }]
+        });
+        let diskCharts = Highcharts.chart('diskCharts', {
+            exporting:{
+                enabled:false //隐藏右上角菜单
+            },
+            credits:{
+                enabled:false//隐藏右下角logo
+            },
+            chart: {
+                type: 'spline',
+                marginRight: 10,
+                events: {
+                    load: function () {
+                        let chart = this;
+                        activeLastPointToolip(chart);
+                    }
+                }
+            },
+            title: {
+                    text: null
+            },
+            xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+            },
+             yAxis: [{
+                min:0,
+                title: {
+                    text: null
+                },
+                showFirstLabel: true
+            }],
+            tooltip: {
+                    formatter: function () {
+                            return '<b>' + this.series.name + '</b><br/>' +
+                                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                                    Highcharts.numberFormat(this.y, 2);
+
+
+                    }
+            },
+            legend: {
+                    enabled: false
+            },
+            series: [{
+                    name: '磁盘利用率',
+                    color: '#389e0d',
+                    data: (function () {
+                            // 生成随机值
+                            let data = [],
+                            time = (new Date()).getTime(),
+                            i;
+
+                            for (i = -9; i <= 0; i += 1) {
+                                    data.push({
+                                            x: time + i * 1000,
+                                            y: 0 //Math.random()
+                                    });
+                            }
+
+                            return data;
+                    }())
+            }]
+        });
+
+        //流媒体服务器
+        let eleZlmProcessState = $("#zlm_process_state");
+        let eleZlmTotalMediaCount = $("#zlm_total_media_count");
+
+        //系统信息
+        let eleOsMachineNode = $("#os_machine_node");
+        let eleOsSystemName = $("#os_system_name");
+        let ele_os_run_date_str = $("#os_run_date_str");
+        let ele_os_cpu_used_rate = $("#os_cpu_used_rate");
+        let ele_os_virtual_mem_used_rate = $("#os_virtual_mem_used_rate");
+        let ele_os_disk_used_rate = $("#os_disk_used_rate ");
+        
+        let eleProjectVersion = $("#project_version");
+
+        function f_getIndex() {
+            $.ajax({
+               url: '/open/getIndex',
+               type: "get",
+               async: true,
+               data: {},
+               dataType: "json",
+               timeout: 0,
+               error: function () {
+                    myAlert("网络异常，请确定网络正常！","error");
+               },
+               success: function (res) {
+                   if(res.code === 1000){
+                        try {
+                            let osInfo = res["osInfo"];
+                            let appInfo = res["appInfo"];
+
+                            let project_version = appInfo["project_version"]
+                            let project_flag = appInfo["project_flag"]
+
+                            let system_name = osInfo["system_name"];
+                            let machine_node = osInfo["machine_node"];
+                            let os_cpu_used_rate = osInfo["os_cpu_used_rate"];
+                            let os_virtual_mem_used_rate = osInfo["os_virtual_mem_used_rate"];
+                            let os_disk_used_rate = osInfo["os_disk_used_rate"];
+                            let os_cpu_used_rate_str = osInfo["os_cpu_used_rate_str"];
+                            let os_virtual_mem_used_rate_str = osInfo["os_virtual_mem_used_rate_str"];
+                            let os_disk_used_rate_str = osInfo["os_disk_used_rate_str"];
+                            let os_run_date_str = osInfo["os_run_date_str"];
+
+                            eleProjectVersion.html("v"+project_version);
+                            eleOsMachineNode.html(machine_node);
+                            eleOsSystemName.html(system_name);
+                            ele_os_run_date_str.html(os_run_date_str);
+                            ele_os_cpu_used_rate.html(os_cpu_used_rate_str);
+                            ele_os_virtual_mem_used_rate.html(os_virtual_mem_used_rate_str);
+                            ele_os_disk_used_rate.html(os_disk_used_rate_str);
+
+                            // 头部核心指标
+                            eleMetricCpu.html(os_cpu_used_rate_str);
+                            eleMetricMem.html(os_virtual_mem_used_rate_str);
+                            eleMetricDisk.html(os_disk_used_rate_str);
+
+                           //设置图表数据
+                            let x = (new Date()).getTime();
+                            cpuCharts.series[0].addPoint([x, os_cpu_used_rate], true, true);
+                            activeLastPointToolip(cpuCharts);
+                            memoryCharts.series[0].addPoint([x, os_virtual_mem_used_rate], true, true);
+                            activeLastPointToolip(memoryCharts);
+                            diskCharts.series[0].addPoint([x, os_disk_used_rate], true, true);
+                            activeLastPointToolip(diskCharts);
+                        }catch (e) {
+                            console.log(e)
+                        }
+                   }else{
+                        console.log(res.msg);
+                   }
+                   setTimeout(function () {
+                       f_getIndex();
+                   }, 6000);
+               }
+            });
+        }
+        function f_getZlmProcessData() {
+            $.ajax({
+               url: '/open/getZlmProcessData',
+               type: "get",
+               async: true,
+               data: {},
+               dataType: "json",
+               timeout: 0,
+               error: function () {
+                    myAlert("网络异常，请确定网络正常！","error");
+               },
+               success: function (res) {
+                    let info = res["info"];
+                    let process_state = parseInt(info["process_state"]);
+                    let total_media_count = parseInt(info["total_media_count"]);
+
+                    if(process_state===1){
+                        eleZlmProcessState.html("<span class='ctrl-state-on'>在线</span>");
+                    }else{
+                        eleZlmProcessState.html("<span class='ctrl-state-off'>离线</span>");
+                    }
+                    eleZlmTotalMediaCount.html(total_media_count);
+               }
+            });
+        }
+
+        function f_downloadNewVersion(){
+            window.open(downloadNewVersionUrl);
+        }
+
+        // KPI 概览（今日告警 / 未处理 / 视频流）
+        function f_getDashboardData() {
+            $.ajax({
+               url: '/index/getDashboardData',
+               type: "get",
+               async: true,
+               data: {},
+               dataType: "json",
+               timeout: 0,
+               error: function () {
+                    myAlert("网络异常，请确定网络正常！","error");
+               },
+               success: function (res) {
+                   if(res.code === 1000){
+                        try {
+                            let info = res["info"];
+                            eleKpiAlarmTotal.html(parseInt(info["todayAlarmTotalCount"]));
+                            eleKpiAlarmUnhandle.html(parseInt(info["todayAlarmUnHandleCount"]));
+                            eleKpiStreamTotal.html(parseInt(info["streamTotalCount"]));
+                        }catch (e) {
+                            console.log(e)
+                        }
+                   }else{
+                        console.log(res.msg);
+                   }
+               }
+            });
+        }
+
+        // 节点总数（读节点列表页分页计数字段）
+        function f_getNodeTotal() {
+            $.ajax({
+               url: '/node/index',
+               type: "get",
+               async: true,
+               data: {"p":1,"ps":1},
+               dataType: "html",
+               timeout: 0,
+               success: function (html) {
+                    try {
+                        let m = html.match(/<strong>(\d+)<\/strong>\s*条/);
+                        if(m){
+                            eleKpiNodeTotal.html(parseInt(m[1]));
+                        }
+                    }catch (e) {
+                        console.log(e)
+                    }
+               }
+            });
+        }
+        function f_getCheckVersion() {
+
+            $.ajax({
+               url: '/version/getCheckVersion',
+               type: "get",
+               async: true,
+               data: {},
+               dataType: "json",
+               timeout: 0,
+               error: function () {
+                   myAlert("网络异常，请确定网络正常！","error");
+               },
+               success: function (res) {
+                  let info = res.info;
+                  let historyVersionUrl = info.historyVersionUrl;//历史版本下载地址
+                   if(1000 === res.code){//发现新版本
+                       let version = info.version.toString();//新版本版本号
+                       let updateContent = info.updateContent;//array
+                       let pubdate = info.pubdate;//版本发布时间
+                       downloadNewVersionUrl = info.url;//新版本下载地址
+                        let html = "";
+
+                        html+="<tr><th scope=\"row\">"+version+"</th>";
+                        html+="<td>"+pubdate+"</td>";
+                        html+="<td style='max-width: 250px;'>";
+                        for (let i = 0; i < updateContent.length; i++) {
+                            html +=updateContent[i]+"<br>";
+                        }
+                        html+="</td></tr>";
+                        eleCheckVersionData.html(html);
+                        eleCheckVersionDialog.modal("toggle");
+
+                   }
+               }
+            });
+
+        }
+        $(function() {
+            f_getIndex();
+            f_getZlmProcessData();
+            f_getCheckVersion();
+            f_getDashboardData();
+            f_getNodeTotal();
+        });
+
+
+</script>
+{% endblock javascripts %}
+

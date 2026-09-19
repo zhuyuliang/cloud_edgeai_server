@@ -1,0 +1,78 @@
+{% extends "app/base_site.html" %}
+{% block title %} {{ page_title|default:"节点页面" }} {% endblock title %}
+{% block stylesheets %}
+  {{ block.super }}
+<style>
+    /* v2 iframe 代理壳：卡片/按钮/下拉由全局 eai-theme.css 提供 */
+    .v2-panel {
+        /* 父级 .main_content_wrapper 是 flex 列容器，必须显式占满整行，否则收缩为内容宽度 */
+        width: 100%;
+        max-width: 100%;
+    }
+    .v2-toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .v2-toolbar .ctrl-btn { height: 28px; padding: 2px 10px; font-size: 12px; }
+    .v2-node-name { color: var(--eai-text); font-size: 14px; font-weight: 500; }
+    .xc_hint { color: var(--eai-text-secondary); font-size: 13px; }
+    .v2-frame-body { padding: 0; }
+    #nodeFrame {
+        width: 100%;
+        min-height: calc(100vh - 170px);
+        border: none;
+        display: block;
+        border-radius: 0 0 var(--eai-radius) var(--eai-radius);
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dash-panel v2-panel">
+          <div class="dash-panel-head">
+            <h3><i class="fa fa-external-link" style="margin-right:2px"></i> {{ page_title|default:"节点页面" }}</h3>
+            <div class="v2-toolbar">
+              <label class="xc_hint">节点：</label>
+              <span class="v2-node-name">{{ node_nickname|default:node_code }}（{{ node_code }}）</span>
+              <button class="ctrl-btn ctrl-btn-secondary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> 刷新</button>
+              <button class="ctrl-btn ctrl-btn-primary" onclick="f_goBack()"><i class="fa fa-list"></i> 返回列表</button>
+              <span class="xc_hint">页面由节点实时提供（iframe 双跳），操作结果与边缘本地一致</span>
+            </div>
+          </div>
+          <div class="dash-panel-body v2-frame-body">
+            <iframe id="nodeFrame" src="{{ iframe_src }}" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+    var mIframeSrc = "{{ iframe_src }}";
+    var mRedirectUrl = "{{ redirect_url }}";
+
+    function f_reloadFrame() {
+        var frame = document.getElementById('nodeFrame');
+        if (!frame) return;
+        // 保留原查询串，追加时间戳防缓存
+        frame.src = mIframeSrc + (mIframeSrc.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+    }
+
+    function f_goBack() {
+        window.location.href = mRedirectUrl;
+    }
+
+    // 边缘表单提交成功后 window.location.href 会被代理重写到节点代理路径（/controls），
+    // 监听 iframe 内导航失败/成功均提示用户返回列表（跨源无法读取，靠用户手动返回）
+</script>
+{% endblock javascripts %}

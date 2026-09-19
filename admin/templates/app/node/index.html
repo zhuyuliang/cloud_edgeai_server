@@ -1,0 +1,690 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} 节点管理 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <style>
+    /* 节点管理页 - 局部样式（公共类见 eai-theme.css） */
+    .node-page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .node-page-header .ctrl-btn { height: 28px; padding: 2px 10px; font-size: 12px; }
+
+    /* 加载提示 */
+    #top_loading {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--eai-text-secondary);
+      background: var(--eai-head-bg);
+      padding: 4px 10px;
+      border-radius: var(--eai-radius-sm);
+    }
+
+    .top_loading_img {
+      width: 16px;
+      height: 16px;
+    }
+
+    #top_msg {
+      font-size: 13px;
+      color: var(--eai-text-secondary);
+    }
+
+    /* 操作按钮列 - 水平排列，空间不足时换行 */
+    .node-action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .node-action-group .ctrl-action {
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    /* 表格列宽（fixed 布局按百分比分配，任何容器宽度下比例稳定） */
+    .node-table {
+      table-layout: fixed;
+      width: 100%;
+      min-width: 980px;
+    }
+
+    .node-table th:nth-child(1), .node-table td:nth-child(1) { width: 4%; text-align: center; }
+    .node-table th:nth-child(2), .node-table td:nth-child(2) { width: 5%; text-align: center; }
+    .node-table th:nth-child(3), .node-table td:nth-child(3) { width: 10%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .node-table th:nth-child(4), .node-table td:nth-child(4) { width: 7%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .node-table th:nth-child(5), .node-table td:nth-child(5) { width: 14%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .node-table th:nth-child(6), .node-table td:nth-child(6) { width: 32%; text-align: center; }
+    .node-table th:nth-child(7), .node-table td:nth-child(7) { width: 12%; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .node-table th:nth-child(8), .node-table td:nth-child(8) { width: 16%; text-align: center; }
+
+    /* 节点信息列 */
+    .node-info {
+      line-height: 1.5;
+    }
+
+    .node-status {
+      margin-bottom: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .node-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--eai-text-secondary);
+    }
+
+    .node-details span {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: var(--eai-radius-sm);
+      background-color: #f8f9fa;
+      border: 1px solid #e8eaed;
+      white-space: nowrap;
+    }
+
+    .node-version  { font-weight: 500; color: var(--eai-primary); background-color: #e6f4ff !important; border-color: #b3d7ff !important; }
+    .node-flag     { color: #137333; background-color: #e6f4ea !important; border-color: #b7dfc3 !important; }
+    .node-machine  { color: #b06000; background-color: #fef7e0 !important; border-color: #f9d56e !important; }
+    .node-system   { color: #5c35a3; background-color: #f3e8ff !important; border-color: #d2aef9 !important; }
+
+    /* 分页区域 */
+    .pagination-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 4px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-info {
+      font-size: 13px;
+      color: var(--eai-text-secondary);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .pagination-info strong {
+      color: var(--eai-text);
+      font-weight: 500;
+    }
+
+    .pagination.node-pagination {
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .pagination.node-pagination > li > a,
+    .pagination.node-pagination > li > span {
+      border: 1px solid var(--eai-input-border);
+      border-radius: var(--eai-radius-sm) !important;
+      color: var(--eai-primary);
+      padding: 5px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      transition: all 0.15s ease;
+      background: #fff;
+      margin: 0;
+      text-decoration: none;
+    }
+
+    .pagination.node-pagination > li > a:hover {
+      background: var(--eai-row-hover);
+      border-color: var(--eai-primary);
+      color: var(--eai-primary-hover);
+    }
+
+    .pagination.node-pagination > li.active > a,
+    .pagination.node-pagination > li.active > span {
+      background: var(--eai-primary);
+      border-color: var(--eai-primary);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(42, 128, 235, 0.4);
+    }
+
+    /* 模态框按钮 */
+    .btn-modal-cancel {
+      background: #fff;
+      color: var(--eai-primary);
+      border: 1px solid var(--eai-input-border);
+      border-radius: var(--eai-radius-sm);
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-modal-cancel:hover {
+      background: var(--eai-row-hover);
+      border-color: var(--eai-primary);
+    }
+
+    .btn-modal-submit {
+      background: var(--eai-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--eai-radius-sm);
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .btn-modal-submit:hover {
+      background: var(--eai-primary-hover);
+      box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+      transform: translateY(-1px);
+    }
+
+    .btn-modal-submit:active {
+      transform: translateY(0);
+    }
+
+    /* 节点编号展示 */
+    #import_version_dialog_node_code {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #e6f4ff;
+      color: var(--eai-primary);
+      border-radius: var(--eai-radius-sm);
+      font-weight: 500;
+      font-size: 13px;
+    }
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dash-panel">
+              <div class="dash-panel-head">
+                <h3><i class="fa fa-server" style="margin-right:2px"></i> 节点管理</h3>
+                <div class="node-page-header">
+                  <button onclick="f_openSync()" class="ctrl-btn ctrl-btn-secondary">
+                    <i class="fa fa-refresh"></i> 全量同步节点
+                  </button>
+                  <button onclick="f_openAdd()" class="ctrl-btn ctrl-btn-primary">
+                    <i class="fa fa-plus"></i> 添加节点
+                  </button>
+                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> 加载中</span>
+                  <span id="top_msg">{{top_msg}}</span>
+                </div>
+              </div>
+              <div class="dash-panel-body">
+
+                <div class="ctrl-table-wrapper table-responsive">
+                  <table class="ctrl-table node-table">
+                    <thead>
+                      <tr class="headings">
+                        <th class="column-title">ID</th>
+                        <th class="column-title">序号</th>
+                        <th class="column-title">编号</th>
+                        <th class="column-title">昵称</th>
+                        <th class="column-title">节点地址</th>
+                        <th class="column-title">节点信息</th>
+                        <th class="column-title">更新时间</th>
+                        <th class="column-title no-link last"><span class="nobr">操作</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for d in data %}
+                      <tr class="even pointer">
+                        <td>{{ d.id }}</td>
+                        <td>{{ d.sort }}</td>
+                        <td>{{ d.code }}</td>
+                        <td>{{ d.nickname }}</td>
+                        <td><a target="_blank" class="eai-link" title="前往节点地址" href="{{ d.address }}">{{ d.address }}</a></td>
+                        <td class="node-info">
+                          <div class="node-status">
+                            {% if d.state == 0 %}
+                              <span class="eai-badge eai-badge-warning">未同步</span>
+                            {% elif d.state == 1 %}
+                              <span class="eai-badge eai-badge-success">在线</span>
+                              {% if d.version > 4 %}
+                                {% if d.is_auth == 1 %}
+                                  <span class="eai-badge eai-badge-info">
+                                    {% if d.is_multi_process == 1 %}
+                                      高级版({{ d.max_count }})路
+                                    {% else %}
+                                      普通版
+                                    {% endif %}
+                                  </span>
+                                {% else %}
+                                  <span class="eai-badge eai-badge-error">未授权</span>
+                                {% endif %}
+                              {% endif %}
+                            {% elif d.state == 2 %}
+                              <span class="eai-badge eai-badge-error">离线</span>
+                            {% elif d.state == 3 %}
+                              <span class="eai-badge eai-badge-error">节点版本不支持</span>
+                            {% elif d.state == 4 %}
+                              <span class="eai-badge eai-badge-error">读取节点信息失败</span>
+                            {% else %}
+                              <span class="eai-badge eai-badge-error">未知错误</span>
+                            {% endif %}
+                          </div>
+                          <div class="node-details">
+                            <span class="node-version">v{{ d.version }}</span>
+                            {% if d.flag and d.flag != '' %}
+                              <span class="node-flag">{{ d.flag }}</span>
+                            {% endif %}
+                            {% if d.machine_node and d.machine_node != '' %}
+                              <span class="node-machine">{{ d.machine_node }}</span>
+                            {% endif %}
+                            {% if d.system_name and d.system_name != '' %}
+                              <span class="node-system">{{ d.system_name }}</span>
+                            {% endif %}
+                          </div>
+                        </td>
+                        <td>{{ d.last_update_time }}</td>
+                        <td>
+                          <div class="node-action-group">
+                            <button onclick="f_edit('{{ d.code }}')" class="ctrl-action" type="button">
+                              <i class="fa fa-pencil"></i> 编辑
+                            </button>
+                            <button onclick="f_importUpdate('{{ d.code }}')" class="ctrl-action" type="button">
+                              <i class="fa fa-upload"></i> 更新版本
+                            </button>
+                            <button onclick="f_openDel('{{ d.code }}')" class="ctrl-action ctrl-action-danger" type="button">
+                              <i class="fa fa-trash-o"></i> 删除
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="pagination-wrapper">
+            <span class="pagination-info">
+              共 <strong>{{ pageData.page_num }}</strong> 页 / <strong>{{ pageData.count }}</strong> 条
+            </span>
+            <ul class="pagination node-pagination">
+              {% for d in pageData.pageLabels %}
+                {% if d.cur == 1 %}
+                  <li class="paginate_button active"><a href="#">{{ d.name }}</a></li>
+                {% else %}
+                  <li class="paginate_button"><a href="/node/index?p={{ d.page }}&ps={{ pageData.page_size }}">{{ d.name }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    <!--节点更新版本弹窗start -->
+    <div id="ImportVersionFileDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">节点更新版本</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label class="col-sm-3 control-label">节点编号</label>
+                <div class="col-sm-9">
+                  <span id="import_version_dialog_node_code"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">升级版本</label>
+                <div class="col-sm-9">
+                  <input type="file" class="form-control" accept=".xcupdate" name="xcupdate_file" placeholder="浏览升级安装包">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
+            <button type="button" onclick="f_openImportUpdate()" class="btn-modal-submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--节点更新版本弹窗end -->
+
+    <!--添加节点弹窗start -->
+    <div id="AddNodeDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">添加节点</h4>
+          </div>
+          <div class="modal-body">
+            <form id="addNodeForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="handle" value="add">
+              <div class="form-group">
+                <label class="col-sm-3 control-label">序号</label>
+                <div class="col-sm-9">
+                  <input type="number" name="sort" class="form-control" placeholder="请输入序号">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">节点昵称</label>
+                <div class="col-sm-9">
+                  <input type="text" name="nickname" required="required" class="form-control" placeholder="请输入节点昵称">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">节点地址</label>
+                <div class="col-sm-9">
+                  <input type="text" name="address" required="required" class="form-control" placeholder="请输入节点地址">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">eai_safe</label>
+                <div class="col-sm-9">
+                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="请输入eai_safe">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">media_secret</label>
+                <div class="col-sm-9">
+                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="请输入media_secret">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
+            <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--添加节点弹窗end -->
+
+    <!--编辑节点弹窗start -->
+    <div id="EditNodeDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">编辑节点</h4>
+          </div>
+          <div class="modal-body">
+            <form id="editNodeForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="handle" value="edit">
+              <input type="hidden" name="code" value="">
+              <div class="form-group">
+                <label class="col-sm-3 control-label">编号</label>
+                <div class="col-sm-9">
+                  <input type="text" name="code_display" class="form-control" disabled="disabled">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">序号</label>
+                <div class="col-sm-9">
+                  <input type="number" name="sort" class="form-control" placeholder="请输入序号">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">节点昵称</label>
+                <div class="col-sm-9">
+                  <input type="text" name="nickname" required="required" class="form-control" placeholder="请输入节点昵称">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">节点地址</label>
+                <div class="col-sm-9">
+                  <input type="text" name="address" required="required" class="form-control" placeholder="请输入节点地址">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">eai_safe</label>
+                <div class="col-sm-9">
+                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="请输入eai_safe">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-3 control-label">media_secret</label>
+                <div class="col-sm-9">
+                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="请输入media_secret">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
+            <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--编辑节点弹窗end -->
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+<script>
+    let ele_top_loading = $("#top_loading");
+    let ele_top_msg = $("#top_msg");
+    let eleImportVersionDialogNodeCode = $("#import_version_dialog_node_code");
+    let eleXcUpdateFile = $("input[name='xcupdate_file']");
+
+    function f_edit(code) {
+        ele_top_loading.show();
+        $.ajax({
+            url: "/node/openNodeDetail",
+            type: "get",
+            async: true,
+            data: { code: code },
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    let node = res.data;
+                    $("#editNodeForm input[name='code']").val(node.code);
+                    $("#editNodeForm input[name='code_display']").val(node.code);
+                    $("#editNodeForm input[name='sort']").val(node.sort);
+                    $("#editNodeForm input[name='nickname']").val(node.nickname);
+                    $("#editNodeForm input[name='address']").val(node.address);
+                    $("#editNodeForm input[name='eai_safe']").val(node.eai_safe);
+                    $("#editNodeForm input[name='media_secret']").val(node.media_secret);
+                    $("#EditNodeDialog").modal("show");
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    function f_openSync() {
+        ele_top_loading.show();
+        $.ajax({
+            url: '/node/openSync',
+            type: "post",
+            async: true,
+            data: {},
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (1000 === res.code) {
+                    myAlert(res.msg, "success");
+                    window.location.reload();
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    function f_openDel(code) {
+        ele_top_loading.show();
+        $.ajax({
+            url: '/node/openDel',
+            type: "post",
+            async: true,
+            data: { "code": code },
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (1000 === res.code) {
+                    window.location.reload();
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    function f_importUpdate(code) {
+        eleImportVersionDialogNodeCode.html(code);
+        $("#ImportVersionFileDialog").modal("show");
+    }
+
+    function f_openImportUpdate() {
+        if (eleXcUpdateFile[0].files.length > 0) {
+            let file = eleXcUpdateFile[0].files[0];
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('node_code', eleImportVersionDialogNodeCode.html());
+            ele_top_loading.show();
+            $.ajax({
+                url: "/node/openImportUpdate",
+                type: 'post',
+                async: true,
+                contentType: false,
+                processData: false,
+                data: formData,
+                dataType: "json",
+                timeout: 0,
+                error: function () {
+                    ele_top_loading.hide();
+                    myAlert("网络异常，请确定网络正常！", "error");
+                },
+                success: function (res) {
+                    ele_top_loading.hide();
+                    if (res.code === 1000) {
+                        myAlert(res.msg, "success");
+                        $("#ImportVersionFileDialog").modal("hide");
+                        window.location.reload();
+                    } else {
+                        myAlert(res.msg, "error");
+                    }
+                }
+            });
+        } else {
+            myAlert("请选择升级包文件！", "error");
+        }
+    }
+
+    function f_openAdd() {
+        $("#AddNodeDialog").modal("show");
+    }
+
+    function f_openAddSubmit() {
+        let formData = new FormData($("#addNodeForm")[0]);
+        ele_top_loading.show();
+        $.ajax({
+            url: "/node/add",
+            type: "post",
+            async: true,
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    myAlert(res.msg, "success");
+                    $("#AddNodeDialog").modal("hide");
+                    setTimeout(function () { window.location.reload(); }, 1000);
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    function f_openEditSubmit() {
+        let formData = new FormData($("#editNodeForm")[0]);
+        ele_top_loading.show();
+        $.ajax({
+            url: "/node/edit",
+            type: "post",
+            async: true,
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    myAlert(res.msg, "success");
+                    $("#EditNodeDialog").modal("hide");
+                    setTimeout(function () { window.location.reload(); }, 1000);
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+</script>
+
+{% endblock javascripts %}

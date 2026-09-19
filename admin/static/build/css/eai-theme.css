@@ -1,0 +1,603 @@
+/* ============================================================
+   EAI 云端管理端统一主题（eai-theme.css）
+   来源：边缘端 web_index.html / web_alarms_event.html / control/index.html
+   用途：全站设计令牌 + 卡片/表格/按钮/徽章/表单公共类
+   规范文档：docs/UI对齐修改实施方案-V2.md
+   ============================================================ */
+
+/* ---------- 1. 设计令牌 ---------- */
+:root {
+  --eai-primary: #2a80eb;
+  --eai-primary-hover: #1967d2;
+  --eai-primary-active: #1765ad;
+  --eai-success: #389e0d;
+  --eai-danger: #cf1322;
+  --eai-warning: #faad14;
+  --eai-purple: #722ed1;
+  --eai-border: #e6e6e6;
+  --eai-head-bg: #f5f7fa;
+  --eai-row-hover: #f0f7ff;
+  --eai-radius: 8px;
+  --eai-radius-sm: 4px;
+  --eai-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --eai-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --eai-text: #333;
+  --eai-text-secondary: #888;
+  --eai-input-border: #d9d9d9;
+}
+
+/* ---------- 2. 卡片基底（源：web_index.html .dash-panel） ---------- */
+.dash-panel {
+  background: #ffffff;
+  border: 1px solid var(--eai-border);
+  border-radius: var(--eai-radius);
+  box-shadow: var(--eai-shadow-sm);
+  margin-bottom: 16px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-panel:hover {
+  box-shadow: var(--eai-shadow);
+}
+
+.dash-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--eai-head-bg);
+  border-bottom: 1px solid var(--eai-border);
+  border-radius: var(--eai-radius) var(--eai-radius) 0 0;
+}
+
+.dash-panel-head h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--eai-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-panel-head h3::before {
+  content: "";
+  width: 3px;
+  height: 14px;
+  background: var(--eai-primary);
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.dash-panel-body {
+  padding: 14px 16px;
+  flex: 1;
+}
+
+.dash-sub {
+  font-size: 12px;
+  color: var(--eai-text-secondary);
+}
+
+/* 系统资源面板修饰符（源：web_index.html dash-cpu/dash-mem/dash-disk）
+   色条与图表系列色保持一致 */
+.dash-panel.dash-cpu  .dash-panel-head h3::before { background: #2a80eb; }
+.dash-panel.dash-mem  .dash-panel-head h3::before { background: #faad14; }
+.dash-panel.dash-disk .dash-panel-head h3::before { background: #389e0d; }
+
+/* 头部右侧的核心 KPI 数值（百分比） */
+.dash-metric {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  color: #1f2937;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease;
+}
+.dash-panel.dash-cpu  .dash-metric { color: #2a80eb; }
+.dash-panel.dash-mem  .dash-metric { color: #faad14; }
+.dash-panel.dash-disk .dash-metric { color: #389e0d; }
+
+/* 系统资源面板体内边距收紧，图表更舒展 */
+.dash-panel.dash-cpu  .dash-panel-body,
+.dash-panel.dash-mem  .dash-panel-body,
+.dash-panel.dash-disk .dash-panel-body {
+  padding: 8px 10px 6px;
+}
+
+/* ---------- 3. KPI 卡（源：web_index.html .kpi-card） ---------- */
+.kpi-row {
+  margin-bottom: 4px;
+}
+
+.kpi-col {
+  margin-bottom: 16px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--eai-border);
+  border-radius: var(--eai-radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--eai-shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 84px;
+}
+
+.kpi-card:hover {
+  box-shadow: var(--eai-shadow);
+  transform: translateY(-1px);
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--eai-primary);
+}
+
+.kpi-card.kpi-danger::before { background: var(--eai-danger); }
+.kpi-card.kpi-warning::before { background: var(--eai-warning); }
+.kpi-card.kpi-success::before { background: var(--eai-success); }
+.kpi-card.kpi-info::before { background: var(--eai-primary); }
+.kpi-card.kpi-default::before { background: #595959; }
+.kpi-card.kpi-purple::before { background: var(--eai-purple); }
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--eai-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.kpi-card.kpi-danger .kpi-icon { background: rgba(207, 19, 34, 0.10); color: var(--eai-danger); }
+.kpi-card.kpi-warning .kpi-icon { background: rgba(250, 173, 20, 0.12); color: var(--eai-warning); }
+.kpi-card.kpi-success .kpi-icon { background: rgba(56, 158, 13, 0.10); color: var(--eai-success); }
+.kpi-card.kpi-info .kpi-icon { background: rgba(42, 128, 235, 0.10); color: var(--eai-primary); }
+.kpi-card.kpi-default .kpi-icon { background: rgba(89, 89, 89, 0.10); color: #595959; }
+.kpi-card.kpi-purple .kpi-icon { background: rgba(114, 46, 209, 0.10); color: var(--eai-purple); }
+
+.kpi-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: var(--eai-text-secondary);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+.kpi-value .kpi-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--eai-text-secondary);
+}
+
+/* ---------- 4. 表格体系（源：web_alarms_event.html .ctrl-table） ---------- */
+.ctrl-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  border: 1px solid var(--eai-border);
+  border-radius: var(--eai-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ctrl-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  table-layout: fixed;
+  background: #fff;
+}
+
+.ctrl-table th,
+.ctrl-table td {
+  border-bottom: 1px solid var(--eai-border);
+  padding: 14px 10px;
+  vertical-align: middle;
+  word-break: break-word;
+  background-clip: padding-box;
+}
+
+.ctrl-table thead th {
+  background: var(--eai-head-bg);
+  color: var(--eai-text);
+  font-weight: 600;
+  border-bottom: 2px solid var(--eai-primary);
+  text-align: center;
+}
+
+.ctrl-table thead th .check_all { vertical-align: middle; }
+.ctrl-table thead th i.fa { margin-right: 4px; }
+.ctrl-table tbody tr td { background: #fff; transition: background 0.2s; }
+.ctrl-table tbody tr:hover td { background: var(--eai-row-hover); }
+.ctrl-table tbody tr:last-child td { border-bottom: none; }
+
+/* 常用固定列宽（列名按语义取用，页面可再覆盖） */
+.ctrl-table th.col-check,
+.ctrl-table td.col-check { width: 50px; min-width: 50px; max-width: 50px; text-align: center; }
+
+.ctrl-table th.col-snap,
+.ctrl-table td.col-snap { width: 100px; min-width: 100px; max-width: 100px; text-align: center; }
+
+.ctrl-table th.col-actions,
+.ctrl-table td.col-actions {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+
+/* 空行/空态 */
+.ctrl-table .empty-row td {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.empty-ph {
+  text-align: center;
+  color: #bbb;
+  padding: 36px 12px;
+  font-size: 13px;
+}
+
+/* ---------- 5. 工具栏（源：边缘 control/index.html .ctrl-toolbar） ---------- */
+.ctrl-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ctrl-toolbar .form-control,
+.ctrl-toolbar .form-control-sm {
+  height: 32px;
+  line-height: 1.4;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: var(--eai-radius-sm);
+  border: 1px solid var(--eai-input-border);
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.ctrl-toolbar select.form-control {
+  width: 140px;
+  padding-right: 24px;
+}
+
+.ctrl-toolbar input.search-input { width: 180px; }
+
+.ctrl-toolbar label {
+  margin: 0;
+  font-size: 13px;
+  color: var(--eai-text);
+  font-weight: normal;
+}
+
+/* ---------- 6. 按钮 ---------- */
+/* 主/次按钮（供工具栏与卡片头使用） */
+.ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--eai-radius-sm);
+  box-sizing: border-box;
+  cursor: pointer;
+  text-decoration: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.ctrl-btn .fa { margin-right: 4px; }
+
+/* 主按钮 */
+.ctrl-btn-primary,
+.ctrl-btn.ctrl-btn-primary {
+  background: var(--eai-primary);
+  color: #fff;
+  border: 1px solid var(--eai-primary);
+}
+
+.ctrl-btn-primary:hover,
+.ctrl-btn.ctrl-btn-primary:hover {
+  background: var(--eai-primary-hover);
+  border-color: var(--eai-primary-hover);
+  color: #fff;
+  text-decoration: none;
+}
+
+.ctrl-btn-primary:active,
+.ctrl-btn.ctrl-btn-primary:active {
+  background: var(--eai-primary-active);
+  border-color: var(--eai-primary-active);
+  color: #fff;
+}
+
+/* 次按钮 */
+.ctrl-btn-secondary,
+.ctrl-btn.ctrl-btn-secondary {
+  background: #fff;
+  color: var(--eai-primary);
+  border: 1px solid var(--eai-input-border);
+}
+
+.ctrl-btn-secondary:hover,
+.ctrl-btn.ctrl-btn-secondary:hover {
+  background: #e8f2fd;
+  border-color: var(--eai-primary);
+  color: var(--eai-primary);
+  text-decoration: none;
+}
+
+/* 危险按钮 */
+.ctrl-btn-danger,
+.ctrl-btn.ctrl-btn-danger {
+  background: #fff;
+  color: var(--eai-danger);
+  border: 1px solid var(--eai-input-border);
+}
+
+.ctrl-btn-danger:hover,
+.ctrl-btn.ctrl-btn-danger:hover {
+  background: var(--eai-danger);
+  border-color: var(--eai-danger);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* 表格行内小操作按钮（源：web_alarms_event.html .ctrl-action） */
+.ctrl-action {
+  display: inline-block;
+  min-width: 52px;
+  padding: 4px 6px;
+  margin-right: 4px;
+  margin-bottom: 2px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--eai-primary);
+  background: var(--eai-head-bg);
+  border: 1px solid var(--eai-border);
+  border-radius: var(--eai-radius-sm);
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ctrl-action:hover { background: var(--eai-primary); color: #fff; border-color: var(--eai-primary); text-decoration: none; }
+.ctrl-action:active { background: var(--eai-primary-active); color: #fff; border-color: var(--eai-primary-active); }
+.ctrl-action:focus { color: var(--eai-primary); outline: none; text-decoration: none; }
+.ctrl-action.ctrl-action-danger:hover { background: var(--eai-danger); border-color: var(--eai-danger); color: #fff; }
+.ctrl-action[disabled],
+.ctrl-action[disabled]:hover {
+  color: #bbb;
+  cursor: not-allowed;
+  background: var(--eai-head-bg);
+  border-color: var(--eai-border);
+}
+
+/* ---------- 7. 状态标签（源：web_alarms_event.html .ctrl-state-*） ---------- */
+.ctrl-state-on,
+.ctrl-state-off,
+.ctrl-state-info,
+.ctrl-state-warn,
+.ctrl-state-muted {
+  display: inline-block;
+  min-width: 52px;
+  padding: 4px 6px;
+  border-radius: var(--eai-radius-sm);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.ctrl-state-on { background: #e6f7e6; color: var(--eai-success); border: 1px solid #b7eb8f; }
+.ctrl-state-off { background: #fff1f0; color: var(--eai-danger); border: 1px solid #ffa39e; }
+.ctrl-state-info { background: #e6f4ff; color: var(--eai-primary); border: 1px solid #91caff; }
+.ctrl-state-warn { background: #fff7e6; color: #d48806; border: 1px solid #ffd591; }
+.ctrl-state-muted { background: #f5f5f5; color: #999; border: 1px solid #d9d9d9; }
+
+/* ---------- 8. 胶囊徽章（源：云端 node/index.html .sun-state-*，改名 eai-badge-* 并扩展语义） ---------- */
+.eai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.eai-badge::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.eai-badge-success { background: #e6f4ea; color: #137333; }
+.eai-badge-success::before { background: #34a853; }
+
+.eai-badge-error { background: #fce8e6; color: #c5221f; }
+.eai-badge-error::before { background: #ea4335; }
+
+.eai-badge-warning { background: #fef7e0; color: #b06000; }
+.eai-badge-warning::before { background: #f9ab00; }
+
+.eai-badge-info { background: #e8f0fe; color: #1967d2; }
+.eai-badge-info::before { background: var(--eai-primary); }
+
+.eai-badge-default { background: #f1f3f4; color: #5f6368; }
+.eai-badge-default::before { background: #9aa0a6; }
+
+/* 小圆点（在线/离线等内联指示） */
+.dot-mini {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+.dot-mini.online { background: var(--eai-success); }
+.dot-mini.offline { background: #d9d9d9; }
+
+/* 通用文字链接 */
+.eai-link {
+  color: var(--eai-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.eai-link:hover {
+  color: var(--eai-primary-hover);
+  text-decoration: underline;
+}
+
+/* ---------- 9. 表单控件 ---------- */
+.eai-input,
+.eai-select,
+.eai-textarea {
+  height: 32px;
+  line-height: 1.4;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: var(--eai-radius-sm);
+  border: 1px solid var(--eai-input-border);
+  box-sizing: border-box;
+  color: var(--eai-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.eai-textarea { height: auto; min-height: 72px; resize: vertical; }
+
+.eai-input:focus,
+.eai-select:focus,
+.eai-textarea:focus {
+  border-color: var(--eai-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(42, 128, 235, 0.15);
+}
+
+/* ---------- 10. 弹窗（规范化 xc_modal / 通用弹层） ---------- */
+.eai-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.eai-modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 860px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.eai-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--eai-border);
+}
+
+.eai-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--eai-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eai-modal-title::before {
+  content: "";
+  width: 3px;
+  height: 14px;
+  background: var(--eai-primary);
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.eai-modal-close {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.eai-modal-close:hover { color: var(--eai-text); }
+
+/* ---------- 11. 响应式 ---------- */
+@media (max-width: 768px) {
+  .dash-panel-head { padding: 8px 12px; }
+  .dash-panel-body { padding: 10px 12px; }
+  .kpi-card { padding: 10px 12px; min-height: 70px; }
+  .kpi-icon { width: 36px; height: 36px; font-size: 16px; }
+  .kpi-value { font-size: 18px; }
+  .dash-metric { font-size: 16px; }
+  .ctrl-table th, .ctrl-table td { padding: 10px 6px; }
+}

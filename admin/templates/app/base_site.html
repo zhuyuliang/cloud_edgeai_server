@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+      {% block meta %}
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+        <meta name="theme-color" content="#2a80eb">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+        <link rel="shortcut icon" href="/static/images/favicon.ico?1002">
+        <link rel="dns-prefetch" href="//fonts.googleapis.com">
+        <link rel="preconnect" href="//fonts.googleapis.com" crossorigin>
+      {% endblock meta %}
+
+      <title>{{ settings.name }} | {% block title %}{% endblock %}</title>
+
+      {% block stylesheets %}
+        <!-- Bootstrap -->
+        <link href="/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="/static/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+        <!-- bootstrap-progressbar -->
+        <link href="/static/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+        <!-- JQVMap -->
+        <!--<link href="/static/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>-->
+
+      {% endblock stylesheets %}
+      <!-- Custom Theme Style -->
+      <link href="/static/build/css/custom.css?1004" rel="stylesheet">
+      <!-- EAI 统一主题：设计令牌 + 卡片/表格/按钮公共类 -->
+      <link href="/static/build/css/eai-theme.css?v=1" rel="stylesheet">
+      
+      <!-- Google Cloud Menu Optimizations -->
+      <style>
+        /* 全局优化 */
+        * {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          min-height: 100vh;
+          background: #f8f9fa;
+        }
+        
+        /* 容器优化：占满视口，空间够时 footer 贴底不超出 */
+        .container.body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          min-height: 100vh;
+          height: 100%;
+        }
+        
+        .main_container {
+          min-height: 100vh;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          background: #f8f9fa;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* 内容区撑满剩余高度，footer 作为 main_container 的直接子元素位于其下方 */
+        .main_content_wrapper {
+          flex: 1 1 auto;
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          margin-top: 64px !important;
+          padding-top: 16px !important;
+          width: 100%;
+          min-width: 0;
+        }
+        
+        /* 顶部导航：固定、全宽，不占据文档流 */
+        .top_nav {
+          position: fixed !important;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          height: 64px;
+          margin: 0 !important;
+          z-index: 100;
+          background: #fff;
+          box-shadow: 0 2px 4px 0 rgba(60, 64, 67, 0.25), 0 2px 6px 2px rgba(60, 64, 67, 0.12);
+          transition: margin-left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+          box-sizing: border-box;
+        }
+        
+        /* 内容区域：不设大 min-height，由 flex 撑满剩余空间，避免把 footer 顶出视口 */
+        .container.body .main_content_wrapper .right_col,
+        .right_col {
+          padding: 20px !important;
+          padding-top: 20px !important;
+          background: transparent;
+          min-height: 0;
+          margin-left: 0 !important;
+          width: 100%;
+          box-sizing: border-box;
+          transition: margin-left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        /* 移动端特殊优化 */
+        @media (max-width: 991px) {
+          .container.body .main_content_wrapper .right_col,
+          .right_col {
+            padding: 15px !important;
+            padding-top: 15px !important;
+          }
+        }
+        
+        .col-md-3.left_col {
+          margin: 0;
+          padding: 0;
+        }
+        
+        .main_content_wrapper > .right_col {
+          flex: 1 1 auto;
+          min-height: 0;
+        }
+        /* footer 作为 main_container 的直接 flex 子项，自然流动在主内容下方 */
+        footer.main_footer {
+          position: static;
+          width: 100%;
+          box-sizing: border-box;
+          background: #f8f9fa;
+          padding: 16px 20px;
+          margin: 0;
+          border-top: 1px solid #e8eaed;
+          box-shadow: 0 -2px 4px 0 rgba(60, 64, 67, 0.08);
+          flex-shrink: 0;
+        }
+        
+        /* 卡片样式优化 - Google Cloud 风格 */
+        .x_panel {
+          background: #fff;
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+          margin-bottom: 20px;
+          transition: box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        
+        .x_panel:hover {
+          box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+        
+        .x_title {
+          border-bottom: 1px solid #e8eaed;
+          padding: 16px 20px;
+        }
+        
+        .x_title h2 {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 500;
+          color: #202124;
+        }
+        
+        .x_content {
+          padding: 20px;
+        }
+        
+        /* 平滑滚动 */
+        html {
+          scroll-behavior: smooth;
+        }
+        
+        /* 加载优化 */
+        body.loading {
+          overflow: hidden;
+        }
+        
+        /* 防止布局抖动 */
+        .col-md-3.left_col {
+          flex-shrink: 0;
+        }
+        
+        /* 性能优化 - GPU 加速 */
+        .left_col,
+        .top_nav,
+        .right_col {
+          will-change: transform;
+          transform: translateZ(0);
+        }
+        
+        /* 移除默认边距 */
+        .col-md-3.left_col {
+          padding: 0 !important;
+        }
+        
+        /* 页面滚动时顶部导航阴影增强 */
+        body.scrolled .top_nav {
+          box-shadow: 0 4px 8px 0 rgba(60, 64, 67, 0.25), 0 4px 12px 4px rgba(60, 64, 67, 0.12);
+        }
+        
+        /* 表格优化 - Google Cloud 风格 */
+        .table {
+          border-collapse: separate;
+          border-spacing: 0;
+        }
+        
+        .table thead th {
+          background: #f8f9fa;
+          color: #5f6368;
+          font-weight: 500;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border-bottom: 2px solid #e8eaed;
+          padding: 12px 16px;
+        }
+        
+        .table tbody tr {
+          transition: background-color 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+          background-color: #f8f9fa;
+        }
+        
+        .table tbody td {
+          border-bottom: 1px solid #e8eaed;
+          padding: 12px 16px;
+          color: #202124;
+        }
+        
+        /* 按钮优化 - Material Design */
+        .btn {
+          border-radius: 4px;
+          font-weight: 500;
+          text-transform: none;
+          padding: 8px 16px;
+          transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+          border: none;
+          box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+        }
+        
+        .btn:hover {
+          box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+          transform: translateY(-1px);
+        }
+        
+        .btn:active {
+          box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3);
+          transform: translateY(0);
+        }
+        
+        .btn-primary {
+          background: #2a80eb;
+          color: #fff;
+        }
+        
+        .btn-primary:hover {
+          background: #1967d2;
+        }
+        
+        /* 表单控件优化 */
+        .form-control {
+          border: 1px solid #dadce0;
+          border-radius: 4px;
+          padding: 10px 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .form-control:focus {
+          border-color: #2a80eb;
+          box-shadow: 0 0 0 2px rgba(42, 128, 235, 0.2);
+          outline: none;
+        }
+        
+        /* 模态框优化 - 确保弹窗显示在 backdrop 之上（修复 right_col transform 导致的堆叠上下文问题） */
+        body.modal-open .container.body {
+          position: relative;
+          z-index: 1050;
+        }
+        .modal-content {
+          border: none;
+          border-radius: 8px;
+          box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 
+                      0 3px 14px 2px rgba(0, 0, 0, 0.12), 
+                      0 5px 5px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+          border-bottom: 1px solid #e8eaed;
+          padding: 20px 24px;
+        }
+        
+        .modal-body {
+          padding: 24px;
+        }
+        
+        .modal-footer {
+          border-top: 1px solid #e8eaed;
+          padding: 16px 24px;
+        }
+        
+        /* 加载状态 */
+        body.loading::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.9);
+          z-index: 9999;
+        }
+        
+        /* 选择文本颜色 */
+        ::selection {
+          background: #e6f4ff;
+          color: #2a80eb;
+        }
+        
+        ::-moz-selection {
+          background: #e6f4ff;
+          color: #2a80eb;
+        }
+        
+        /* 焦点样式优化 */
+        :focus-visible {
+          outline: 2px solid #2a80eb;
+          outline-offset: 2px;
+        }
+        
+        /* 减少动画(如果用户设置了偏好) */
+        @media (prefers-reduced-motion: reduce) {
+          *,
+          *::before,
+          *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+        
+        /* 打印样式 */
+        @media print {
+          .left_col,
+          .top_nav,
+          .sidebar-overlay {
+            display: none !important;
+          }
+          
+          .right_col {
+            margin-left: 0 !important;
+            padding: 0 !important;
+          }
+        }
+      </style>
+    {% endblock head %}
+  </head>
+
+  <body class="{% block body_class %}{% endblock body_class %}">
+    {% block body %}
+      <div class="container body">
+        <div class="main_container">
+
+          {% block sidebar %}
+            {% include "app/sidebar.html" %}
+          {% endblock sidebar %}
+
+          {% block top_navigation %}
+            <div class="top_nav">
+              {% include "app/top_navigation.html" %}
+            </div>
+          {% endblock top_navigation %}
+
+          <div class="main_content_wrapper">
+            {% block content %}
+              <!-- {{ content }} -->
+            {% endblock content %}
+          </div>
+
+          {% block footer %}
+            <footer class="main_footer">
+              {% include "app/footer.html" %}
+            </footer>
+          {% endblock footer %}
+
+        </div>
+      </div>
+
+      {% block javascripts %}
+        <!-- jQuery -->
+        <script src="/static/lib/jquery/jquery.min.js"></script>
+        <link href="/static/lib/jquery/toast/1.3.2/jquery.toast.css?v=2" rel="stylesheet">
+        <script src="/static/lib/jquery/toast/1.3.2/jquery.toast.min.js"></script>
+        <script src="/static/lib/jquery/toast/1.3.2/toast.js"></script>
+        <!-- Bootstrap -->
+        <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+        <!-- FastClick -->
+        <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+        <!-- NProgress -->
+        <script src="/static/vendors/nprogress/nprogress.js"></script>
+        <!-- bootstrap-progressbar -->
+        <script src="/static/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+        <!-- iCheck -->
+        <script src="/static/vendors/iCheck/icheck.min.js"></script>
+        <!-- bootstrap-wysiwyg -->
+        <script src="/static/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+        <script src="/static/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+        <script src="/static/vendors/google-code-prettify/src/prettify.js"></script>
+        <!-- jQuery Tags Input -->
+        <script src="/static/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+        <!-- Switchery -->
+        <script src="/static/vendors/switchery/dist/switchery.min.js"></script>
+        <!-- Select2 -->
+        <script src="/static/vendors/select2/dist/js/select2.full.min.js"></script>
+        <!-- Parsley -->
+        <!-- Autosize -->
+        <script src="/static/vendors/autosize/dist/autosize.min.js"></script>
+        <!-- jQuery autocomplete -->
+        <script src="/static/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+        <!-- starrr -->
+        <script src="/static/vendors/starrr/dist/starrr.js"></script>
+
+      {% endblock %}
+      <!-- Custom Theme Scripts -->
+      <script src="/static/build/js/custom.js?1001"></script>
+      
+      <!-- Google Cloud Menu Enhancement Scripts -->
+      <script>
+        (function() {
+          'use strict';
+          
+          // 性能优化 - 使用 requestAnimationFrame
+          var raf = window.requestAnimationFrame || 
+                    window.webkitRequestAnimationFrame || 
+                    window.mozRequestAnimationFrame || 
+                    function(callback) { return setTimeout(callback, 16); };
+          
+          // 防抖函数
+          function debounce(func, wait) {
+            var timeout;
+            return function executedFunction() {
+              var context = this;
+              var args = arguments;
+              var later = function() {
+                timeout = null;
+                func.apply(context, args);
+              };
+              clearTimeout(timeout);
+              timeout = setTimeout(later, wait);
+            };
+          }
+          
+          // 节流函数
+          function throttle(func, limit) {
+            var inThrottle;
+            return function() {
+              var args = arguments;
+              var context = this;
+              if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(function() { inThrottle = false; }, limit);
+              }
+            };
+          }
+          
+          // 优化页面加载
+          function initPageOptimizations() {
+            // 移除加载状态
+            document.body.classList.remove('loading');
+            
+            // 优化图片加载
+            var images = document.querySelectorAll('img[data-src]');
+            if ('IntersectionObserver' in window) {
+              var imageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                  if (entry.isIntersecting) {
+                    var img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                  }
+                });
+              });
+              
+              images.forEach(function(img) {
+                imageObserver.observe(img);
+              });
+            } else {
+              // 回退方案
+              images.forEach(function(img) {
+                img.src = img.dataset.src;
+              });
+            }
+          }
+          
+          // 响应式布局调整
+          var handleResize = debounce(function() {
+            var width = window.innerWidth;
+            
+            // 更新布局
+            raf(function() {
+              if (width >= 992) {
+                // 桌面端
+                document.body.classList.add('desktop-mode');
+                document.body.classList.remove('mobile-mode');
+              } else {
+                // 移动端
+                document.body.classList.add('mobile-mode');
+                document.body.classList.remove('desktop-mode');
+              }
+            });
+          }, 150);
+          
+          // 滚动性能优化
+          var handleScroll = throttle(function() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            raf(function() {
+              if (scrollTop > 64) {
+                document.body.classList.add('scrolled');
+              } else {
+                document.body.classList.remove('scrolled');
+              }
+            });
+          }, 100);
+          
+          // 初始化
+          function init() {
+            // 页面优化
+            initPageOptimizations();
+            
+            // 初始布局检测
+            handleResize();
+            
+            // 绑定事件
+            window.addEventListener('resize', handleResize);
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // 添加触摸支持检测
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+              document.body.classList.add('touch-device');
+            }
+            
+            // 性能标记
+            if (window.performance && window.performance.mark) {
+              window.performance.mark('app-initialized');
+            }
+          }
+          
+          // 页面可见性变化处理
+          document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+              // 页面隐藏时暂停不必要的操作
+              document.body.classList.add('page-hidden');
+            } else {
+              // 页面可见时恢复
+              document.body.classList.remove('page-hidden');
+            }
+          });
+          
+          // 错误处理
+          window.addEventListener('error', function(e) {
+            console.error('Global error:', e.message);
+          });
+          
+          // 刷新后滚动到顶部，避免主内容顶部被固定顶栏遮挡
+          if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+          }
+          window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+          });
+          window.addEventListener('pageshow', function(ev) {
+            if (ev.persisted) {
+              window.scrollTo(0, 0);
+            }
+          });
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+              window.scrollTo(0, 0);
+              init();
+            });
+          } else {
+            window.scrollTo(0, 0);
+            init();
+          }
+          
+          // 页面完全加载后的优化
+          window.addEventListener('load', function() {
+            // 预连接到常用资源
+            var preconnectLinks = [
+              'https://fonts.googleapis.com',
+              'https://fonts.gstatic.com'
+            ];
+            
+            preconnectLinks.forEach(function(url) {
+              var link = document.createElement('link');
+              link.rel = 'preconnect';
+              link.href = url;
+              link.crossOrigin = 'anonymous';
+              document.head.appendChild(link);
+            });
+            
+            // 性能监控
+            if (window.performance && window.performance.timing) {
+              var timing = window.performance.timing;
+              var loadTime = timing.loadEventEnd - timing.navigationStart;
+              console.log('Page load time:', loadTime + 'ms');
+            }
+          });
+          
+          // 链接预加载优化
+          function initLinkPreload() {
+            var links = document.querySelectorAll('a[href^="/"]');
+            var preloadedLinks = new Set();
+            
+            links.forEach(function(link) {
+              link.addEventListener('mouseenter', function() {
+                var href = this.getAttribute('href');
+                if (href && !preloadedLinks.has(href)) {
+                  var preloadLink = document.createElement('link');
+                  preloadLink.rel = 'prefetch';
+                  preloadLink.href = href;
+                  document.head.appendChild(preloadLink);
+                  preloadedLinks.add(href);
+                }
+              }, { passive: true });
+            });
+          }
+          
+          // 延迟初始化链接预加载
+          setTimeout(initLinkPreload, 2000);
+          
+          // 暴露全局工具函数
+          window.AppUtils = {
+            debounce: debounce,
+            throttle: throttle,
+            raf: raf
+          };
+          
+          // 页面性能监控(开发环境)
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            window.addEventListener('load', function() {
+              setTimeout(function() {
+                if (window.performance && window.performance.getEntriesByType) {
+                  var perfData = window.performance.getEntriesByType('navigation')[0];
+                  if (perfData) {
+                    console.group('⚡ Performance Metrics');
+                    console.log('DNS:', Math.round(perfData.domainLookupEnd - perfData.domainLookupStart) + 'ms');
+                    console.log('TCP:', Math.round(perfData.connectEnd - perfData.connectStart) + 'ms');
+                    console.log('Request:', Math.round(perfData.responseStart - perfData.requestStart) + 'ms');
+                    console.log('Response:', Math.round(perfData.responseEnd - perfData.responseStart) + 'ms');
+                    console.log('DOM Load:', Math.round(perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart) + 'ms');
+                    console.log('Total Load:', Math.round(perfData.loadEventEnd - perfData.fetchStart) + 'ms');
+                    console.groupEnd();
+                  }
+                }
+              }, 100);
+            });
+          }
+          
+        })();
+      </script>
+
+    {% endblock body %}
+  </body>
+</html>

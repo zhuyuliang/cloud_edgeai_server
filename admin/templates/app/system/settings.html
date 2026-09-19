@@ -1,0 +1,327 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} 启动配置 {% endblock title %}
+{% block stylesheets %}
+  {{ block.super }}
+<style>
+    input[type="file"]{
+      color: var(--eai-text);
+      font-size: 12px;
+    }
+    ::file-selector-button{
+      font-size: 12px;
+      color: #fff;
+      border-radius: var(--eai-radius-sm);
+      border: 1px solid var(--eai-input-border);
+      padding: 2px 4px;
+      background-color: var(--eai-text-secondary);
+      cursor: pointer;
+    }
+    .config-form {
+      margin: 10px 0;
+    }
+    .config-section {
+      margin-bottom: 15px;
+      padding: 12px;
+      background-color: var(--eai-head-bg);
+      border-radius: var(--eai-radius);
+      border: 1px solid var(--eai-border);
+    }
+    .config-section h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--eai-text);
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      font-weight: 500;
+      color: var(--eai-text);
+      font-size: 13px;
+    }
+    .form-control {
+      border-radius: var(--eai-radius-sm);
+      height: 30px;
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+    .checkbox {
+      margin-bottom: 5px;
+    }
+    .settings-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    /* 加载提示 */
+    #top_loading {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--eai-text-secondary);
+      background: var(--eai-head-bg);
+      padding: 4px 10px;
+      border-radius: var(--eai-radius-sm);
+    }
+    .top_loading_img {
+      width: 16px;
+      height: 16px;
+    }
+    #top_msg {
+      font-size: 13px;
+      color: var(--eai-text-secondary);
+    }
+
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+              <h3><i class="fa fa-cog" style="margin-right:2px"></i> 启动配置</h3>
+              <div class="settings-toolbar">
+                <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading">加载中</span>
+                <span id="top_msg">{{top_msg}}</span>
+              </div>
+            </div>
+            <div class="dash-panel-body">
+
+              <div class="config-form">
+                <form id="settingsForm" class="form-horizontal form-label-left">
+                  <!-- 基本配置 -->
+                  <div class="config-section">
+                    <h4>基本配置</h4>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">主机地址 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="host" name="host" value="{{config.host}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="adminPort">管理端口 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="number" id="adminPort" name="adminPort" value="{{config.adminPort}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="logDebug">日志调试模式
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" id="logDebug" name="logDebug" {% if config.logDebug %}checked{% endif %} class="flat"> 开启日志调试
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 媒体服务配置 -->
+                  <div class="config-section">
+                    <h4>媒体服务配置</h4>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaRtspPort">RTSP端口 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="number" id="mediaRtspPort" name="mediaRtspPort" value="{{config.mediaRtspPort}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaHttpPort">HTTP端口 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="number" id="mediaHttpPort" name="mediaHttpPort" value="{{config.mediaHttpPort}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaSecret">媒体服务密钥 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="mediaSecret" name="mediaSecret" value="{{config.mediaSecret}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 安全配置 -->
+                  <div class="config-section">
+                    <h4>安全配置</h4>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="eaiSafe">系统安全密钥 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="eaiSafe" name="eaiSafe" value="{{config.eaiSafe}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isEnableLoginCaptcha">登录验证码
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" id="isEnableLoginCaptcha" name="isEnableLoginCaptcha" {% if config.isEnableLoginCaptcha %}checked{% endif %} class="flat"> 启用登录验证码
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 路径配置 -->
+                  <div class="config-section">
+                    <h4>路径配置</h4>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="install">安装路径 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="install" name="install" value="{{config.install}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fontPath">字体文件路径 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="fontPath" name="fontPath" value="{{config.fontPath}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="uploadDir">上传目录 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="uploadDir" name="uploadDir" value="{{config.uploadDir}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="storageDir">存储目录 <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="storageDir" name="storageDir" value="{{config.storageDir}}" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 保存按钮 -->
+                  <div class="ln_solid"></div>
+                  <div class="form-group">
+                    <div class="col-md-6 col-sm-6 col-md-offset-3">
+                      <button type="button" onclick="f_saveSettings()" class="ctrl-btn ctrl-btn-primary" style="padding:8px 20px">保存配置</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+              <!-- 日志导出 -->
+              <div class="ln_solid"></div>
+              <div class="form-group" style="margin-bottom: 30px;">
+                <div class="col-md-6 col-sm-6 col-md-offset-3">
+                  <h4 style="font-weight: bold">日志</h4>
+                  <button type="button" onclick="f_exportLogs()" class="ctrl-btn ctrl-btn-secondary" style="padding:8px 20px">导出日志</button> 导出日志，提供给开发者排查问题
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+<script>
+    let ele_top_loading = $("#top_loading");
+    let ele_top_msg= $("#top_msg");
+    let ele_settingsForm = $("#settingsForm");
+
+    function f_exportLogs(){
+        //导出日志
+        ele_top_loading.show();
+        $.ajax({
+           url: "/system/postExportLogs",
+           type: "post",
+           async: true,
+           data: {},
+           dataType: "json",
+           timeout: 0,
+           error: function () {
+               ele_top_loading.hide();
+               myAlert("网络异常，请确定网络正常！","error");
+           },
+           success: function (res) {
+               ele_top_loading.hide();
+               if(res.code === 1000){
+                    let info = res.info;
+                    let export_filename = info["export_filename"]
+                    let download_url = "/storage/download?filename="+export_filename;
+                    window.open(download_url);
+               }else{
+                   myAlert(res.msg,"error");
+               }
+           }
+        });
+    }
+    
+    function f_saveSettings(){
+        //保存配置
+        ele_top_loading.show();
+        
+        // 获取表单数据 - 确保所有字段都被包含，包括未选中的复选框
+        let data = {};
+        
+        // 先处理所有输入字段
+        ele_settingsForm.find('input[type="text"], input[type="number"]').each(function() {
+            data[$(this).attr('name')] = $(this).val();
+        });
+        
+        // 处理所有复选框字段，确保都被发送
+        ele_settingsForm.find('input[type="checkbox"]').each(function() {
+            data[$(this).attr('name')] = $(this).is(':checked');
+        });
+        
+        $.ajax({
+           url: "/system/postSaveSettings",
+           type: "post",
+           async: true,
+           data: data,
+           dataType: "json",
+           timeout: 0,
+           error: function () {
+               ele_top_loading.hide();
+               myAlert("网络异常，请确定网络正常！","error");
+           },
+           success: function (res) {
+               ele_top_loading.hide();
+               if(res.code === 1000){
+                   myAlert(res.msg,"success");
+               }else{
+                   myAlert(res.msg,"error");
+               }
+           }
+        });
+    }
+
+</script>
+
+{% endblock javascripts %}

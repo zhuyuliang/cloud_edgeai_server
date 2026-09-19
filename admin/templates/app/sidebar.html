@@ -1,0 +1,1223 @@
+<style>
+
+  /* 重置默认样式 */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 侧边栏容器 - Google Cloud 风格 */
+  .left_col {
+    background: #ffffff !important;
+    color: #202124 !important;
+    width: 256px !important;
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15) !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    display: block !important;
+    z-index: 1000 !important;
+    font-family: 'Google Sans', 'Roboto', Arial, sans-serif !important;
+    transform: translateX(-256px) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  }
+  
+  /* 强制禁用 nav-sm 迷你侧边栏模式 */
+  body.nav-sm .left_col,
+  body.nav-sm.menu-open .left_col {
+    width: 256px !important;
+    transform: translateX(-256px) !important;
+  }
+  
+  body.nav-sm.menu-open .left_col {
+    transform: translateX(0) !important;
+  }
+  
+  /* 确保所有文本始终可见，不会隐藏 */
+  body.nav-sm .left_col .site_title span,
+  body.nav-sm .left_col .nav.side-menu li a span {
+    display: inline-block !important;
+    opacity: 1 !important;
+    width: auto !important;
+  }
+  
+  /* 确保菜单项始终保持完整宽度布局 */
+  body.nav-sm .left_col .nav.side-menu > li > a {
+    padding: 10px 16px !important;
+  }
+  
+  /* 菜单展开状态 */
+  body.menu-open .left_col {
+    transform: translateX(0) !important;
+  }
+  
+  /* 遮罩层 */
+  .sidebar-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    z-index: 999 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s !important;
+  }
+  
+  body.menu-open .sidebar-overlay {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  /* 顶部标题区域 - Google 风格 */
+  .nav_title {
+    background: #ffffff !important;
+    border: 0 !important;
+    border-bottom: 1px solid #e8eaed !important;
+    width: 256px !important;
+    padding: 0 16px !important;
+    text-align: left !important;
+    height: 64px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .site_title {
+    color: #5f6368 !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    font-family: 'Google Sans', sans-serif !important;
+  }
+
+  .site_title:hover {
+    color: #2a80eb !important;
+  }
+
+  .site_title i {
+    font-size: 20px !important;
+    color: #2a80eb !important;
+  }
+  
+  /* 侧边栏关闭按钮 */
+  .sidebar-close-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    color: #5f6368 !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .sidebar-close-btn:hover {
+    background: rgba(95, 99, 104, 0.1) !important;
+    color: #202124 !important;
+  }
+  
+  .sidebar-close-btn:active {
+    background: rgba(95, 99, 104, 0.2) !important;
+  }
+  
+  .sidebar-close-btn i {
+    font-size: 18px !important;
+    color: inherit !important;
+  }
+
+  /* 清除浮动 */
+  .clearfix {
+    clear: both !important;
+    display: block !important;
+    width: 100% !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 移除用户信息区域 */
+  .profile {
+    display: none !important;
+  }
+
+  /* 菜单区域 */
+  #sidebar-menu {
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .menu_section {
+    margin: 0 !important;
+    padding: 20px 0 8px 0 !important;
+  }
+
+  .menu_section h3 {
+    color: #5f6368 !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    margin: 0 20px 8px !important;
+    padding: 0 !important;
+    font-family: 'Google Sans', sans-serif !important;
+  }
+
+  /* 菜单列表 */
+  .nav.side-menu {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 主菜单项 */
+  .side-menu > li {
+    margin: 0 8px 2px 8px !important;
+    position: relative !important;
+  }
+
+  /* 主菜单链接 - Material Design 风格 */
+  .side-menu > li > a,
+  .nav.side-menu > li > a {
+    display: flex !important;
+    align-items: center !important;
+    padding: 9px 14px !important;
+    color: #5f6368 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    background: transparent !important;
+    position: relative !important;
+    border-radius: 8px !important;
+    font-family: 'Google Sans', sans-serif !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  /* 主菜单图标 */
+  .side-menu > li > a i,
+  .nav.side-menu > li > a i {
+    margin-right: 12px !important;
+    font-size: 18px !important;
+    width: 20px !important;
+    text-align: center !important;
+    color: #5f6368 !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* 主菜单文字 */
+  .side-menu > li > a span,
+  .nav.side-menu > li > a span {
+    color: #5f6368 !important;
+  }
+  
+  /* 箭头图标 */
+  .side-menu > li > a span.fa-chevron-down {
+    margin-left: auto !important;
+    font-size: 10px !important;
+    color: #5f6368 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    transform: rotate(0deg) !important;
+    display: inline-block !important;
+  }
+  
+  /* 展开时箭头旋转 */
+  .side-menu > li.active > a span.fa-chevron-down {
+    transform: rotate(180deg) !important;
+  }
+
+  /* 主菜单悬停效果 - Google Cloud 风格 */
+  .side-menu > li > a:hover,
+  .nav.side-menu > li > a:hover {
+    background: #f1f3f4 !important;
+    color: #2a80eb !important;
+  }
+
+  .side-menu > li > a:hover i,
+  .nav.side-menu > li > a:hover i {
+    color: #2a80eb !important;
+  }
+
+  .side-menu > li > a:hover span.fa-chevron-down,
+  .nav.side-menu > li > a:hover span.fa-chevron-down,
+  .nav.side-menu > li > a:hover span {
+    color: #2a80eb !important;
+  }
+
+  /* 主菜单激活状态 - Google 蓝色强调 */
+  .side-menu > li.active > a {
+    background: #e6f4ff !important;
+    color: #2a80eb !important;
+    border: none !important;
+    outline: none !important;
+  }
+
+  .side-menu > li.active > a i {
+    color: #2a80eb !important;
+  }
+  
+  /* 覆盖 custom.css 中的绿色右边框和旧样式 */
+  .nav.side-menu > li.current-page,
+  .nav.side-menu > li.active {
+    border: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    outline: none !important;
+  }
+  
+  .nav.side-menu > li.active > a {
+    text-shadow: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .nav li.current-page {
+    background: transparent !important;
+  }
+  
+  .nav li.current-page a,
+  .nav li li.current-page a {
+    color: inherit !important;
+  }
+  
+  /* 强制覆盖 custom.css 中主菜单悬停的白色/浅色文字 */
+  .nav.side-menu > li > a,
+  .nav.side-menu > li > a:visited {
+    color: #5f6368 !important;
+  }
+  
+  .nav.side-menu > li > a:hover {
+    color: #2a80eb !important;
+  }
+  
+  .nav.side-menu > li > a:hover span:not(.fa),
+  .nav.side-menu > li > a:hover > * {
+    color: #2a80eb !important;
+  }
+  
+  .nav.side-menu > li.active > a,
+  .nav.side-menu > li.active > a * {
+    color: #2a80eb !important;
+  }
+  
+  /* 移除子菜单的装饰元素（圆点和竖线） */
+  .nav-md ul.nav.child_menu li:before,
+  .nav-md ul.nav.child_menu li:after {
+    display: none !important;
+  }
+  
+  /* 覆盖子菜单的padding */
+  .nav.child_menu li {
+    padding-left: 0 !important;
+  }
+  
+  /* 全局覆盖 - 确保所有菜单文字颜色正确和无边框 */
+  .nav.side-menu > li > a,
+  .nav.side-menu > li > a span,
+  .nav.child_menu > li > a {
+    color: #5f6368 !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .nav.side-menu > li > a:hover,
+  .nav.side-menu > li > a:hover span,
+  .nav.child_menu > li > a:hover {
+    color: #2a80eb !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .nav.side-menu > li.active > a,
+  .nav.side-menu > li.active > a span,
+  .nav.child_menu > li.active > a {
+    color: #2a80eb !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  /* 强制去掉所有菜单项的边框 */
+  .nav.side-menu > li,
+  .nav.side-menu li,
+  .nav.child_menu > li,
+  .nav.child_menu li {
+    border: none !important;
+    outline: none !important;
+  }
+
+  /* 子菜单 - Google Cloud 风格 */
+  .child_menu {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border-left: none !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  }
+
+  /* 展开的子菜单 */
+  .side-menu > li.active .child_menu {
+    max-height: 500px !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    padding: 4px 0 8px 0 !important;
+    margin: 0 0 0 8px !important;
+  }
+
+  .child_menu > li {
+    margin: 0 0 2px 0 !important;
+    opacity: 0 !important;
+    transform: translateX(-10px) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  }
+
+  /* 展开时子菜单项动画 */
+  .side-menu > li.active .child_menu > li {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+
+  .side-menu > li.active .child_menu > li:nth-child(1) {
+    transition-delay: 0.05s !important;
+  }
+
+  .side-menu > li.active .child_menu > li:nth-child(2) {
+    transition-delay: 0.1s !important;
+  }
+
+  .side-menu > li.active .child_menu > li:nth-child(3) {
+    transition-delay: 0.15s !important;
+  }
+
+  .side-menu > li.active .child_menu > li:nth-child(4) {
+    transition-delay: 0.2s !important;
+  }
+
+  /* 子菜单链接 */
+  .child_menu > li > a,
+  .nav.child_menu > li > a {
+    display: block !important;
+    padding: 7px 14px 7px 46px !important;
+    color: #5f6368 !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+    position: relative !important;
+    border-radius: 0 8px 8px 0 !important;
+    font-family: 'Roboto', sans-serif !important;
+  }
+
+  /* 子菜单悬停效果 */
+  .child_menu > li > a:hover {
+    background: #f1f3f4 !important;
+    color: #2a80eb !important;
+  }
+  
+  /* 覆盖 custom.css 中子菜单悬停的白色文字 */
+  .nav.child_menu li li a:hover,
+  .nav.child_menu li li a.active,
+  .nav.child_menu li a:hover {
+    color: #2a80eb !important;
+  }
+  
+  /* 确保所有子菜单链接的默认和悬停颜色 */
+  .nav.side-menu .child_menu li a,
+  .nav.child_menu > li > a {
+    color: #5f6368 !important;
+  }
+  
+  .nav.side-menu .child_menu li a:hover,
+  .nav.child_menu > li > a:hover {
+    color: #2a80eb !important;
+    background: #f1f3f4 !important;
+  }
+
+  /* 子菜单激活状态 */
+  .nav.child_menu > li.active,
+  .child_menu > li.active > a,
+  .nav.child_menu li.active a {
+    background: #e6f4ff !important;
+    color: #2a80eb !important;
+    font-weight: 500 !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .nav.child_menu li li.active,
+  .nav.child_menu li li:hover {
+    background: none !important;
+  }
+  
+  /* 确保激活的子菜单项文字颜色正确 */
+  .nav.child_menu li.active > a,
+  .nav.side-menu .child_menu li.active a {
+    color: #2a80eb !important;
+  }
+
+  /* 隐藏不需要的元素 */
+  .sidebar-footer {
+    display: none !important;
+  }
+
+  /* 滚动条样式 - Google 风格 */
+  .scroll-view {
+    scrollbar-width: thin !important;
+    scrollbar-color: #dadce0 #ffffff !important;
+  }
+
+  .scroll-view::-webkit-scrollbar {
+    width: 8px !important;
+  }
+
+  .scroll-view::-webkit-scrollbar-track {
+    background: #ffffff !important;
+  }
+
+  .scroll-view::-webkit-scrollbar-thumb {
+    background: #dadce0 !important;
+    border-radius: 4px !important;
+    transition: background 0.2s ease !important;
+  }
+
+  .scroll-view::-webkit-scrollbar-thumb:hover {
+    background: #bdc1c6 !important;
+  }
+
+  /* 修复菜单间距 */
+  .nav.side-menu {
+    margin-top: 0 !important;
+  }
+
+  /* 主菜单区域背景 */
+  .main_menu_side {
+    background: #ffffff !important;
+  }
+
+  /* 所有屏幕尺寸 - 菜单默认隐藏（Google Cloud 风格） */
+  @media (min-width: 992px) {
+    .left_col {
+      position: fixed !important;
+      z-index: 1000 !important;
+    }
+  }
+  
+  @media (max-width: 991px) {
+    .left_col {
+      position: fixed !important;
+      z-index: 1000 !important;
+    }
+  }
+
+  /* 菜单项激活态动画 */
+  .side-menu > li > a,
+  .child_menu > li > a {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  /* Google Material Ripple 效果 */
+  .side-menu > li > a::after,
+  .child_menu > li > a::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(42, 128, 235, 0.2) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.3s, height 0.3s !important;
+  }
+
+  .side-menu > li > a:active::after,
+  .child_menu > li > a:active::after {
+    width: 200px !important;
+    height: 200px !important;
+  }
+  
+  /* 菜单分组分隔线 */
+  .menu_section:not(:first-child) {
+    border-top: 1px solid #e8eaed !important;
+    padding-top: 20px !important;
+  }
+  
+  /* 隐藏子菜单时不占用空间 */
+  .side-menu > li:not(.active) .child_menu {
+    display: none !important;
+  }
+  
+  .side-menu > li.active .child_menu {
+    display: block !important;
+  }
+  
+  /* 菜单项焦点样式 - 去掉边框 */
+  .side-menu > li > a:focus,
+  .child_menu > li > a:focus {
+    outline: none !important;
+    border: none !important;
+  }
+  
+  /* 提升可访问性 - 键盘导航 - 去掉边框 */
+  .side-menu > li > a:focus-visible,
+  .child_menu > li > a:focus-visible {
+    outline: none !important;
+    border: none !important;
+  }
+  
+  /* 菜单项间的分隔 */
+  .side-menu > li + li {
+    margin-top: 4px !important;
+  }
+  
+  /* 平滑滚动 */
+  .scroll-view {
+    scroll-behavior: smooth !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Google Cloud Logo 动画 */
+  .site_title i {
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  }
+  
+  .site_title:hover i {
+    transform: scale(1.1) rotate(5deg) !important;
+  }
+  
+  /* 菜单项文字包装 */
+  .side-menu > li > a > span:not(.fa) {
+    flex: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  /* 加载动画 */
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .side-menu > li {
+    animation: slideInFromLeft 0.3s ease-out !important;
+    animation-fill-mode: both !important;
+  }
+  
+  .side-menu > li:nth-child(1) { animation-delay: 0.05s !important; }
+  .side-menu > li:nth-child(2) { animation-delay: 0.1s !important; }
+  .side-menu > li:nth-child(3) { animation-delay: 0.15s !important; }
+  .side-menu > li:nth-child(4) { animation-delay: 0.2s !important; }
+  .side-menu > li:nth-child(5) { animation-delay: 0.25s !important; }
+  .side-menu > li:nth-child(6) { animation-delay: 0.3s !important; }
+  .side-menu > li:nth-child(7) { animation-delay: 0.35s !important; }
+  .side-menu > li:nth-child(8) { animation-delay: 0.4s !important; }
+  
+  /* 阴影效果 - 滚动时 */
+  .scroll-view.scrolled::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+  }
+  
+  /* 优化触摸设备体验 */
+  @media (hover: none) and (pointer: coarse) {
+    .side-menu > li > a,
+    .child_menu > li > a {
+      padding-top: 12px !important;
+      padding-bottom: 12px !important;
+    }
+  }
+  
+  /* 高对比度模式支持 */
+  @media (prefers-contrast: high) {
+    .side-menu > li > a,
+    .child_menu > li > a {
+      border: 1px solid transparent !important;
+    }
+    
+    .side-menu > li > a:hover,
+    .child_menu > li > a:hover {
+      border-color: #2a80eb !important;
+    }
+  }
+  
+  /* 深色模式支持(未来扩展) */
+  @media (prefers-color-scheme: dark) {
+    /* 这里可以添加深色模式样式 */
+  }
+  
+  /* 阻止页面滚动 */
+  body.menu-open {
+    overflow: hidden !important;
+  }
+  
+  /* 汉堡菜单按钮激活状态 */
+  body.menu-open #menu_toggle {
+    background-color: rgba(42, 128, 235, 0.1) !important;
+    color: #2a80eb !important;
+  }
+  
+  /* 所有屏幕尺寸布局 - 内容区域不留边距 */
+  .right_col {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .top_nav {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* 强制覆盖 nav-sm 和 nav-md 状态下的内容区域布局 */
+  body.nav-sm .right_col,
+  body.nav-md .right_col,
+  body.nav-sm .top_nav,
+  body.nav-md .top_nav {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* 侧边栏阴影增强(打开时) */
+  body.menu-open .left_col {
+    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* 平滑过渡 */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+</style>
+
+<div class="left_col scroll-view">
+  <div class="navbar nav_title" style="border: 0;">
+    <a href="/" class="site_title">
+      <i class="fa fa-laptop"></i>
+      <span>{{ settings.name }}</span>
+    </a>
+    <button class="sidebar-close-btn" id="sidebar_close" aria-label="关闭菜单">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <!-- 侧边栏菜单 -->
+  <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+    <div class="menu_section">
+      <h3>菜单导航</h3>
+      <ul class="nav side-menu">
+        <li>
+          <a href="/" data-title="控制面板"><i class="fa fa-home"></i> <span>控制面板</span></a>
+        </li>
+        
+        <li>
+          <a href="/node/index" data-title="节点管理"><i class="fa fa-database"></i> <span>节点管理</span></a>
+        </li>
+        
+        <li>
+          <a data-title="报警管理"><i class="fa fa-bullhorn"></i> <span>报警管理</span> <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/alarm/event" data-title="事件告警">事件告警</a></li>
+            <li><a href="/alarm/carplate" data-title="车牌告警">车牌告警</a></li>
+            <li><a href="/alarm/face" data-title="人脸告警">人脸告警</a></li>
+            <li><a href="/alarm/count" data-title="计数告警">计数告警</a></li>
+          </ul>
+        </li>
+        
+        <li>
+          <a data-title="视频管理"><i class="fa fa-video-camera"></i> <span>视频管理</span> <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/stream/index">视频管理</a></li>
+            <li><a href="/stream/player">单屏播放器</a></li>
+          </ul>
+        </li>
+        
+        <li>
+          <a href="/control/index" data-title="布控管理"><i class="fa fa-cube"></i> <span>布控管理</span></a>
+        </li>
+        
+        <li>
+          <a href="/user/index" data-title="用户管理"><i class="fa fa-user"></i> <span>用户管理</span></a>
+        </li>
+        
+        <li>
+          <a data-title="系统功能"><i class="fa fa-gear"></i> <span>系统功能</span> <span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="/system/config">启动配置</a></li>
+            <li><a href="/version/index">关于系统</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- /侧边栏菜单 -->
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  // 禁用 custom.js 中的侧边栏切换逻辑（nav-md/nav-sm状态切换）
+  // 确保 body 始终保持 nav-md 状态，避免出现只显示图标的迷你侧边栏
+  function disableOldSidebarLogic() {
+    // 移除可能存在的 nav-sm 类，强制使用 nav-md
+    document.body.classList.remove('nav-sm');
+    document.body.classList.add('nav-md');
+    
+    // 如果 jQuery 可用，移除 custom.js 中绑定的所有相关事件
+    if (typeof $ !== 'undefined') {
+      // 移除汉堡菜单按钮的事件
+      if ($('#menu_toggle').length > 0) {
+        $('#menu_toggle').off('click');
+      }
+      
+      // 移除侧边栏菜单所有链接的事件（custom.js 中绑定的）
+      if ($('#sidebar-menu').length > 0) {
+        $('#sidebar-menu').find('a').off('click');
+        
+        // 阻止 slideUp/slideDown 动画（custom.js使用的）
+        $('#sidebar-menu').find('li ul').stop(true, true);
+        
+        // 移除 custom.js 可能添加的类
+        $('#sidebar-menu').find('li').removeClass('active-sm');
+      }
+    }
+    
+    console.log('已禁用旧的侧边栏逻辑');
+  }
+  
+  // 监听 body 类变化，防止被修改回 nav-sm
+  function preventNavSmClass() {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+          const body = mutation.target;
+          if (body.classList.contains('nav-sm')) {
+            body.classList.remove('nav-sm');
+            body.classList.add('nav-md');
+          }
+        }
+      });
+    });
+    
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  }
+  
+  // Google Cloud 风格菜单交互
+  function initGoogleCloudMenu() {
+    const menuItems = document.querySelectorAll('.side-menu > li');
+    const currentPath = window.location.pathname;
+    
+    console.log('==== 开始初始化Google Cloud菜单 ====');
+    console.log('找到菜单项数量:', menuItems.length);
+    
+    // 菜单项点击处理
+    menuItems.forEach(function(item, index) {
+      const link = item.querySelector('a');
+      const hasSubmenu = item.querySelector('.child_menu');
+      
+      if (!link) return;
+      
+      // 移除旧的初始化标记，强制重新绑定
+      if (item.hasAttribute('data-menu-initialized')) {
+        item.removeAttribute('data-menu-initialized');
+        console.log('菜单项', index, '移除旧标记，准备重新初始化');
+      }
+      
+      console.log('菜单项', index, ':', link.textContent.trim(), hasSubmenu ? '(有子菜单)' : '(无子菜单)');
+      
+      item.setAttribute('data-menu-initialized', 'true');
+      
+      if (hasSubmenu) {
+        // 有子菜单的项目
+        // 完全替换link元素以移除所有旧的事件监听器
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+        
+        // 创建新的处理函数
+        const clickHandler = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation();
+          
+          const isActive = item.classList.contains('active');
+          
+          console.log('点击有子菜单的项目:', newLink.textContent.trim(), '当前状态:', isActive);
+          
+          // 关闭其他展开的菜单项(带动画)
+          menuItems.forEach(function(otherItem) {
+            if (otherItem !== item && otherItem.classList.contains('active')) {
+              otherItem.classList.remove('active');
+            }
+          });
+          
+          // 切换当前菜单项
+          if (isActive) {
+            item.classList.remove('active');
+            console.log('关闭子菜单');
+          } else {
+            item.classList.add('active');
+            console.log('展开子菜单');
+            
+            // 确保展开的菜单在可视区域内
+            setTimeout(function() {
+              const childMenu = item.querySelector('.child_menu');
+              if (childMenu) {
+                const rect = childMenu.getBoundingClientRect();
+                const scrollView = document.querySelector('.scroll-view');
+                
+                if (rect.bottom > window.innerHeight && scrollView) {
+                  scrollView.scrollTo({
+                    top: scrollView.scrollTop + (rect.bottom - window.innerHeight) + 20,
+                    behavior: 'smooth'
+                  });
+                }
+              }
+            }, 100);
+          }
+          
+          return false;
+        };
+        
+        // 添加新的事件监听器，使用捕获阶段（优先级更高）
+        newLink.addEventListener('click', clickHandler, true);
+        
+        // 子菜单项点击处理
+        const childLinks = hasSubmenu.querySelectorAll('a');
+        childLinks.forEach(function(childLink) {
+          childLink.addEventListener('click', function(e) {
+            // 移除所有子菜单的激活状态
+            hasSubmenu.querySelectorAll('li').forEach(function(childItem) {
+              childItem.classList.remove('active');
+            });
+            
+            // 添加当前子菜单项的激活状态
+            this.parentElement.classList.add('active');
+            
+            // 视觉反馈
+            addRippleEffect(this, e);
+          });
+        });
+      } else {
+        // 没有子菜单的项目,点击时添加视觉反馈
+        link.addEventListener('click', function(e) {
+          addRippleEffect(this, e);
+        });
+        
+        // 键盘导航支持
+        link.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+          }
+        });
+      }
+    });
+    
+    // 根据当前 URL 设置激活状态
+    setActiveMenuByPath(menuItems, currentPath);
+    
+    console.log('==== Google Cloud菜单初始化完成 ====');
+  }
+  
+  // 设置当前激活菜单
+  function setActiveMenuByPath(menuItems, currentPath) {
+    menuItems.forEach(function(item) {
+      const link = item.querySelector('a');
+      const childMenu = item.querySelector('.child_menu');
+      
+      // 检查主菜单链接
+      if (link && link.getAttribute('href') === currentPath) {
+        if (!childMenu) {
+          item.classList.add('active');
+        }
+      }
+      
+      // 检查子菜单链接
+      if (childMenu) {
+        const childLinks = childMenu.querySelectorAll('a');
+        childLinks.forEach(function(childLink) {
+          if (childLink.getAttribute('href') === currentPath) {
+            item.classList.add('active');
+            childLink.parentElement.classList.add('active');
+          }
+        });
+      }
+    });
+  }
+  
+  // 添加水波纹效果
+  function addRippleEffect(element, event) {
+    const ripple = document.createElement('span');
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+      background: rgba(42, 128, 235, 0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: scale(0);
+      animation: ripple 0.6s ease-out;
+    `;
+    
+    element.style.position = 'relative';
+    element.style.overflow = 'hidden';
+    element.appendChild(ripple);
+    
+    setTimeout(function() {
+      ripple.remove();
+    }, 600);
+  }
+  
+  // 添加水波纹动画
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes ripple {
+      to {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // 滚动检测
+  function initScrollDetection() {
+    const scrollView = document.querySelector('.scroll-view');
+    if (!scrollView) return;
+    
+    scrollView.addEventListener('scroll', function() {
+      if (this.scrollTop > 10) {
+        this.classList.add('scrolled');
+      } else {
+        this.classList.remove('scrolled');
+      }
+    });
+  }
+  
+  // 侧边栏切换动画优化
+  function initSidebarToggle() {
+    const menuToggle = document.querySelector('#menu_toggle');
+    const sidebarCloseBtn = document.querySelector('#sidebar_close');
+    if (!menuToggle) return;
+    
+    // 确保只有一个遮罩层
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'sidebar-overlay';
+      document.body.appendChild(overlay);
+    }
+    
+    // 切换菜单
+    function toggleMenu() {
+      document.body.classList.toggle('menu-open');
+      
+      // 菜单打开时禁止页面滚动
+      if (document.body.classList.contains('menu-open')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // 打开菜单
+    function openMenu() {
+      document.body.classList.add('menu-open');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // 关闭菜单
+    function closeMenu() {
+      document.body.classList.remove('menu-open');
+      document.body.style.overflow = '';
+    }
+    
+    // 移除旧的事件监听器（如果存在）
+    const newMenuToggle = menuToggle.cloneNode(true);
+    menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
+    
+    // 汉堡菜单按钮点击 - 切换
+    newMenuToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleMenu();
+    });
+    
+    // 侧边栏关闭按钮点击 - 关闭
+    if (sidebarCloseBtn) {
+      sidebarCloseBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      });
+    }
+    
+    // 遮罩层点击关闭菜单
+    overlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeMenu();
+    });
+    
+    // 只对没有子菜单的主菜单项和所有子菜单项添加自动关闭功能
+    const menuItems = document.querySelectorAll('.side-menu > li');
+    menuItems.forEach(function(item) {
+      const link = item.querySelector('a');
+      const hasSubmenu = item.querySelector('.child_menu');
+      
+      if (!hasSubmenu && link && link.getAttribute('href')) {
+        // 没有子菜单的主菜单项，点击后关闭侧边栏
+        link.addEventListener('click', function(e) {
+          if (this.getAttribute('href') && this.getAttribute('href') !== '#' && this.getAttribute('href') !== 'javascript:;') {
+            setTimeout(closeMenu, 300);
+          }
+        });
+      }
+      
+      // 子菜单项点击后关闭侧边栏
+      if (hasSubmenu) {
+        const childLinks = hasSubmenu.querySelectorAll('a');
+        childLinks.forEach(function(childLink) {
+          childLink.addEventListener('click', function(e) {
+            if (this.getAttribute('href') && this.getAttribute('href') !== '#' && this.getAttribute('href') !== 'javascript:;') {
+              setTimeout(closeMenu, 300);
+            }
+          });
+        });
+      }
+    });
+  }
+  
+  // 响应式处理
+  function initResponsive() {
+    const handleResize = function() {
+      // 窗口调整时关闭菜单（所有尺寸下都默认隐藏）
+      const isMenuOpen = document.body.classList.contains('menu-open');
+      // 如果正在调整窗口大小且菜单打开，可选择保持打开或关闭
+      // 这里我们选择在窗口大小变化时保持当前状态
+    };
+    
+    window.addEventListener('resize', handleResize);
+  }
+  
+  // 键盘快捷键
+  function initKeyboardShortcuts() {
+    document.addEventListener('keydown', function(e) {
+      // Alt + M 切换菜单
+      if (e.altKey && e.key === 'm') {
+        e.preventDefault();
+        const menuToggle = document.querySelector('#menu_toggle');
+        if (menuToggle) {
+          menuToggle.click();
+        }
+      }
+      
+      // Esc 关闭菜单或展开的子菜单
+      if (e.key === 'Escape') {
+        const isMenuOpen = document.body.classList.contains('menu-open');
+        
+        if (isMenuOpen) {
+          // 关闭整个菜单
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        } else {
+          // 关闭展开的子菜单
+          const activeMenus = document.querySelectorAll('.side-menu > li.active');
+          activeMenus.forEach(function(menu) {
+            if (menu.querySelector('.child_menu')) {
+              menu.classList.remove('active');
+            }
+          });
+        }
+      }
+    });
+  }
+  
+  // 初始化所有功能
+  function initAll() {
+    // 先禁用旧的侧边栏逻辑
+    disableOldSidebarLogic();
+    preventNavSmClass();
+    
+    // 初始化新的功能
+    initGoogleCloudMenu();
+    initScrollDetection();
+    initSidebarToggle();
+    initResponsive();
+    initKeyboardShortcuts();
+    
+    // 确保在 custom.js 加载后再次禁用旧逻辑并重新初始化
+    setTimeout(function() {
+      disableOldSidebarLogic();
+      // 重新初始化菜单交互，确保事件绑定正确
+      initGoogleCloudMenu();
+    }, 100);
+    
+    // 更长延迟再次确保（处理慢加载情况）
+    setTimeout(function() {
+      disableOldSidebarLogic();
+      initGoogleCloudMenu();
+    }, 500);
+  }
+  
+  // 启动
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  
+  // 页面完全加载后再次确保
+  window.addEventListener('load', function() {
+    disableOldSidebarLogic();
+    initGoogleCloudMenu();
+  });
+})();
+</script>

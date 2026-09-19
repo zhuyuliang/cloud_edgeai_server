@@ -1,0 +1,98 @@
+<html lang="zh-CN">
+<head>
+<title>提示中</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 主题令牌：独立页直接引入（eai-theme 无全局元素选择器，安全） -->
+<link href="/static/build/css/eai-theme.css?v=2" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        background: var(--eai-head-bg);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .msg-card {
+        background: #fff;
+        width: 478px;
+        max-width: calc(100vw - 32px);
+        padding: 40px 32px 32px;
+        border-radius: var(--eai-radius);
+        border: 1px solid var(--eai-border);
+        box-shadow: var(--eai-shadow);
+        text-align: center;
+    }
+    .msg-card img.msg-icon {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+    }
+    .msg-card h3 {
+        color: var(--eai-text);
+        font-size: 20px;
+        font-weight: 500;
+        margin: 20px 0 8px;
+        line-height: 1.5;
+        word-break: break-word;
+    }
+    .msg-card .msg-tip {
+        color: var(--eai-text-secondary);
+        font-size: 13px;
+        margin: 0 0 24px;
+    }
+    .msg-card .confirm {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: var(--eai-primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--eai-radius-sm);
+        padding: 9px 32px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .msg-card .confirm:hover {
+        background: var(--eai-primary-hover);
+    }
+    .msg-card .confirm:active {
+        background: var(--eai-primary-active);
+    }
+    .msg-card .confirm:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(42, 128, 235, 0.3);
+    }
+</style>
+</head>
+
+<body>
+    <div class="msg-card">
+        <img class="msg-icon" src="/static/lib/message/{% if is_success %}message-success{% else %}message-error{% endif %}.png"  alt="提示图片"/>
+        <h3>{{msg}}</h3>
+        <p class="msg-tip">页面即将自动返回…</p>
+        <button class="confirm" onclick="redirect()" >返回上一页</button>
+    </div>
+</body>
+<script>
+    function redirect(){
+        let redirect_url="{{redirect_url}}"
+        if(redirect_url){
+            window.location.href=redirect_url;
+        }else{
+            history.back();
+        }
+    }
+    window.onload=function(){
+       setTimeout(function(){
+          redirect();
+       },1500);
+    }
+</script>
+</html>
+

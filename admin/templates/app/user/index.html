@@ -1,0 +1,561 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} 用户管理 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+<style>
+  /* 用户管理页 - 局部样式（公共类见 eai-theme.css） */
+  .user-page-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* 加载提示 */
+  #top_loading {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--eai-text-secondary);
+    background: var(--eai-head-bg);
+    padding: 4px 10px;
+    border-radius: var(--eai-radius-sm);
+  }
+
+  .top_loading_img {
+    width: 16px;
+    height: 16px;
+  }
+
+  #top_msg {
+    font-size: 13px;
+    color: var(--eai-text-secondary);
+  }
+
+  /* 分页区域 */
+  .pagination-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 4px;
+    flex-wrap: wrap;
+  }
+
+  .pagination-info {
+    font-size: 13px;
+    color: var(--eai-text-secondary);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .pagination-info strong {
+    color: var(--eai-text);
+    font-weight: 500;
+  }
+
+  .pagination.user-pagination {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pagination.user-pagination > li > a,
+  .pagination.user-pagination > li > span {
+    border: 1px solid var(--eai-input-border);
+    border-radius: var(--eai-radius-sm) !important;
+    color: var(--eai-primary);
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all 0.15s ease;
+    background: #fff;
+    margin: 0;
+    text-decoration: none;
+  }
+
+  .pagination.user-pagination > li > a:hover {
+    background: var(--eai-row-hover);
+    border-color: var(--eai-primary);
+    color: var(--eai-primary-hover);
+  }
+
+  .pagination.user-pagination > li.active > a,
+  .pagination.user-pagination > li.active > span {
+    background: var(--eai-primary);
+    border-color: var(--eai-primary);
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(42, 128, 235, 0.4);
+  }
+
+  /* 模态框标题 */
+  .modal-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--eai-text);
+  }
+
+  /* 模态框取消按钮 */
+  .btn-modal-cancel {
+    background: #fff;
+    color: var(--eai-primary);
+    border: 1px solid var(--eai-input-border);
+    border-radius: var(--eai-radius-sm);
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+  }
+
+  .btn-modal-cancel:hover {
+    background: var(--eai-row-hover);
+    border-color: var(--eai-primary);
+  }
+
+  /* 模态框提交按钮 */
+  .btn-modal-submit {
+    background: var(--eai-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--eai-radius-sm);
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .btn-modal-submit:hover {
+    background: var(--eai-primary-hover);
+    box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+    transform: translateY(-1px);
+  }
+
+  .btn-modal-submit:active {
+    transform: translateY(0);
+  }
+
+  /* 单选按钮组 */
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  .radio-group .radio {
+    margin: 0;
+  }
+
+  .radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    color: var(--eai-text);
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  /* 表格列宽控制 */
+  .user-table td:last-child,
+  .user-table th:last-child {
+    white-space: nowrap;
+    width: 120px;
+  }
+
+  /* 单元格内容与表头一致居中 */
+  .user-table td {
+    text-align: center;
+  }
+
+  .user-table .action-btn-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-table .action-btn-group .ctrl-action {
+    margin: 0;
+    white-space: nowrap;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="dash-panel">
+              <div class="dash-panel-head">
+                <h3><i class="fa fa-users" style="margin-right:2px"></i> 用户管理</h3>
+                <div class="user-page-header">
+                  <button onclick="f_openAdd()" class="ctrl-btn ctrl-btn-primary">
+                    <i class="fa fa-plus"></i> 添加用户
+                  </button>
+                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> 加载中</span>
+                  <span id="top_msg">{{top_msg}}</span>
+                </div>
+              </div>
+              <div class="dash-panel-body">
+
+                <div class="ctrl-table-wrapper table-responsive">
+                  <table class="ctrl-table user-table">
+                    <thead>
+                      <tr class="headings">
+                        <th class="column-title">ID</th>
+                        <th class="column-title">用户名</th>
+                        <th class="column-title">邮箱</th>
+                        <th class="column-title">超级管理员</th>
+                        <th class="column-title">状态</th>
+                        <th class="column-title">加入时间</th>
+                        <th class="column-title">上次登录时间</th>
+                        <th class="column-title no-link last"><span class="nobr">操作</span></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for d in data %}
+                      <tr class="even pointer">
+                        <td>{{ d.id }}</td>
+                        <td>{{ d.username }}</td>
+                        <td>{{ d.email }}</td>
+                        <td>
+                          {% if d.is_superuser == 1 %}
+                            <span class="eai-badge eai-badge-info"><i class="fa fa-shield"></i> 是</span>
+                          {% else %}
+                            <span class="eai-badge eai-badge-default">否</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if d.is_active == 1 %}
+                            <span class="eai-badge eai-badge-success">正常</span>
+                          {% else %}
+                            <span class="eai-badge eai-badge-error">禁用</span>
+                          {% endif %}
+                        </td>
+                        <td>{{ d.date_joined }}</td>
+                        <td>{{ d.last_login }}</td>
+                        <td>
+                          <div class="action-btn-group">
+                            <button onclick="f_edit('{{ d.id }}')" class="ctrl-action" type="button">
+                              <i class="fa fa-pencil"></i> 编辑
+                            </button>
+                            <button onclick="f_del('{{ d.id }}')" class="ctrl-action ctrl-action-danger" type="button" title="删除">
+                              <i class="fa fa-trash-o"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="pagination-wrapper">
+            <span class="pagination-info">
+              共 <strong>{{ pageData.page_num }}</strong> 页 / <strong>{{ pageData.count }}</strong> 条
+            </span>
+            <ul class="pagination user-pagination">
+              {% for d in pageData.pageLabels %}
+                {% if d.cur == 1 %}
+                  <li class="paginate_button active"><a href="#">{{ d.name }}</a></li>
+                {% else %}
+                  <li class="paginate_button"><a href="/user/index?p={{ d.page }}&ps={{ pageData.page_size }}">{{ d.name }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+       <!-- 添加用户弹窗start -->
+       <div id="AddUserDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+               <h4 class="modal-title">添加用户</h4>
+             </div>
+             <div class="modal-body">
+               <form id="addUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                 <input type="hidden" name="handle" value="add">
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">用户名</label>
+                   <div class="col-sm-9">
+                     <input type="text" name="username" required="required" class="form-control" placeholder="请输入用户名">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">邮箱</label>
+                   <div class="col-sm-9">
+                     <input type="email" name="email" required="required" class="form-control" placeholder="请输入邮箱">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">密码</label>
+                   <div class="col-sm-9">
+                     <input type="password" name="password" required="required" class="form-control" placeholder="请输入密码">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">状态</label>
+                   <div class="col-sm-9">
+                     <div class="radio-group">
+                       <div class="radio">
+                         <label>
+                           <input type="radio" checked="checked" value="1" name="is_active"> 正常
+                         </label>
+                       </div>
+                       <div class="radio">
+                         <label>
+                           <input type="radio" value="0" name="is_active"> 禁用
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </form>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
+               <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">提交</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       <!-- 添加用户弹窗end -->
+
+       <!-- 编辑用户弹窗start -->
+       <div id="EditUserDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+               <h4 class="modal-title">编辑用户</h4>
+             </div>
+             <div class="modal-body">
+               <form id="editUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+                 <input type="hidden" name="handle" value="edit">
+                 <input type="hidden" name="id" value="">
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">用户名</label>
+                   <div class="col-sm-9">
+                     <input type="text" name="username" required="required" class="form-control" placeholder="请输入用户名">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">邮箱</label>
+                   <div class="col-sm-9">
+                     <input type="email" name="email" required="required" class="form-control" placeholder="请输入邮箱">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">新密码</label>
+                   <div class="col-sm-9">
+                     <input type="password" name="new_password" class="form-control" placeholder="不修改密码请留空">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">确认新密码</label>
+                   <div class="col-sm-9">
+                     <input type="password" name="re_password" class="form-control" placeholder="不修改密码请留空">
+                   </div>
+                 </div>
+
+                 <div class="form-group">
+                   <label class="col-sm-3 control-label">状态</label>
+                   <div class="col-sm-9">
+                     <div class="radio-group">
+                       <div class="radio">
+                         <label>
+                           <input type="radio" value="1" name="is_active"> 正常
+                         </label>
+                       </div>
+                       <div class="radio">
+                         <label>
+                           <input type="radio" value="0" name="is_active"> 禁用
+                         </label>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </form>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
+               <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">提交</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       <!-- 编辑用户弹窗end -->
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+
+<script>
+    let ele_top_loading = $("#top_loading");
+    let ele_top_msg= $("#top_msg");
+
+    // 打开添加用户弹窗
+    function f_openAdd() {
+        $("#AddUserDialog").modal("show");
+    }
+
+    // 打开编辑用户弹窗并填充数据
+    function f_edit(user_id) {
+        ele_top_loading.show();
+        $.ajax({
+            url: "/user/api_openUserDetail",
+            type: "get",
+            async: true,
+            data: { id: user_id },
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    let user = res.data;
+                    // 填充表单数据
+                    $("#editUserForm input[name='id']").val(user.id);
+                    $("#editUserForm input[name='username']").val(user.username);
+                    $("#editUserForm input[name='email']").val(user.email);
+                    // 将布尔值转换为对应的数值字符串
+                    let isActiveValue = user.is_active ? "1" : "0";
+                    $("#editUserForm input[name='is_active'][value='" + isActiveValue + "']").prop("checked", true);
+                    // 打开弹窗
+                    $("#EditUserDialog").modal("show");
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    // 提交添加用户表单
+    function f_openAddSubmit() {
+        let formData = new FormData($("#addUserForm")[0]);
+        ele_top_loading.show();
+        
+        $.ajax({
+            url: "/user/add",
+            type: "post",
+            async: true,
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    myAlert(res.msg, "success");
+                    $("#addUserForm")[0].reset();
+                    $("#AddUserDialog").modal("hide");
+                    window.location.reload();
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    // 提交编辑用户表单
+    function f_openEditSubmit() {
+        let formData = new FormData($("#editUserForm")[0]);
+        ele_top_loading.show();
+        
+        $.ajax({
+            url: "/user/edit",
+            type: "post",
+            async: true,
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            timeout: 0,
+            error: function () {
+                ele_top_loading.hide();
+                myAlert("网络异常，请确定网络正常！", "error");
+            },
+            success: function (res) {
+                ele_top_loading.hide();
+                if (res.code === 1000) {
+                    myAlert(res.msg, "success");
+                    $("#EditUserDialog").modal("hide");
+                    window.location.reload();
+                } else {
+                    myAlert(res.msg, "error");
+                }
+            }
+        });
+    }
+
+    function f_del(user_id){
+        ele_top_loading.show();
+        $.ajax({
+               url: '/user/postDel',
+               type: "post",
+               async: true,
+               data: {"id":user_id},
+               dataType: "json",
+               timeout: 0,
+               error: function () {
+                   ele_top_loading.hide();
+                   myAlert("网络异常，请确定网络正常！","error");
+               },
+               success: function (res) {
+                      ele_top_loading.hide();
+                   if(1000 === res.code){
+                        window.location.reload();
+                   }else{
+                        myAlert(res.msg,"error");
+                   }
+               }
+            });
+
+    }
+</script>
+
+{% endblock javascripts %}
+

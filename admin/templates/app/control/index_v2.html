@@ -1,0 +1,94 @@
+{% extends "app/base_site.html" %}
+{% block title %} 布控管理 {% endblock title %}
+{% block stylesheets %}
+  {{ block.super }}
+<style>
+    /* v2 iframe 代理壳：卡片/按钮/下拉由全局 eai-theme.css 提供 */
+    .v2-panel {
+        /* 父级 .main_content_wrapper 是 flex 列容器，必须显式占满整行，否则收缩为内容宽度 */
+        width: 100%;
+        max-width: 100%;
+    }
+    .v2-toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .v2-toolbar .ctrl-btn { height: 28px; padding: 2px 10px; font-size: 12px; }
+    .v2-toolbar .eai-select { min-width: 200px; }
+    .xc_hint { color: var(--eai-text-secondary); font-size: 13px; }
+    .v2-frame-body { padding: 0; }
+    #nodeFrame {
+        width: 100%;
+        min-height: calc(100vh - 170px);
+        border: none;
+        display: block;
+        border-radius: 0 0 var(--eai-radius) var(--eai-radius);
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dash-panel v2-panel">
+          <div class="dash-panel-head">
+            <h3><i class="fa fa-crosshairs" style="margin-right:2px"></i> 布控管理</h3>
+            <div class="v2-toolbar">
+              <label class="xc_hint">节点：</label>
+              <select id="nodeSelect" class="eai-select">
+                {% for node in nodes %}
+                <option value="{{ node.code }}" {% if node.code == node_code %}selected{% endif %}>{{ node.nickname }}（{{ node.code }}）</option>
+                {% endfor %}
+              </select>
+              <button class="ctrl-btn ctrl-btn-primary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> 刷新</button>
+              <span class="xc_hint">页面由节点实时提供（iframe 双跳），添加/编辑/启停/删除布控等操作直接在节点页面完成</span>
+            </div>
+          </div>
+          <div class="dash-panel-body v2-frame-body">
+            {% if nodes %}
+            <iframe id="nodeFrame" src="/proxy/node/{{ node_code }}/controls?embed=1" frameborder="0"></iframe>
+            {% else %}
+            <div class="empty-ph" style="padding:60px 12px;">暂无在线节点，请先在「节点管理」中添加并同步节点</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+    var mNodeCode = "{{ node_code }}";
+
+    window.f_onNodeChange = function () {
+        var code = document.getElementById('nodeSelect').value;
+        if (!code) return;
+        mNodeCode = code;
+        // 保持地址栏 node_code 同步（不刷新页面）
+        try {
+            var url = new URL(window.location.href);
+            url.searchParams.set('node_code', code);
+            window.history.replaceState({}, '', url);
+        } catch (e) {}
+        f_reloadFrame();
+    };
+
+    function f_reloadFrame() {
+        var frame = document.getElementById('nodeFrame');
+        if (!frame) return;
+        frame.src = '/proxy/node/' + mNodeCode + '/controls?embed=1&t=' + Date.now();
+    }
+
+    (function () {
+        var sel = document.getElementById('nodeSelect');
+        if (sel) sel.addEventListener('change', window.f_onNodeChange);
+    })();
+</script>
+{% endblock javascripts %}

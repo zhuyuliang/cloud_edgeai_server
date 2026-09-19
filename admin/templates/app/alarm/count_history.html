@@ -1,0 +1,421 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} 计数历史 {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <style>
+    /* 基础表格/按钮/状态标签由全局 eai-theme.css 提供，此处仅保留本页特有样式 */
+    .ctrl-table { width: max-content; min-width: 100%; }
+
+    .ctrl-table th.col-id, .ctrl-table td.col-id { width: 60px; min-width: 60px; max-width: 60px; text-align: center; }
+    .ctrl-table th.col-snap, .ctrl-table td.col-snap { width: 100px; min-width: 100px; max-width: 100px; text-align: center; }
+    .ctrl-table th.col-task, .ctrl-table td.col-task { width: 150px; min-width: 150px; max-width: 150px; }
+    .ctrl-table th.col-count, .ctrl-table td.col-count { width: 90px; min-width: 90px; max-width: 90px; text-align: center; }
+    .ctrl-table th.col-time, .ctrl-table td.col-time { width: 150px; min-width: 150px; max-width: 150px; text-align: center; white-space: nowrap; }
+    .ctrl-table th.col-state, .ctrl-table td.col-state { width: 80px; min-width: 80px; max-width: 80px; text-align: center; }
+    .ctrl-table th.col-strategy, .ctrl-table td.col-strategy { width: 100px; min-width: 100px; max-width: 100px; }
+    .ctrl-table th.col-actions, .ctrl-table td.col-actions {
+      width: 90px; min-width: 90px; max-width: 90px;
+      position: sticky; right: 0; z-index: 2;
+      white-space: nowrap;
+      box-shadow: -4px 0 6px -4px rgba(0, 0, 0, 0.12);
+    }
+    .ctrl-table thead th.col-actions { z-index: 3; }
+
+    .count-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      min-width: 56px;
+    }
+    .enter-badge { background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%); color: #fff; }
+    .leave-badge { background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%); color: #fff; }
+    .total-badge { background: linear-gradient(135deg, var(--eai-primary) 0%, #4096ff 100%); color: #fff; }
+
+    .snap-cell {
+      position: relative;
+      width: 80px;
+      height: 60px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--eai-head-bg);
+      display: inline-block;
+      border: 1px solid var(--eai-border);
+    }
+    .snap-cell .alarm-media {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      display: block;
+      cursor: pointer;
+      background: #000;
+    }
+    .snap-cell .snap-type-label {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      background: rgba(42,128,235,0.9);
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 2px;
+      pointer-events: none;
+      line-height: 14px;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--eai-head-bg);
+      border: 1px solid var(--eai-border);
+      border-radius: var(--eai-radius);
+      margin-bottom: 16px;
+    }
+    .history-header .info-group { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .history-header .info-item { display: flex; align-items: center; gap: 6px; }
+    .history-header .info-label { color: var(--eai-text-secondary); font-size: 13px; }
+    .history-header .info-value { color: var(--eai-text); font-weight: 600; font-size: 14px; }
+    .history-header code.info-value {
+      background: #fff;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--eai-input-border);
+      font-size: 13px;
+      color: var(--eai-primary);
+    }
+    .history-header .btn-group { display: flex; gap: 8px; }
+
+    .chart-container {
+      width: 100%;
+      height: 360px;
+      background: #fff;
+      border: 1px solid var(--eai-border);
+      border-radius: var(--eai-radius);
+      margin-bottom: 20px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* 快照大图弹窗：套全局 eai-modal 外壳，宽度自适应图片 */
+    #media-modal-content {
+      width: auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #media-modal-header {
+      width: 100%;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-radius: var(--eai-radius) var(--eai-radius) 0 0;
+      border-bottom: 1px solid var(--eai-border);
+      box-sizing: border-box;
+    }
+    #media-modal-title { font-size: 16px; font-weight: 600; color: var(--eai-text); }
+    #media-modal-inner { padding: 20px; display: flex; align-items: center; justify-content: center; }
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="right_col" role="main">
+  <div class="">
+    <div class="row">
+      <div class="col-md-12">
+<div class="dash-panel">
+            <div class="dash-panel-head">
+              <h3>
+                <i class="fa fa-history"></i> 计数历史记录
+                {% if error %}
+                  <span class="ctrl-state-info" style="margin-left:10px;font-size:12px;">{{ error }}</span>
+                {% endif %}
+              </h3>
+            </div>
+            <div class="dash-panel-body">
+
+            <div class="history-header">
+              <div class="info-group">
+                <div class="info-item">
+                  <span class="info-label">节点:</span>
+                  <span class="info-value">{{ node_nickname }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">布控代码:</span>
+                  <code class="info-value">{{ control_code }}</code>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">任务名称:</span>
+                  <span class="info-value">{{ task_name|default:'-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">历史记录:</span>
+                  <span class="info-value" style="color:#2a80eb;" id="record_count">- 条</span>
+                </div>
+              </div>
+              <div class="btn-group">
+                <button onclick="f_export()" class="ctrl-btn ctrl-btn-primary">
+                  <i class="fa fa-download"></i> 导出Excel
+                </button>
+                <button onclick="f_goBack()" class="ctrl-btn ctrl-btn-secondary">
+                  <i class="fa fa-arrow-left"></i> 返回
+                </button>
+              </div>
+            </div>
+
+            <div class="chart-container" id="trendChart" style="display:none;"></div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="ctrl-table-wrapper">
+                  <table class="ctrl-table">
+                    <thead>
+                      <tr>
+                        <th class="col-id">ID</th>
+                        <th class="col-snap">快照</th>
+                        <th class="col-task">任务名称</th>
+                        <th class="col-count"><i class="fa fa-sign-in"></i> 进入</th>
+                        <th class="col-count"><i class="fa fa-sign-out"></i> 离开</th>
+                        <th class="col-count"><i class="fa fa-calculator"></i> 总计</th>
+                        <th class="col-strategy">清零策略</th>
+                        <th class="col-time">周期开始</th>
+                        <th class="col-time">周期结束</th>
+                        <th class="col-state">状态</th>
+                        <th class="col-actions">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="data">
+                      <tr class="empty-row"><td colspan="11">加载中...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="media-modal-mask" class="eai-modal">
+  <div id="media-modal-content" class="eai-modal-content">
+    <div id="media-modal-header" class="eai-modal-header" style="margin-bottom:0;padding:0 24px;">
+      <span id="media-modal-title" class="eai-modal-title">快照详情</span>
+      <span id="media-modal-close" class="eai-modal-close">&times;</span>
+    </div>
+    <div id="media-modal-inner"></div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/vendors/echarts/dist/echarts.min.js"></script>
+  <script>
+    const NODE_CODE = '{{ node_code }}';
+    const CONTROL_CODE = '{{ control_code }}';
+    const TASK_NAME = '{{ task_name }}';
+    const RESET_STRATEGY_NAMES = {manual: '手动清零', hourly: '每小时清零', daily: '每日清零', weekly: '每周清零', monthly: '每月清零'};
+    let HISTORY_DATA = [];
+    let trendChart = null;
+
+    // 提示反馈 xcAlert/myAlert 由全局 toast.js 提供
+
+    function f_goBack() {
+      window.location.href = '/alarm/count';
+    }
+
+    function f_query() {
+      $.ajax({
+        url: '/alarm/openStatisticHistory',
+        type: "get",
+        data: { node_code: NODE_CODE, control_code: CONTROL_CODE, task_name: TASK_NAME },
+        dataType: "json",
+        error: function () { myAlert("网络异常！", "error"); },
+        success: function (res) {
+          if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
+          HISTORY_DATA = res.data || [];
+          $("#record_count").text(HISTORY_DATA.length + " 条");
+          f_renderTable();
+          f_renderChart();
+        }
+      });
+    }
+
+    function f_renderTable() {
+      let tbody = $("#data");
+      if (!HISTORY_DATA.length) {
+        tbody.html("<tr class='empty-row'><td colspan='11'>该布控暂无历史记录</td></tr>");
+        return;
+      }
+      let html = "";
+      for (let d of HISTORY_DATA) {
+        let idText = (typeof d.id === "number") ? ("#" + d.id) : "-";
+        html += `<tr>`;
+        html += `<td class="col-id"><small style="color:#999;">${idText}</small></td>`;
+        html += `<td class="col-snap">`;
+        if (d.snap_url) {
+          html += `<span class="snap-cell"><span class="snap-type-label">图片</span>`;
+          html += `<img src="${d.snap_url}" alt="快照" class="alarm-media" title="点击查看大图" data-url="${d.snap_url}" onerror="this.parentElement.style.opacity=0.3;" /></span>`;
+        } else {
+          html += `<div style="width:80px;height:60px;background:#f5f7fa;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;"><i class="fa fa-image" style="font-size:22px;color:#ccc;"></i></div>`;
+        }
+        html += `</td>`;
+        html += `<td class="col-task" title="${d.task_name}"><i class="fa fa-tasks" style="color:#2a80eb;margin-right:4px;"></i>${d.task_name || '-'}</td>`;
+        html += `<td class="col-count"><span class="count-badge enter-badge">${d.enter_num}</span></td>`;
+        html += `<td class="col-count"><span class="count-badge leave-badge">${d.leave_num}</span></td>`;
+        html += `<td class="col-count"><span class="count-badge total-badge">${d.total_num}</span></td>`;
+        html += `<td class="col-strategy"><small style="color:#666;">${RESET_STRATEGY_NAMES[d.reset_strategy] || d.reset_strategy}</small></td>`;
+        html += `<td class="col-time"><small style="color:#666;">${d.period_start || '-'}</small></td>`;
+        html += `<td class="col-time"><small style="color:#666;">${d.period_end || '-'}</small></td>`;
+        if (d.running) {
+          html += `<td class="col-state"><span class="ctrl-state-on">进行中</span></td>`;
+          html += `<td class="col-actions"><button class="ctrl-action" disabled title="进行中周期不可删除">删除</button></td>`;
+        } else {
+          html += `<td class="col-state"><span class="ctrl-state-muted">已归档</span></td>`;
+          html += `<td class="col-actions"><button class="ctrl-action ctrl-action-danger" onclick='f_delete(${JSON.stringify(d.id)})' title="删除此记录"><i class="fa fa-trash"></i> 删除</button></td>`;
+        }
+        html += `</tr>`;
+      }
+      tbody.html(html);
+    }
+
+    function f_renderChart() {
+      let chartDom = document.getElementById('trendChart');
+      if (!chartDom || !window.echarts || !HISTORY_DATA.length) return;
+      chartDom.style.display = "block";
+      if (trendChart) { trendChart.dispose(); }
+      trendChart = echarts.init(chartDom);
+
+      // 时间正序（最早在前）画趋势
+      let rawData = HISTORY_DATA.slice().reverse().map(d => ({
+        time: d.period_end || d.period_start || '',
+        enter: d.enter_num,
+        leave: d.leave_num,
+        total: d.total_num
+      })).filter(d => d.time);
+
+      let times = rawData.map(d => d.time);
+      let option = {
+        title: {
+          text: '计数趋势图（按清零周期）',
+          subtext: '布控代码: ' + CONTROL_CODE,
+          left: 'center',
+          textStyle: { fontSize: 16, color: '#333' },
+          subtextStyle: { fontSize: 12, color: '#999' }
+        },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+        legend: { data: ['进入', '离开', '总计'], bottom: 0, textStyle: { fontSize: 13 } },
+        grid: { left: '3%', right: '4%', bottom: '12%', top: '18%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: times,
+          boundaryGap: false,
+          axisLabel: {
+            rotate: 30,
+            fontSize: 11,
+            formatter: function (value) {
+              if (value && value.length >= 16) return value.substring(5, 16);
+              return value;
+            }
+          }
+        },
+        yAxis: { type: 'value', name: '数量', minInterval: 1, axisLabel: { fontSize: 12 } },
+        series: [
+          {
+            name: '进入', type: 'line', data: rawData.map(d => d.enter),
+            smooth: true, symbol: 'circle', symbolSize: 6,
+            lineStyle: { color: '#52c41a', width: 2 }, itemStyle: { color: '#52c41a' },
+            areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(82,196,26,0.15)' },
+              { offset: 1, color: 'rgba(82,196,26,0.01)' }]) }
+          },
+          {
+            name: '离开', type: 'line', data: rawData.map(d => d.leave),
+            smooth: true, symbol: 'circle', symbolSize: 6,
+            lineStyle: { color: '#faad14', width: 2 }, itemStyle: { color: '#faad14' },
+            areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(250,173,20,0.15)' },
+              { offset: 1, color: 'rgba(250,173,20,0.01)' }]) }
+          },
+          {
+            name: '总计', type: 'line', data: rawData.map(d => d.total),
+            smooth: true, symbol: 'diamond', symbolSize: 8,
+            lineStyle: { color: '#2a80eb', width: 2.5 }, itemStyle: { color: '#2a80eb' },
+            areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(42,128,235,0.12)' },
+              { offset: 1, color: 'rgba(42,128,235,0.01)' }]) }
+          }
+        ]
+      };
+      trendChart.setOption(option);
+      window.addEventListener('resize', function () { if (trendChart) trendChart.resize(); });
+    }
+
+    function f_delete(recordId) {
+      if (!confirm('确定要删除这条历史记录吗？此操作不可恢复（仅删除云端记录）。')) return;
+      $.post("/alarm/openDeleteStatisticHistory", { record_id: recordId }, function (res) {
+        if (1000 === res.code) { myAlert(res.msg, "success"); f_query(); }
+        else myAlert(res.msg, "error");
+      }, "json").fail(function () { myAlert("网络异常！", "error"); });
+    }
+
+    function f_export() {
+      // 导出走浏览器地址栏下载，无 session 时需 Safe 头兜底 → 改为 ajax 拿 blob 再下载
+      $.ajax({
+        url: '/alarm/openExportStatisticHistory',
+        type: "get",
+        data: { node_code: NODE_CODE, control_code: CONTROL_CODE, task_name: TASK_NAME },
+        xhrFields: { responseType: 'blob' },
+        success: function (blob, textStatus, xhr) {
+          let ctype = (xhr.getResponseHeader('Content-Type') || '');
+          if (ctype.indexOf('json') >= 0) {
+            // 接口返回的是 JSON 错误信息
+            let fr = new FileReader();
+            fr.onload = function () {
+              try { let r = JSON.parse(fr.result); myAlert(r.msg || "导出失败", "error"); }
+              catch (e) { myAlert("导出失败", "error"); }
+            };
+            fr.readAsText(blob);
+            return;
+          }
+          let a = document.createElement('a');
+          let url = URL.createObjectURL(blob);
+          a.href = url;
+          a.download = '计数历史_' + CONTROL_CODE + '.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          myAlert("导出成功", "success");
+        },
+        error: function () { myAlert("网络异常！", "error"); }
+      });
+    }
+
+    $(document).on('click', '.alarm-media', function () {
+      let url = $(this).data('url');
+      $('#media-modal-inner').html('<img src="' + url + '" style="max-width:75vw;max-height:75vh;display:block;margin:auto;border-radius:8px;" />');
+      $('#media-modal-mask').fadeIn(100);
+    });
+    $('#media-modal-close, #media-modal-mask').on('click', function (e) {
+      if (e.target === this) {
+        $('#media-modal-mask').fadeOut(100);
+        $('#media-modal-inner').html('');
+      }
+    });
+
+    $(function () { f_query(); });
+  </script>
+{% endblock javascripts %}

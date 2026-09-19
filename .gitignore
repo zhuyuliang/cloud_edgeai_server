@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 虚拟环境
+.venv/
+venv/
+admin/venv/
+
+# 日志与运行时产物
+log/
+*.log
+*.log.*
+zlmediakit/log/
+zlmediakit/zlm.pid
+
+# 告警/存储运行时数据
+admin/static/storage/alarm/
+admin/static/storage/temp/
+
+# 系统文件
+.DS_Store
+Thumbs.db

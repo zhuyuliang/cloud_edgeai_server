@@ -1,0 +1,477 @@
+<style>
+/* 仅修饰顶部导航内部结构，容器 .top_nav 的定位/尺寸由 base_site 统一控制 */
+/* 全局：顶部导航内所有可聚焦元素去掉焦点阴影与轮廓，避免被其他 CSS 覆盖 */
+.nav_menu *:focus,
+.nav_menu *:focus-visible,
+.nav_menu *:focus:hover,
+.nav_menu *:focus:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+/* 全局：顶部导航内所有链接/按钮悬浮时去掉阴影（覆盖 Bootstrap / bootstrap-theme / custom.css 的 hover 阴影） */
+.nav_menu a:hover,
+.nav_menu .nav > li > a:hover,
+.nav_menu .navbar-nav > li > a:hover,
+.nav_menu .dropdown-menu li a:hover {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -ms-box-shadow: none !important;
+  -o-box-shadow: none !important;
+}
+
+/* 右侧用户下拉（.dropdown + .dropdown-usermenu）内一切悬浮无阴影 */
+.nav_menu .navbar-nav.navbar-right .dropdown a:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown .dropdown-menu a:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown *:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown.open a:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown.open .dropdown-menu a:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown.open *:hover {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+/* li.dropdown 自身在悬浮、焦点、子元素获焦时无阴影 */
+.nav_menu .navbar-nav.navbar-right li.dropdown:hover,
+.nav_menu .navbar-nav.navbar-right li.dropdown:focus,
+.nav_menu .navbar-nav.navbar-right li.dropdown:focus-within,
+.nav_menu .navbar-nav.navbar-right .dropdown:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown:focus,
+.nav_menu .navbar-nav.navbar-right .dropdown:focus-within,
+.nav_menu .navbar-nav.navbar-right .dropdown.open:hover,
+.nav_menu .navbar-nav.navbar-right .dropdown.open:focus,
+.nav_menu .navbar-nav.navbar-right .dropdown.open:focus-within {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  outline: none;
+}
+
+/* 焦点重叠：custom.css .top_nav .nav>li>a:focus 会加 background:#D9DEE4，已用下方 .nav_menu .navbar-nav.navbar-right > li > a.user-profile:focus 覆盖 */
+/* 覆盖 custom.css 的 float:left，保证内部 flex 能占满整行 */
+.nav_menu {
+  width: 100%;
+  height: 100%;
+  max-height: 64px;
+  background: transparent;
+  padding: 0;
+  box-sizing: border-box;
+  float: none;
+}
+
+.nav_menu nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 64px;
+  padding: 0 24px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.nav.toggle {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav.toggle a#menu_toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  color: #5f6368;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+}
+
+.nav.toggle a#menu_toggle:hover {
+  background-color: rgba(95, 99, 104, 0.1);
+  color: #202124;
+}
+
+.nav.toggle a#menu_toggle:focus,
+.nav.toggle a#menu_toggle:focus-visible,
+.nav.toggle a#menu_toggle:focus:hover,
+.nav.toggle a#menu_toggle:focus-visible:hover {
+  box-shadow: none !important;
+  outline: none;
+  background-color: rgba(95, 99, 104, 0.08);
+}
+
+.nav.toggle a#menu_toggle i {
+  font-size: 20px;
+  line-height: 1;
+  display: block;
+  margin-top: -12px;
+}
+
+/* 覆盖 Bootstrap .nav .open > a 的 border-color:#337ab7 与 bootstrap-theme 的 .navbar-default/.navbar-inverse .navbar-nav > .open > a 的 inset box-shadow */
+.nav_menu .nav .open > a,
+.nav_menu .nav .open > a:hover,
+.nav_menu .nav .open > a:focus,
+.nav_menu .nav .open > a:active,
+.nav_menu .navbar-nav .open > a,
+.nav_menu .navbar-nav .open > a:hover,
+.nav_menu .navbar-nav .open > a:focus,
+.nav_menu .navbar-nav .open > a:active,
+.top_nav .nav_menu .nav .open > a,
+.top_nav .nav_menu .navbar-nav .open > a,
+.top_nav .nav_menu .navbar-default .navbar-nav > .open > a,
+.top_nav .nav_menu .navbar-inverse .navbar-nav > .open > a {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -ms-box-shadow: none !important;
+  -o-box-shadow: none !important;
+  outline: none;
+}
+
+/* 覆盖 custom.css 焦点重叠：.top_nav .nav>li>a:focus / .top_nav .nav .open>a:focus 会加 background:#D9DEE4，用更高优先级去掉 */
+.nav_menu .navbar-nav.navbar-right > li > a.user-profile:focus,
+.nav_menu .navbar-nav.navbar-right > li > a.user-profile:focus-visible,
+.nav_menu .navbar-nav.navbar-right > li > a.user-profile:focus:hover,
+.nav_menu .navbar-nav.navbar-right > li > a.user-profile:focus-visible:hover {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none !important;
+  outline: none;
+}
+
+/* Right side navigation - 覆盖 custom.css 的 .top_nav .navbar-right (width:70%; float:right) */
+.nav_menu .navbar-nav.navbar-right,
+.top_nav .navbar-nav.navbar-right {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-left: auto !important;
+  width: auto !important;
+  float: none !important;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.navbar-nav.navbar-right > li {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-nav.navbar-right > li > a {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* User Profile Dropdown */
+.user-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 24px;
+  background: transparent;
+  color: #202124;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-decoration: none;
+  transition: background-color 0.2s, box-shadow 0.2s, border-color 0.2s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.user-profile:hover {
+  background-color: rgba(95, 99, 104, 0.1);
+  border-color: #e8eaed;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -ms-box-shadow: none !important;
+  -o-box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+/* 覆盖 bootstrap-theme 的 .navbar-default .navbar-nav > .open > a / > li > a 的 inset box-shadow 与 0 1px 5px 外阴影 */
+.top_nav .nav_menu .navbar-nav > li > a.user-profile,
+.top_nav .nav_menu .navbar-nav > li > a.user-profile:hover,
+.top_nav .nav_menu .navbar-nav > .open > a.user-profile,
+.top_nav .nav_menu .navbar-nav > .open > a.user-profile:hover,
+.nav_menu a.user-profile.dropdown-toggle,
+.nav_menu a.user-profile.dropdown-toggle:hover,
+.nav_menu a.user-profile.dropdown-toggle:hover * {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -ms-box-shadow: none !important;
+  -o-box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+.user-profile:hover img {
+  border-color: #e8eaed;
+}
+
+.user-profile:focus,
+.user-profile:focus-visible,
+.user-profile:focus:hover,
+.user-profile:focus-visible:hover {
+  border-color: transparent;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.user-profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e8eaed;
+}
+
+.user-profile .fa-angle-down {
+  font-size: 16px;
+  color: #5f6368;
+  transition: transform 0.2s;
+}
+
+.user-profile[aria-expanded="true"] .fa-angle-down {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu.dropdown-usermenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60, 64, 67, 0.15), 0 4px 16px rgba(60, 64, 67, 0.1);
+  padding: 8px 0;
+  list-style: none;
+  margin: 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+}
+
+.dropdown-menu.dropdown-usermenu.show,
+.dropdown.open .dropdown-menu.dropdown-usermenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu.dropdown-usermenu li {
+  list-style: none;
+  margin: 0;
+}
+
+.dropdown-menu.dropdown-usermenu li a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  color: #202124;
+  font-size: 14px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-decoration: none;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  border-radius: 4px;
+  margin: 0 4px;
+}
+
+.dropdown-menu.dropdown-usermenu li a:hover {
+  background-color: rgba(42, 128, 235, 0.08);
+  color: #2a80eb;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+.dropdown-menu.dropdown-usermenu li a:focus,
+.dropdown-menu.dropdown-usermenu li a:focus-visible,
+.dropdown-menu.dropdown-usermenu li a:focus:hover,
+.dropdown-menu.dropdown-usermenu li a:focus-visible:hover {
+  background-color: rgba(42, 128, 235, 0.08);
+  color: #2a80eb;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.dropdown-menu.dropdown-usermenu li a i {
+  color: #5f6368;
+  font-size: 16px;
+}
+
+.dropdown-menu.dropdown-usermenu li a:hover i {
+  color: #2a80eb;
+}
+
+/* Notification Badge (for future use) */
+.info-number {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  color: #5f6368;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.info-number:hover {
+  background-color: rgba(95, 99, 104, 0.1);
+  color: #202124;
+}
+
+.info-number:focus,
+.info-number:focus-visible,
+.info-number:focus:hover,
+.info-number:focus-visible:hover {
+  box-shadow: none !important;
+  outline: none;
+  background-color: rgba(95, 99, 104, 0.08);
+}
+
+.info-number i {
+  font-size: 20px;
+}
+
+.info-number .badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #ea4335;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  border-radius: 9px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav_menu nav {
+    padding: 0 16px;
+  }
+  
+  .user-profile {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  
+  .user-profile img {
+    width: 28px;
+    height: 28px;
+  }
+}
+</style>
+
+<div class="nav_menu">
+  <nav>
+    <div class="nav toggle">
+      <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          <img src="{% if settings.logo_url == '/static/images/user.png' %}/static/images/avatar-default.svg{% else %}{{ settings.logo_url }}?2026002{% endif %}" alt="{{ request.session.user.username }}">
+          <span>{{ request.session.user.username }}</span>
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-usermenu pull-right">
+          <li>
+            <a href="/logout">
+              <span>注销登录</span>
+              <i class="fa fa-sign-out"></i>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--
+      <li role="presentation" class="dropdown">
+        <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-envelope-o"></i>
+          <span class="badge bg-green">12</span>
+        </a>
+        <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+          <li>
+            <a>
+              <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
+              <span>
+                <span>John Doe</span>
+                <span class="time">3 mins ago</span>
+              </span>
+              <span class="message">
+                Film festivals used to be do-or-die moments for movie makers. They were where...
+              </span>
+            </a>
+          </li>
+          <li>
+            <a>
+              <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
+              <span>
+                <span>John Doe</span>
+                <span class="time">3 mins ago</span>
+              </span>
+              <span class="message">
+                Film festivals used to be do-or-die moments for movie makers. They were where...
+              </span>
+            </a>
+          </li>
+          <li>
+            <a>
+              <span class="image"><img src="/static/images/img.jpg" alt="Profile Image" /></span>
+              <span>
+                <span>John Doe</span>
+                <span class="time">3 mins ago</span>
+              </span>
+              <span class="message">
+                Film festivals used to be do-or-die moments for movie makers. They were where...
+              </span>
+            </a>
+          </li>
+          <li>
+            <div class="text-center">
+              <a>
+                <strong>查看所有报警</strong>
+                <i class="fa fa-angle-right"></i>
+              </a>
+            </div>
+          </li>
+        </ul>
+      </li>
+      -->
+    </ul>
+  </nav>
+</div>

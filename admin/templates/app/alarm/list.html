@@ -1,0 +1,416 @@
+{% extends "app/base_site.html" %}
+{% load static %}
+
+{% block title %} {{ page_title }} {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <style>
+    /* 告警卡片网格（页面特有布局，颜色用主题令牌；按钮/徽章/弹窗用全局 ctrl-btn / eai-badge / eai-modal） */
+    .alarm-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .alarm-toolbar .ctrl-btn { height: 28px; padding: 2px 10px; font-size: 12px; }
+    .xc_filters { display: flex; align-items: center; gap: 18px; margin-bottom: 15px; flex-wrap: wrap; }
+    .xc_filter-group { display: flex; align-items: center; gap: 6px; }
+    .xc_filter-label { font-size: 13px; color: var(--eai-text-secondary); }
+    .xc_date-range .eai-input { width: 220px; }
+    /* === 告警卡片（对齐边缘 snap-cell / ctrl-state 视觉）=== */
+    .xc_video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
+    .xc_video-card { border: 1px solid var(--eai-border); border-radius: var(--eai-radius); overflow: hidden; background: #fff; transition: all .2s ease; }
+    .xc_video-card:hover { box-shadow: 0 4px 16px rgba(42, 128, 235, 0.14); transform: translateY(-2px); border-color: rgba(42,128,235,.45); }
+    .xc_video-thumbnail { position: relative; height: 160px; background: #000; cursor: pointer; }
+    .xc_video-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
+    .xc_video-card:hover .xc_video-thumbnail img { transform: scale(1.05); }
+    /* 媒体类型角标（源：边缘 .snap-type-label） */
+    .xc_media-tag { position: absolute; left: 8px; top: 8px; background: rgba(42,128,235,.9); color: #fff; font-size: 10px; line-height: 16px; padding: 1px 6px; border-radius: 2px; pointer-events: none; }
+    .xc_media-tag.video { background: rgba(255,77,79,.9); }
+    /* 未读红点（源：边缘状态圆点语义） */
+    .xc_unread-dot { position: absolute; right: 8px; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: #ff4d4f; box-shadow: 0 0 0 3px rgba(255,77,79,.25); pointer-events: none; }
+    .xc_play-button { position: absolute; inset: 0; margin: auto; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); border: 2px solid #fff; }
+    .xc_play-button::after { content: ''; position: absolute; inset: 0; margin: auto; border-left: 12px solid #fff; border-top: 8px solid transparent; border-bottom: 8px solid transparent; transform: translateX(3px); }
+    .xc_video-info { padding: 8px 10px; }
+    .xc_video-title { font-size: 13px; color: var(--eai-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; }
+    .xc_video-title .xc_title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .xc_video-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--eai-text-secondary); }
+    /* 风险等级实底标签（对齐边缘 .ctrl-state-* 配色） */
+    .xc_risk-badge { display: inline-block; min-width: 48px; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 6px; text-align: center; white-space: nowrap; flex-shrink: 0; }
+    .xc_risk-0 { background: #e6f7e6; color: #389e0d; border: 1px solid #b7eb8f; }
+    .xc_risk-1 { background: #fff7e6; color: #d48806; border: 1px solid #ffd591; }
+    .xc_risk-2 { background: #fff1f0; color: #cf1322; border: 1px solid #ffa39e; }
+    .xc_pagination { display: flex; gap: 6px; margin: 15px 0; flex-wrap: wrap; }
+    .xc_page-btn { padding: 4px 10px; border: 1px solid var(--eai-input-border); border-radius: var(--eai-radius-sm); cursor: pointer; font-size: 13px; background: #fff; }
+    .xc_page-btn:hover { color: var(--eai-primary); border-color: var(--eai-primary); }
+    /* === 详情弹窗（对齐边缘 media-modal 结构：左媒体黑底大图 + 右信息灰底面板 + 底部操作条）=== */
+    #alarmModal .eai-modal-content { width: 960px; max-width: 95vw; height: 640px; max-height: 90vh; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .xc_modal-grid { display: flex; flex: 1; overflow: hidden; }
+    .xc_media-col { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #000; position: relative; }
+    .xc_media-actions { position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; gap: 8px; }
+    .xc_media-action-btn { background: #ff9500; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; transition: background .2s; }
+    .xc_media-action-btn:hover { background: #ffa940; }
+    .xc_media-display { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; min-height: 0; }
+    .xc_media-display img, .xc_media-display video { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+    .xc_media-thumbs { display: flex; gap: 8px; padding: 10px 16px; background: rgba(0,0,0,.55); overflow-x: auto; flex-shrink: 0; }
+    .xc_media-thumbs .xc_thumb { width: 72px; height: 54px; border-radius: 4px; overflow: hidden; border: 2px solid transparent; cursor: pointer; opacity: .65; background: #000; flex-shrink: 0; position: relative; }
+    .xc_media-thumbs .xc_thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .xc_media-thumbs .xc_thumb.active { border-color: #ff9500; opacity: 1; }
+    .xc_media-thumbs .xc_thumb:hover { opacity: 1; }
+    .xc_media-thumbs .xc_thumb .xc_thumb-tag { position: absolute; left: 2px; top: 2px; background: rgba(255,77,79,.9); color: #fff; font-size: 10px; padding: 0 4px; border-radius: 2px; line-height: 14px; }
+    .xc_media-empty { color: #999; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .xc_info-col { width: 300px; background: #f8f9fa; border-left: 1px solid var(--eai-border); padding: 20px; overflow-y: auto; flex-shrink: 0; }
+    .xc_info-col h4 { font-size: 15px; font-weight: 600; color: var(--eai-text); margin: 0 0 12px; }
+    .xc_info-item { display: flex; gap: 8px; padding: 4px 0; font-size: 13px; line-height: 1.5; }
+    .xc_info-label { color: #666; min-width: 70px; flex-shrink: 0; }
+    .xc_info-value { color: var(--eai-text); word-break: break-all; flex: 1; }
+    .xc_review-section { margin-top: 18px; padding-top: 4px; }
+    .xc_modal-footer { padding: 14px 20px; border-top: 1px solid var(--eai-border); background: #fff; display: flex; justify-content: flex-end; gap: 12px; flex-shrink: 0; }
+    .xc_modal-footer .ctrl-btn { height: 34px; padding: 6px 16px; }
+    .xc_footer-reset { background: #d9d9d9; color: #666; border: 1px solid #d9d9d9; }
+    .xc_footer-reset:hover { background: #e6e6e6; color: #333; border-color: #e6e6e6; }
+    .xc_footer-confirm { background: #52c41a; color: #fff; border: 1px solid #52c41a; }
+    .xc_footer-confirm:hover { background: #73d13d; border-color: #73d13d; color: #fff; }
+    .xc_footer-false { background: #ff4d4f; color: #fff; border: 1px solid #ff4d4f; }
+    .xc_footer-false:hover { background: #ff7875; border-color: #ff7875; color: #fff; }
+    @media (max-width: 900px) {
+      .xc_modal-grid { flex-direction: column; overflow-y: auto; }
+      .xc_media-col { min-height: 320px; }
+      .xc_info-col { width: auto; border-left: none; border-top: 1px solid var(--eai-border); }
+      .xc_video-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="dash-panel">
+            <div class="dash-panel-head">
+              <h3><i class="fa fa-bell-o" style="margin-right:2px"></i> {{ page_title }}</h3>
+              <div class="alarm-toolbar">
+                <label style="display:flex;align-items:center;gap:5px;font-weight:normal;font-size:13px;margin:0;">
+                  <input type="checkbox" id="check_all"> 全选
+                </label>
+                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('2')"><i class="fa fa-check"></i> 标记已处理</button>
+                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('3')"><i class="fa fa-ban"></i> 标记误报</button>
+                <button class="ctrl-btn ctrl-btn-danger" onclick="f_handle('delete')"><i class="fa fa-trash-o"></i> 批量删除</button>
+                <button class="ctrl-btn ctrl-btn-primary" onclick="f_export()"><i class="fa fa-download"></i> 导出 CSV</button>
+                <span id="top_loading" style="display:none;">
+                  <img src="/static/images/load.gif" alt="loading">加载中
+                </span>
+              </div>
+            </div>
+            <div class="dash-panel-body">
+              <div class="xc_filters">
+                {% if alarm_category < 0 %}
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">分类:</label>
+                  <select id="select_category" class="eai-select">
+                    <option value="-1">选择全部</option>
+                    <option value="0">事件告警</option>
+                    <option value="1">车牌告警</option>
+                    <option value="2">人脸告警</option>
+                  </select>
+                </div>
+                {% endif %}
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">节点:</label>
+                  <select id="select_node" class="eai-select">
+                    <option value="-1">选择全部</option>
+                    {% for node in nodes %}
+                    <option value="{{ node.code }}">{{ node.nickname }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="xc_filter-group">
+                  <label class="xc_filter-label">状态:</label>
+                  <select id="select_state" class="eai-select">
+                    <option value="-1">选择全部</option>
+                    {% for s in states %}
+                    <option value="{{ s.value }}">{{ s.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="xc_date-range">
+                  <input type="text" id="input_dateRange" class="eai-input" value="{{ startDate }} to {{ endDate }}">
+                </div>
+              </div>
+
+              <div class="xc_video-grid" id="data"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="xc_pagination" id="pageData"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 告警详情模态框（对齐边缘 media-modal：左媒体大图区 + 右信息面板 + 底部操作条） -->
+  <div id="alarmModal" class="eai-modal">
+    <div class="eai-modal-content">
+      <div class="eai-modal-header">
+        <h3 class="eai-modal-title">告警详情</h3>
+        <button class="eai-modal-close">&times;</button>
+      </div>
+      <div class="xc_modal-grid">
+        <!-- 左：媒体展示 -->
+        <div class="xc_media-col">
+          <div class="xc_media-actions">
+            <button type="button" class="xc_media-action-btn" id="btnDownloadOriginal"><i class="fa fa-download"></i> 下载原图</button>
+            <button type="button" class="xc_media-action-btn" id="btnDownloadVideo" style="display:none;"><i class="fa fa-video-camera"></i> 下载视频</button>
+          </div>
+          <div class="xc_media-display" id="modalMediaDisplay"></div>
+          <div class="xc_media-thumbs" id="modalMediaThumbs" style="display:none;"></div>
+        </div>
+        <!-- 右：告警信息 + 处理意见 -->
+        <div class="xc_info-col">
+          <h4>告警信息</h4>
+          <div id="modalInfo"></div>
+          <div class="xc_review-section">
+            <h4>处理信息</h4>
+            <label class="xc_info-label" style="display:block;margin-bottom:4px;">处理意见：</label>
+            <textarea class="eai-textarea" id="modalDealInfo" style="min-height:76px;width:100%;" placeholder="请输入处理意见"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- 底部操作条 -->
+      <div class="xc_modal-footer">
+        <button type="button" class="ctrl-btn xc_footer-reset" id="btnModalReset"><i class="fa fa-refresh"></i> 重置</button>
+        <button type="button" class="ctrl-btn xc_footer-false" id="btnModalFalseAlarm"><i class="fa fa-ban"></i> 误报</button>
+        <button type="button" class="ctrl-btn xc_footer-confirm" id="btnModalConfirm"><i class="fa fa-check"></i> 已处理</button>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="/static/vendors/moment/min/moment.min.js"></script>
+  <script src="/static/lib/jquery/daterangepicker/jquery.daterangepicker.js"></script>
+  <script>
+    let ALARM_CATEGORY = {{ alarm_category }};   // -1=历史全量
+    let RISK_NAMES = {0: '低风险', 1: '中风险', 2: '高风险'};
+    let STATE_BADGES = {
+        0: '<span class="eai-badge eai-badge-info">未读</span>',
+        1: '<span class="eai-badge eai-badge-warning">未处理</span>',
+        2: '<span class="eai-badge eai-badge-success">已处理</span>',
+        3: '<span class="eai-badge eai-badge-error">误报</span>',
+    };
+    let temp_cur_page = 1, temp_cur_page_size = 12;
+    const eleData = $("#data"), elePageData = $("#pageData");
+    const eleCheckAll = $("#check_all");
+    // 弹窗媒体状态：列表 [{type:'image'|'video', url, poster}]，当前索引
+    let modal_media_list = [], modal_media_index = 0;
+    let f_editing_info = null;
+
+    // 提示性反馈：xcAlert/myAlert 由全局 toast.js 提供
+
+    function f_stateBadge(s) { return STATE_BADGES[s] || '<span class="eai-badge eai-badge-default">未知</span>'; }
+
+    function f_openIndex(page, page_size) {
+      eleCheckAll.prop("checked", false);
+      temp_cur_page = page; temp_cur_page_size = page_size;
+      $("#top_loading").show();
+      let category = ALARM_CATEGORY >= 0 ? ALARM_CATEGORY : ($("#select_category").val() || -1);
+      $.ajax({
+        url: '/alarm/openIndex',
+        type: "get",
+        data: {
+          p: page, ps: page_size,
+          alarmCategory: category,
+          nodeCode: $("#select_node").val() || -1,
+          state: $("#select_state").val() || -1,
+          dateRange: $("#input_dateRange").val(),
+        },
+        dataType: "json",
+        error: function () { $("#top_loading").hide(); myAlert("网络异常！", "error"); },
+        success: function (res) {
+          $("#top_loading").hide();
+          if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
+          let data = res.data;
+          if (!data.length) { eleData.html("<div class='empty-ph' style='grid-column:1/-1;'>暂无告警数据</div>"); elePageData.html(""); return; }
+          let html = "";
+          for (let d of data) {
+            let title = d["task_name"] || d["flow_name"] || d["desc"] || ("告警#" + d["id"]);
+            let risk = parseInt(d["risk_level"] || 0);
+            let hasVideo = (parseInt(d["video_count"] || 0) > 0) && d["videoUrl"];
+            html += `<div class="xc_video-card">`;
+            html += `<div class="xc_video-thumbnail" onclick='f_edit("${d["code"]}")'>`;
+            html += `<img src="${d["imageUrl"]}" onerror="this.src='/static/images/720p.jpg'">`;
+            if (hasVideo) html += `<div class="xc_play-button"></div>`;
+            html += `<span class="xc_media-tag${hasVideo ? " video" : ""}">${hasVideo ? "视频" : "图片"}</span>`;
+            if (parseInt(d["state"]) === 0) html += `<span class="xc_unread-dot" title="未读"></span>`;
+            html += `</div><div class="xc_video-info">`;
+            html += `<div class="xc_video-title"><label style="flex-shrink:0;"><input type="checkbox" class="check_item" value="${d["id"]}"></label><span class="xc_risk-badge xc_risk-${risk}">${RISK_NAMES[risk]}</span><span class="xc_title-text" title="${title}">${title}</span></div>`;
+            html += `<div class="xc_video-meta"><span>${d["node_nickname"]} · ${d["create_time_str"]}</span>${f_stateBadge(d["state"])}</div>`;
+            html += `</div></div>`;
+          }
+          eleData.html(html);
+          f_show_pageData(res.pageData);
+        }
+      });
+    }
+
+    function f_show_pageData(pageData) {
+      let html = "";
+      if (pageData.page > 1) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page - 1},${pageData.page_size})">上一页</div>`;
+      for (let l of pageData.pageLabels || []) {
+        html += `<div class="xc_page-btn" onclick="f_openIndex(${l.page},${pageData.page_size})">${l.name}</div>`;
+      }
+      if (pageData.page < pageData.page_num) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page + 1},${pageData.page_size})">下一页</div>`;
+      html += `<div style="font-size:12px;color:var(--eai-text-secondary);align-self:center;">共${pageData.count}条</div>`;
+      elePageData.html(html);
+    }
+
+    function f_handle(handle) {
+      if (handle === "delete") {
+        let ids = [];
+        $(".check_item:checked").each(function () { ids.push($(this).val()); });
+        if (!ids.length) { myAlert("请至少选择一条数据", "warning"); return; }
+        if (!confirm("确认删除选中的告警？")) return;
+        $.post("/alarm/openHandle", { alarm_ids_str: ids.join(","), handle: "delete" }, f_handleDone, "json");
+      } else {
+        let ids = [];
+        $(".check_item:checked").each(function () { ids.push($(this).val()); });
+        if (!ids.length) { myAlert("请至少选择一条数据", "warning"); return; }
+        let deal_info = prompt("处理信息（可选）：", "") || "";
+        $.post("/alarm/openHandle", { alarm_ids_str: ids.join(","), handle: handle, deal_info: deal_info }, f_handleDone, "json");
+      }
+    }
+    function f_handleDone(res) {
+      if (1000 === res.code) { myAlert(res.msg, "success"); f_openIndex(temp_cur_page, temp_cur_page_size); }
+      else myAlert(res.msg, "error");
+    }
+
+    function f_export() {
+      let category = ALARM_CATEGORY >= 0 ? ALARM_CATEGORY : ($("#select_category").val() || -1);
+      $.post("/alarm/openExport", {
+        alarmCategory: category,
+        nodeCode: $("#select_node").val() || -1,
+        state: $("#select_state").val() || -1,
+        dateRange: $("#input_dateRange").val(),
+      }, function (res) {
+        if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
+        if (!res.info.count) { myAlert("当前筛选条件下无数据", "warning"); return; }
+        window.open(res.info.url, "_blank");
+        myAlert("已导出 " + res.info.count + " 条", "success");
+      }, "json");
+    }
+
+    function f_edit(code) {
+      $.get("/alarm/openInfo", { code: code }, function (res) {
+        if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
+        let info = res.info;
+        f_editing_id = info.id;
+        f_editing_info = info;
+        $("#modalInfo").html(`
+          <div class="xc_info-item"><span class="xc_info-label">状态</span><span class="xc_info-value">${f_stateBadge(info.state)}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">所属节点</span><span class="xc_info-value">${info.node_nickname || info.node_code || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">风险等级</span><span class="xc_info-value">${RISK_NAMES[info.risk_level != null ? info.risk_level : 0]}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">算法任务</span><span class="xc_info-value">${info.task_name || info.flow_name || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">告警编号</span><span class="xc_info-value">${info.code}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">布控编号</span><span class="xc_info-value">${info.control_code || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">检测时间</span><span class="xc_info-value">${info.create_time_str || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">告警描述</span><span class="xc_info-value">${info.desc || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">处理信息</span><span class="xc_info-value">${info.deal_info || '未填写'}</span></div>`);
+        f_modalLoadMedia(info);
+        $("#modalDealInfo").val(info.deal_info || "");
+        $("#alarmModal").show();
+      }, "json");
+    }
+
+    // ── 弹窗媒体：构建 图片+视频 播放列表，缩略图切换（对齐边缘 media-modal 交互） ──
+    function f_modalLoadMedia(info) {
+      modal_media_list = [];
+      let imgs = info.imageUrlArray && info.imageUrlArray.length ? info.imageUrlArray : (info.imageUrl ? [info.imageUrl] : []);
+      for (let u of imgs) modal_media_list.push({ type: "image", url: u, poster: u });
+      if (parseInt(info.video_count || 0) > 0 && info.videoUrl) {
+        modal_media_list.push({ type: "video", url: info.videoUrl, poster: imgs[0] || "" });
+      }
+      // 缩略图条
+      let $thumbs = $("#modalMediaThumbs");
+      if (modal_media_list.length > 1) {
+        $thumbs.show().html(modal_media_list.map((m, i) => `
+          <div class="xc_thumb" data-index="${i}">
+            ${m.type === "video" ? '<span class="xc_thumb-tag">视频</span>' : ''}
+            <img src="${m.poster || m.url}" onerror="this.src='/static/images/720p.jpg'">
+          </div>`).join(""));
+      } else { $thumbs.hide().empty(); }
+      // 下载按钮
+      let firstImg = imgs[0] || "";
+      let videoItem = modal_media_list.find(m => m.type === "video");
+      $("#btnDownloadOriginal").toggle(!!firstImg).data("url", firstImg);
+      $("#btnDownloadVideo").toggle(!!videoItem).data("url", videoItem ? videoItem.url : "");
+      f_modalShowMedia(0);
+    }
+
+    function f_modalShowMedia(index) {
+      modal_media_index = index;
+      let m = modal_media_list[index];
+      let $display = $("#modalMediaDisplay");
+      $("#modalMediaThumbs .xc_thumb").removeClass("active").filter(`[data-index="${index}"]`).addClass("active");
+      if (!m) {
+        $display.html(`<div class="xc_media-empty"><i class="fa fa-picture-o" style="font-size:40px;color:#555;"></i><span>暂无媒体文件</span></div>`);
+        return;
+      }
+      if (m.type === "video") {
+        $display.html(`<video controls autoplay muted loop preload="none" src="${m.url}" poster="${m.poster || ''}" style="max-width:100%;max-height:100%;"></video>`);
+      } else {
+        $display.html(`<img src="${m.url}" onerror="this.src='/static/images/720p.jpg'">`);
+      }
+    }
+
+    $(document).on("click", "#modalMediaThumbs .xc_thumb", function () {
+      f_modalShowMedia(parseInt($(this).attr("data-index")));
+    });
+
+    function f_downloadUrl(url) {
+      if (!url) return;
+      let a = document.createElement("a");
+      a.href = url; a.download = ""; a.target = "_blank";
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+    $(document).on("click", "#btnDownloadOriginal", function () { f_downloadUrl($(this).data("url")); });
+    $(document).on("click", "#btnDownloadVideo", function () { f_downloadUrl($(this).data("url")); });
+
+    // 底部操作条：已处理 / 误报 / 重置（替代原 radio + 提交按钮）
+    function f_modalHandle(state) {
+      if (!f_editing_id) { myAlert("告警数据未加载", "warning"); return; }
+      $.post("/alarm/openHandle", { alarm_ids_str: f_editing_id, handle: state, deal_info: $("#modalDealInfo").val() }, function (res) {
+        if (1000 === res.code) { myAlert("处理成功", "success"); $("#alarmModal").hide(); f_openIndex(temp_cur_page, temp_cur_page_size); }
+        else myAlert(res.msg, "error");
+      }, "json");
+    }
+    $(document).on("click", "#btnModalConfirm", function () { f_modalHandle(2); });
+    $(document).on("click", "#btnModalFalseAlarm", function () { f_modalHandle(3); });
+    $(document).on("click", "#btnModalReset", function () {
+      if (f_editing_info) { $("#modalDealInfo").val(f_editing_info.deal_info || ""); }
+      myAlert("已重置处理意见", "info");
+    });
+
+    $(".eai-modal-close").click(function () { $("#alarmModal").hide(); });
+    $(window).click(function (e) { if (e.target.id === "alarmModal") $("#alarmModal").hide(); });
+
+    $("#select_node,#select_state,#select_category").change(function () { f_openIndex(1, temp_cur_page_size); });
+    $("#input_dateRange").dateRangePicker({
+      language: 'cn',
+    }).bind('datepicker-apply', function () { f_openIndex(1, temp_cur_page_size); });
+    eleCheckAll.change(function () { $(".check_item").prop("checked", $(this).prop("checked")); });
+
+    let f_editing_id = null;
+
+    function getUrlParam(name) {
+      let m = new RegExp("[?&]" + name + "=([^&]*)").exec(window.location.search);
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+
+    $(function () {
+      f_openIndex(1, temp_cur_page_size);
+      // 深链：?alarm_code=xxx 自动打开详情弹窗（dashboard 跳转入口）
+      let deepCode = getUrlParam("alarm_code");
+      if (deepCode) setTimeout(() => f_edit(deepCode), 500);
+    });
+  </script>
+{% endblock javascripts %}
