@@ -3,6 +3,7 @@ from app.views.ViewsBase import *
 from app.models import *
 from django.shortcuts import render, redirect
 from app.utils.Utils import gen_random_code_s
+from django.utils.translation import gettext as _
 
 
 def _node_code_from_referer(request):
@@ -74,7 +75,7 @@ def add(request):
     context = {
         "node_code": node_code,
         "node_nickname": node.nickname,
-        "page_title": "新增布控",
+        "page_title": _("新增布控"),
         "iframe_src": "/proxy/node/%s/control/add?embed=1" % node_code,
         "redirect_url": "/control/index?node_code=%s" % node_code,
     }
@@ -84,7 +85,7 @@ def add(request):
 
 def api_openAdd(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -151,7 +152,7 @@ def edit(request):
     context = {
         "node_code": node_code,
         "node_nickname": node.nickname,
-        "page_title": "编辑布控",
+        "page_title": _("编辑布控"),
         "iframe_src": "/proxy/node/%s/control/edit?embed=1&code=%s" % (node_code, code),
         "redirect_url": "/control/index?node_code=%s" % node_code,
     }
@@ -159,7 +160,7 @@ def edit(request):
 
 def api_openEdit(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -203,7 +204,7 @@ def api_openEdit(request):
 
 def api_openDel(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -249,7 +250,7 @@ def api_openDel(request):
 
 def api_openCopy(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -295,7 +296,7 @@ def api_openCopy(request):
 def api_openSettings(request):
     # 快捷设置
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -339,7 +340,7 @@ def api_openSettings(request):
 
 def api_openLog(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = []
     if request.method == 'GET':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -389,7 +390,7 @@ def api_openLog(request):
 
 def api_openIndex(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = []
     pageData = {}
 
@@ -468,7 +469,7 @@ def api_openIndex(request):
     return f_responseJson(res)
 def api_openHandleAllControl(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -514,7 +515,7 @@ def api_openHandleAllControl(request):
 def api_openStartControl(request):
     # 开始执行布控
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -562,7 +563,7 @@ def api_openStartControl(request):
 def api_openStopControl(request):
     # 停止执行布控
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)

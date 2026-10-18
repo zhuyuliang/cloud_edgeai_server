@@ -135,7 +135,7 @@
 <div class="dash-panel">
             <div class="dash-panel-head">
               <h3>
-                <i class="fa fa-history"></i> 计数历史记录
+                <i class="fa fa-history"></i> {% trans "计数历史记录" %}
                 {% if error %}
                   <span class="ctrl-state-info" style="margin-left:10px;font-size:12px;">{{ error }}</span>
                 {% endif %}
@@ -146,28 +146,28 @@
             <div class="history-header">
               <div class="info-group">
                 <div class="info-item">
-                  <span class="info-label">节点:</span>
+                  <span class="info-label">{% trans "节点" %}:</span>
                   <span class="info-value">{{ node_nickname }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="info-label">布控代码:</span>
+                  <span class="info-label">{% trans "布控代码" %}:</span>
                   <code class="info-value">{{ control_code }}</code>
                 </div>
                 <div class="info-item">
-                  <span class="info-label">任务名称:</span>
+                  <span class="info-label">{% trans "任务名称" %}:</span>
                   <span class="info-value">{{ task_name|default:'-' }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="info-label">历史记录:</span>
-                  <span class="info-value" style="color:#2a80eb;" id="record_count">- 条</span>
+                  <span class="info-label">{% trans "历史记录" %}:</span>
+                  <span class="info-value" style="color:#2a80eb;" id="record_count">- {% trans "条" %}</span>
                 </div>
               </div>
               <div class="btn-group">
                 <button onclick="f_export()" class="ctrl-btn ctrl-btn-primary">
-                  <i class="fa fa-download"></i> 导出Excel
+                  <i class="fa fa-download"></i> {% trans "导出Excel" %}
                 </button>
                 <button onclick="f_goBack()" class="ctrl-btn ctrl-btn-secondary">
-                  <i class="fa fa-arrow-left"></i> 返回
+                  <i class="fa fa-arrow-left"></i> {% trans "返回" %}
                 </button>
               </div>
             </div>
@@ -181,20 +181,20 @@
                     <thead>
                       <tr>
                         <th class="col-id">ID</th>
-                        <th class="col-snap">快照</th>
-                        <th class="col-task">任务名称</th>
-                        <th class="col-count"><i class="fa fa-sign-in"></i> 进入</th>
-                        <th class="col-count"><i class="fa fa-sign-out"></i> 离开</th>
-                        <th class="col-count"><i class="fa fa-calculator"></i> 总计</th>
-                        <th class="col-strategy">清零策略</th>
-                        <th class="col-time">周期开始</th>
-                        <th class="col-time">周期结束</th>
-                        <th class="col-state">状态</th>
-                        <th class="col-actions">操作</th>
+                        <th class="col-snap">{% trans "快照" %}</th>
+                        <th class="col-task">{% trans "任务名称" %}</th>
+                        <th class="col-count"><i class="fa fa-sign-in"></i> {% trans "进入" %}</th>
+                        <th class="col-count"><i class="fa fa-sign-out"></i> {% trans "离开" %}</th>
+                        <th class="col-count"><i class="fa fa-calculator"></i> {% trans "总计" %}</th>
+                        <th class="col-strategy">{% trans "清零策略" %}</th>
+                        <th class="col-time">{% trans "周期开始" %}</th>
+                        <th class="col-time">{% trans "周期结束" %}</th>
+                        <th class="col-state">{% trans "状态" %}</th>
+                        <th class="col-actions">{% trans "操作" %}</th>
                       </tr>
                     </thead>
                     <tbody id="data">
-                      <tr class="empty-row"><td colspan="11">加载中...</td></tr>
+                      <tr class="empty-row"><td colspan="11">{% trans "加载中" %}...</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -211,7 +211,7 @@
 <div id="media-modal-mask" class="eai-modal">
   <div id="media-modal-content" class="eai-modal-content">
     <div id="media-modal-header" class="eai-modal-header" style="margin-bottom:0;padding:0 24px;">
-      <span id="media-modal-title" class="eai-modal-title">快照详情</span>
+      <span id="media-modal-title" class="eai-modal-title">{% trans "快照详情" %}</span>
       <span id="media-modal-close" class="eai-modal-close">&times;</span>
     </div>
     <div id="media-modal-inner"></div>
@@ -226,7 +226,7 @@
     const NODE_CODE = '{{ node_code }}';
     const CONTROL_CODE = '{{ control_code }}';
     const TASK_NAME = '{{ task_name }}';
-    const RESET_STRATEGY_NAMES = {manual: '手动清零', hourly: '每小时清零', daily: '每日清零', weekly: '每周清零', monthly: '每月清零'};
+    const RESET_STRATEGY_NAMES = {manual: '{% trans "手动清零" %}', hourly: '{% trans "每小时清零" %}', daily: '{% trans "每日清零" %}', weekly: '{% trans "每周清零" %}', monthly: '{% trans "每月清零" %}'};
     let HISTORY_DATA = [];
     let trendChart = null;
 
@@ -242,11 +242,11 @@
         type: "get",
         data: { node_code: NODE_CODE, control_code: CONTROL_CODE, task_name: TASK_NAME },
         dataType: "json",
-        error: function () { myAlert("网络异常！", "error"); },
+        error: function () { myAlert("{% trans "网络异常！" %}", "error"); },
         success: function (res) {
           if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
           HISTORY_DATA = res.data || [];
-          $("#record_count").text(HISTORY_DATA.length + " 条");
+          $("#record_count").text(HISTORY_DATA.length + " {% trans "条" %}");
           f_renderTable();
           f_renderChart();
         }
@@ -256,7 +256,7 @@
     function f_renderTable() {
       let tbody = $("#data");
       if (!HISTORY_DATA.length) {
-        tbody.html("<tr class='empty-row'><td colspan='11'>该布控暂无历史记录</td></tr>");
+        tbody.html("<tr class='empty-row'><td colspan='11'>{% trans "该布控暂无历史记录" %}</td></tr>");
         return;
       }
       let html = "";
@@ -266,8 +266,8 @@
         html += `<td class="col-id"><small style="color:#999;">${idText}</small></td>`;
         html += `<td class="col-snap">`;
         if (d.snap_url) {
-          html += `<span class="snap-cell"><span class="snap-type-label">图片</span>`;
-          html += `<img src="${d.snap_url}" alt="快照" class="alarm-media" title="点击查看大图" data-url="${d.snap_url}" onerror="this.parentElement.style.opacity=0.3;" /></span>`;
+          html += `<span class="snap-cell"><span class="snap-type-label">{% trans "图片" %}</span>`;
+          html += `<img src="${d.snap_url}" alt="{% trans "快照" %}" class="alarm-media" title="{% trans "点击查看大图" %}" data-url="${d.snap_url}" onerror="this.parentElement.style.opacity=0.3;" /></span>`;
         } else {
           html += `<div style="width:80px;height:60px;background:#f5f7fa;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;"><i class="fa fa-image" style="font-size:22px;color:#ccc;"></i></div>`;
         }
@@ -280,11 +280,11 @@
         html += `<td class="col-time"><small style="color:#666;">${d.period_start || '-'}</small></td>`;
         html += `<td class="col-time"><small style="color:#666;">${d.period_end || '-'}</small></td>`;
         if (d.running) {
-          html += `<td class="col-state"><span class="ctrl-state-on">进行中</span></td>`;
-          html += `<td class="col-actions"><button class="ctrl-action" disabled title="进行中周期不可删除">删除</button></td>`;
+          html += `<td class="col-state"><span class="ctrl-state-on">{% trans "进行中" %}</span></td>`;
+          html += `<td class="col-actions"><button class="ctrl-action" disabled title="{% trans "进行中周期不可删除" %}">{% trans "删除" %}</button></td>`;
         } else {
-          html += `<td class="col-state"><span class="ctrl-state-muted">已归档</span></td>`;
-          html += `<td class="col-actions"><button class="ctrl-action ctrl-action-danger" onclick='f_delete(${JSON.stringify(d.id)})' title="删除此记录"><i class="fa fa-trash"></i> 删除</button></td>`;
+          html += `<td class="col-state"><span class="ctrl-state-muted">{% trans "已归档" %}</span></td>`;
+          html += `<td class="col-actions"><button class="ctrl-action ctrl-action-danger" onclick='f_delete(${JSON.stringify(d.id)})' title="{% trans "删除此记录" %}"><i class="fa fa-trash"></i> {% trans "删除" %}</button></td>`;
         }
         html += `</tr>`;
       }
@@ -309,14 +309,14 @@
       let times = rawData.map(d => d.time);
       let option = {
         title: {
-          text: '计数趋势图（按清零周期）',
-          subtext: '布控代码: ' + CONTROL_CODE,
+          text: '{% trans "计数趋势图（按清零周期）" %}',
+          subtext: '{% trans "布控代码" %}: ' + CONTROL_CODE,
           left: 'center',
           textStyle: { fontSize: 16, color: '#333' },
           subtextStyle: { fontSize: 12, color: '#999' }
         },
         tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
-        legend: { data: ['进入', '离开', '总计'], bottom: 0, textStyle: { fontSize: 13 } },
+        legend: { data: ['{% trans "进入" %}', '{% trans "离开" %}', '{% trans "总计" %}'], bottom: 0, textStyle: { fontSize: 13 } },
         grid: { left: '3%', right: '4%', bottom: '12%', top: '18%', containLabel: true },
         xAxis: {
           type: 'category',
@@ -331,10 +331,10 @@
             }
           }
         },
-        yAxis: { type: 'value', name: '数量', minInterval: 1, axisLabel: { fontSize: 12 } },
+        yAxis: { type: 'value', name: '{% trans "数量" %}', minInterval: 1, axisLabel: { fontSize: 12 } },
         series: [
           {
-            name: '进入', type: 'line', data: rawData.map(d => d.enter),
+            name: '{% trans "进入" %}', type: 'line', data: rawData.map(d => d.enter),
             smooth: true, symbol: 'circle', symbolSize: 6,
             lineStyle: { color: '#52c41a', width: 2 }, itemStyle: { color: '#52c41a' },
             areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -342,7 +342,7 @@
               { offset: 1, color: 'rgba(82,196,26,0.01)' }]) }
           },
           {
-            name: '离开', type: 'line', data: rawData.map(d => d.leave),
+            name: '{% trans "离开" %}', type: 'line', data: rawData.map(d => d.leave),
             smooth: true, symbol: 'circle', symbolSize: 6,
             lineStyle: { color: '#faad14', width: 2 }, itemStyle: { color: '#faad14' },
             areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -350,7 +350,7 @@
               { offset: 1, color: 'rgba(250,173,20,0.01)' }]) }
           },
           {
-            name: '总计', type: 'line', data: rawData.map(d => d.total),
+            name: '{% trans "总计" %}', type: 'line', data: rawData.map(d => d.total),
             smooth: true, symbol: 'diamond', symbolSize: 8,
             lineStyle: { color: '#2a80eb', width: 2.5 }, itemStyle: { color: '#2a80eb' },
             areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -364,11 +364,11 @@
     }
 
     function f_delete(recordId) {
-      if (!confirm('确定要删除这条历史记录吗？此操作不可恢复（仅删除云端记录）。')) return;
+      if (!confirm('{% trans "确定要删除这条历史记录吗？此操作不可恢复（仅删除云端记录）。" %}')) return;
       $.post("/alarm/openDeleteStatisticHistory", { record_id: recordId }, function (res) {
         if (1000 === res.code) { myAlert(res.msg, "success"); f_query(); }
         else myAlert(res.msg, "error");
-      }, "json").fail(function () { myAlert("网络异常！", "error"); });
+      }, "json").fail(function () { myAlert("{% trans "网络异常！" %}", "error"); });
     }
 
     function f_export() {
@@ -384,8 +384,8 @@
             // 接口返回的是 JSON 错误信息
             let fr = new FileReader();
             fr.onload = function () {
-              try { let r = JSON.parse(fr.result); myAlert(r.msg || "导出失败", "error"); }
-              catch (e) { myAlert("导出失败", "error"); }
+              try { let r = JSON.parse(fr.result); myAlert(r.msg || "{% trans "导出失败" %}", "error"); }
+              catch (e) { myAlert("{% trans "导出失败" %}", "error"); }
             };
             fr.readAsText(blob);
             return;
@@ -398,9 +398,9 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          myAlert("导出成功", "success");
+          myAlert("{% trans "导出成功" %}", "success");
         },
-        error: function () { myAlert("网络异常！", "error"); }
+        error: function () { myAlert("{% trans "网络异常！" %}", "error"); }
       });
     }
 

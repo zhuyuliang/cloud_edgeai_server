@@ -1,12 +1,13 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
   <link rel="shortcut icon" href="/static/images/favicon.ico?1002">
-  <title>{{ settings.name }} | 大屏管理</title>
+  <title>{{ settings.name }} | {% trans "大屏管理" %}</title>
     <!-- Font Awesome -->
     <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- fancybox -->
@@ -640,15 +641,15 @@
   <div class="xc_container">
     <!-- 左侧侧边栏 -->
     <div class="xc_sidebar">
-      <div class="xc_sidebar-title">最近7日告警趋势</div>
+      <div class="xc_sidebar-title">{% trans "最近7日告警趋势" %}</div>
       <div class="xc_chart-box">
             <div id="left_alarm_chart" style="width: 100%;height:180px"></div>
       </div>
 
-      <div class="xc_sidebar-title">最近7日告警类型排行</div>
+      <div class="xc_sidebar-title">{% trans "最近7日告警类型排行" %}</div>
       <div class="xc_rank-box" id="left_alarm_rank">
             <div class="xc_rank-item">
-                <span>加载中</span>
+                <span>{% trans "加载中" %}</span>
             </div>
             <div class="xc_progress-bar">
                 <div class="xc_progress-fill" style="width: 1%;"></div>
@@ -664,7 +665,7 @@
            -->
       </div>
 
-      <div class="xc_sidebar-title">接入视频</div>
+      <div class="xc_sidebar-title">{% trans "接入视频" %}</div>
       <div class="xc_status-box">
         <div class="xc_status-icon">
              <svg viewBox="0 0 24 24" width="24" height="24" fill="#5aa2f1">
@@ -678,7 +679,7 @@
         </div>
         <div class="xc_status-info">
           <div class="xc_num" id="stream_count">0/0</div>
-          <div class="xc_label">在线数量/总数量</div>
+          <div class="xc_label">{% trans "在线数量/总数量" %}</div>
         </div>
       </div>
     </div>
@@ -689,7 +690,7 @@
 
         <div class="xc_top-bar-left">
            <select id="select_stream" class="xc_stream-select">
-                <option value="0">请选择视频流</option>
+                <option value="0">{% trans "请选择视频流" %}</option>
                 {% for gitem in group_streams %}
                   <optgroup label="{{ gitem.group_name_ch }}">
                      {% for stream in gitem.streams %}
@@ -717,17 +718,17 @@
             </select>
 
           <div class="xc_control-buttons">
-                 <div class="xc_control-button" onclick="f_clickPlayStart()"><i class="fa fa-play-circle-o" title="开始播放"></i></div>
-                 <div class="xc_control-button" onclick="f_clickPlayStop()"><i class="fa fa-stop" title="停止播放"></i></div>
-              <div class="xc_control-button" onclick="f_createGridVideoContainer(1)" title="1分屏">1</div>
-              <div class="xc_control-button" onclick="f_createGridVideoContainer(4)" title="4分屏">4</div>
-              <div class="xc_control-button" onclick="f_createGridVideoContainer(9)" title="9分屏">9</div>
-              <div class="xc_control-button" onclick="f_createGridVideoContainer(16)" title="16分屏">16</div>
-               <div class="xc_control-button" onclick="f_updateDashboardData()"><i class="fa fa-save" title="保存配置"></i></div>
-                <div class="xc_control-button" onclick="f_clickFullScreen()"><i class="fa fa-retweet"  title="全屏播放"></i></div>
-                <div class="xc_control-button" ><div id="handle_audio_player"><i class="fa fa-bell-o" title="关闭声音" ></i></div></div>
+                 <div class="xc_control-button" onclick="f_clickPlayStart()"><i class="fa fa-play-circle-o" title="{% trans '开始播放' %}"></i></div>
+                 <div class="xc_control-button" onclick="f_clickPlayStop()"><i class="fa fa-stop" title="{% trans '停止播放' %}"></i></div>
+              <div class="xc_control-button" onclick="f_createGridVideoContainer(1)" title="{% trans '1分屏' %}">1</div>
+              <div class="xc_control-button" onclick="f_createGridVideoContainer(4)" title="{% trans '4分屏' %}">4</div>
+              <div class="xc_control-button" onclick="f_createGridVideoContainer(9)" title="{% trans '9分屏' %}">9</div>
+              <div class="xc_control-button" onclick="f_createGridVideoContainer(16)" title="{% trans '16分屏' %}">16</div>
+               <div class="xc_control-button" onclick="f_updateDashboardData()"><i class="fa fa-save" title="{% trans '保存配置' %}"></i></div>
+                <div class="xc_control-button" onclick="f_clickFullScreen()"><i class="fa fa-retweet"  title="{% trans '全屏播放' %}"></i></div>
+                <div class="xc_control-button" ><div id="handle_audio_player"><i class="fa fa-bell-o" title="{% trans '关闭声音' %}" ></i></div></div>
                 <div><audio id="audio_player"  controls style="display: none;" >
-                浏览器不支持音频播放
+                {% trans "浏览器不支持音频播放" %}
                 </audio></div>
               <!--
                 <div class="xc_control-button">□</div>
@@ -760,24 +761,24 @@
 
       <div class="xc_bottom-stat">
         <div class="xc_bottom-stat-item">
-          <div class="xc_label">今日告警总数</div>
+          <div class="xc_label">{% trans "今日告警总数" %}</div>
           <div>
             <span class="xc_num" id="today_alarm_total_count">0</span>
-            <span class="xc_unit">条</span>
+            <span class="xc_unit">{% trans "条" %}</span>
           </div>
         </div>
         <div class="xc_bottom-stat-item">
-          <div class="xc_label">今日已处理</div>
+          <div class="xc_label">{% trans "今日已处理" %}</div>
           <div>
             <span class="xc_num" id="today_alarm_handle_count">0</span>
-            <span class="xc_unit">条</span>
+            <span class="xc_unit">{% trans "条" %}</span>
           </div>
         </div>
         <div class="xc_bottom-stat-item">
-          <div class="xc_label">今日未处理</div>
+          <div class="xc_label">{% trans "今日未处理" %}</div>
           <div>
            <span class="xc_num" id="today_alarm_unhandle_count">0</span>
-            <span class="xc_unit">条</span>
+            <span class="xc_unit">{% trans "条" %}</span>
           </div>
         </div>
       </div>
@@ -785,10 +786,10 @@
 
     <!-- 右侧侧边栏 -->
     <div class="xc_rightbar">
-      <div class="xc_sidebar-title">最新告警</div>
+      <div class="xc_sidebar-title">{% trans "最新告警" %}</div>
         <div id="right_alarm_data">
             <div class="xc_alarm-item">
-                <span>加载中</span>
+                <span>{% trans "加载中" %}</span>
             </div>
           <!--
             <div class="xc_alarm-item">
@@ -818,7 +819,7 @@
     <div id="bxc_dialog">
         <div class="dialog_title">
             <span class="dialog_alarm_count"></span>
-            <button class="close" onclick="f_close_newAlarmDialog()">关闭</button>
+            <button class="close" onclick="f_close_newAlarmDialog()">{% trans "关闭" %}</button>
         </div>
         <div class="dialog_content">
             <div class="content_top">
@@ -885,7 +886,7 @@
 
     eleHandleAudioPlayer.click(function () {
         if(mAudioPlayerIsOpen){//当前开启，点击则关闭
-            $(this).html("<i class=\"fa fa-bell-slash-o\" title='开启声音'></i>");
+            $(this).html("<i class=\"fa fa-bell-slash-o\" title='{% trans "开启声音" %}'></i>");
             mAudioPlayerIsOpen = false;
             try {
                 if(!eleAudioPlayer.paused){
@@ -896,7 +897,7 @@
             }
         }else{//当前关闭中，点击则开启
             mAudioPlayerIsOpen = true;
-            $(this).html("<i class=\"fa fa-bell-o\" title='关闭声音'></i>");
+            $(this).html("<i class=\"fa fa-bell-o\" title='{% trans "关闭声音" %}'></i>");
         }
     })
 
@@ -927,7 +928,7 @@
             videoBufferDelay: Number(3), // 1000s 达到延迟重播(s)
             decoder: '/static/lib/easyPlayer/js/decoder-pro.js',
             isResize: true,
-            loadingText: "加载中",
+            loadingText: "{% trans "加载中" %}",
             debug: false,
             debugLevel: "debug",
             useMSE: true,
@@ -950,7 +951,7 @@
             },
             background: "/static/images/player_poster.jpg",
             timeout: 10,
-            qualityConfig: ['普清', '高清', '超清'],
+            qualityConfig: ['{% trans "普清" %}', '{% trans "高清" %}', '{% trans "超清" %}'],
             forceNoOffscreen: true,
             isNotMute: false,
             heartTimeout: Number(7),//超出时间无数据重连(s)
@@ -1075,15 +1076,15 @@
     function f_clickPlayStart() {
         console.log("f_clickPlayStart()",mSelectedGridVideoCount,mSelectedGridItemClass,mSelectedVideoId,mSelectedVideoPlayerMap)
         if(mSelectedVideoId===null){
-            myAlert("请选中一个窗口！","error");
+            myAlert("{% trans "请选中一个窗口！" %}","error");
             return false;
         }
         streamCode = eleSelectStream.val().trim();//typeof string
         if(streamCode==="-1"){
-            myAlert("暂无视频流","error");
+            myAlert("{% trans "暂无视频流" %}","error");
             return false;
         }else if(streamCode==="0"){
-            myAlert("请选择视频流","error");
+            myAlert("{% trans "请选择视频流" %}","error");
             return false;
         }
         let stream = streamCodeDict[streamCode];
@@ -1096,7 +1097,7 @@
 
         let video_url = stream["wsMp4Url"];
         if(typeof video_url === "undefined" || !video_url.startsWith("ws://") || !video_url.endsWith(".mp4")){
-            myAlert("视频流地址格式不正确！","error");
+            myAlert("{% trans "视频流地址格式不正确！" %}","error");
             return false;
         }
         f_playStart(mSelectedVideoId,video_url);
@@ -1169,7 +1170,7 @@
                     enabled: false //隐藏底部类别名称
             },
             series: [{
-                name: '报警数量',
+                name: '{% trans "报警数量" %}',
                 data: data
             }]
         });
@@ -1204,7 +1205,7 @@
         }else{
 
             html+="<div class=\"xc_rank-item\">";
-              html+="<span>暂无数据</span>";
+              html+="<span>{% trans "暂无数据" %}</span>";
               html+="<span>0</span>";
             html+="</div>";
             html+="<div class=\"xc_progress-bar\">";
@@ -1223,13 +1224,13 @@
                    let state = d["state"];
                    let state_str;
                     if(state===0) {//未读
-                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#5aa2f1;margin:0 3px;\">未处理</span>";
+                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#5aa2f1;margin:0 3px;\">{% trans "未处理" %}</span>";
                     }else if(state===1){//已读-正常报警
-                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#ff7875;margin:0 3px;\">报警</span>";
+                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#ff7875;margin:0 3px;\">{% trans "报警" %}</span>";
                     }else if(state===2){//已读-误报
-                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#ffc53d;margin:0 3px;\">误报</span>";
+                        state_str = "<span style=\"border-radius: 3px;font-size:11px;padding:2px 4px;color:#ffc53d;margin:0 3px;\">{% trans "误报" %}</span>";
                     }else{
-                        state_str = "<span>未知</span>";
+                        state_str = "<span>{% trans "未知" %}</span>";
                     }
 
                  html += "<div class=\"xc_alarm-item\">";
@@ -1237,19 +1238,19 @@
                  html += "<img src=\""+d["imageUrl"]+"\" alt=\"alarm\" style=\"width: 100%; height: 100%; object-fit: cover;\">";
                  html += "</div>";
                  html += "<div class=\"xc_alarm-info\">";
-                 html += "<span>视频："+d["stream_nickname"]+"</span>";
-                 html += "<span>类型："+d["flow_name"]+"</span>";
-                 html += "<span>时间："+d["create_time_str"]+"</span>";
+                 html += "<span>{% trans "视频" %}："+d["stream_nickname"]+"</span>";
+                 html += "<span>{% trans "类型" %}："+d["flow_name"]+"</span>";
+                 html += "<span>{% trans "时间" %}："+d["create_time_str"]+"</span>";
                  html += "</div>";
                  html += "<div class=\"xc_alarm-status\">";
                  html += "<div>"+state_str+"</div>";
-                 html += "<div class=\"xc_action-button\" onclick='f_open_alarm_edit(\""+d["code"]+"\")'>查看详情</div>";
+                 html += "<div class=\"xc_action-button\" onclick='f_open_alarm_edit(\""+d["code"]+"\")'>{% trans "查看详情" %}</div>";
                  html += "</div>";
                  html += "</div>";
              }
         }else{
             html +="<div class=\"xc_alarm-item\">";
-                html +="<span>暂无数据</span>";
+                html +="<span>{% trans "暂无数据" %}</span>";
             html +="</div>";
         }
 
@@ -1295,7 +1296,7 @@
            dataType: "json",
            timeout: 0,
            error: function () {
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                if(res.code === 1000){
@@ -1320,7 +1321,7 @@
            dataType: "json",
            timeout: 0,
            error: function () {
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                if(res.code === 1000){
@@ -1373,7 +1374,7 @@
            dataType: "json",
            timeout: 0,
            error: function () {
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                if(res.code === 1000){
@@ -1453,11 +1454,11 @@
                     for (let i = 0; i < show_len; i++) {
                         content_list+="<div class=\"content_item\"><img src=\""+imageUrlArray[i]+"\"></div>";
                     }
-                    content_list+="<div class=\"content_item\"><span style='margin-left:1px;'>共"+mCurAlarmImageCount+"张</span></div>"
+                    content_list+="<div class=\"content_item\"><span style='margin-left:1px;'>{% trans "共" %}"+mCurAlarmImageCount+"{% trans "张" %}</span></div>"
 
-                    eleDialogAlarmCount.html("发现"+mCurAlarmCount+"条新的报警");
+                    eleDialogAlarmCount.html("{% trans "发现" %}"+mCurAlarmCount+"{% trans "条新的报警" %}");
                     eleDialogAlarmTime.html(alarm["create_time_str"]);
-                    eleDialogAlarmLink.html("<a href='javascript:f_open_alarm_edit(\""+alarm["code"]+"\")'>查看报警详情</a>");
+                    eleDialogAlarmLink.html("<a href='javascript:f_open_alarm_edit(\""+alarm["code"]+"\")'>{% trans "查看报警详情" %}</a>");
                     eleDialogAlarmContentList.html(content_list);
                     //弹窗显示报警数据end
 

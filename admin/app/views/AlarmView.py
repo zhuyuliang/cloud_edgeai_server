@@ -11,6 +11,7 @@ from app.models import *
 from app.utils.TarUtils import TarUtils
 from app.utils.AlarmUtils import AlarmUtils
 from app.utils.Utils import gen_random_code_s
+from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from app.utils.Utils import buildPageLabels
 from app.utils.OSSystem import OSSystem
@@ -151,9 +152,9 @@ def f_getAlarmInfoByCode(alarm_code):
 # ─────────────────── P3: 告警页面（镜像边缘 alarms/* 分类） ───────────────────
 # alarm_category: 0事件 1车牌 2人脸 3计数；state: 0未读 1未处理 2已处理 3误报
 
-ALARM_CATEGORY_NAMES = {0: "事件告警", 1: "车牌告警", 2: "人脸告警", 3: "计数告警"}
-ALARM_STATE_NAMES = {0: "未读", 1: "未处理", 2: "已处理", 3: "误报"}
-ALARM_RISK_NAMES = {0: "低风险", 1: "中风险", 2: "高风险"}
+ALARM_CATEGORY_NAMES = {0: _("事件告警"), 1: _("车牌告警"), 2: _("人脸告警"), 3: _("计数告警")}
+ALARM_STATE_NAMES = {0: _("未读"), 1: _("未处理"), 2: _("已处理"), 3: _("误报")}
+ALARM_RISK_NAMES = {0: _("低风险"), 1: _("中风险"), 2: _("高风险")}
 
 def _alarmListContext(request, alarm_category, page_title):
     """告警分类列表页共用 context（event/carplate/face/history 复用）。"""
@@ -183,7 +184,7 @@ def page_count(request):
     """计数告警页：数据来自 eai_node_statistic_alarm。"""
     context = {
         "settings": f_settingsReadData(),
-        "page_title": "计数告警",
+        "page_title": _("计数告警"),
         "nodes": NodeModel.objects.all().order_by("sort").values("code", "nickname"),
     }
     return render(request, 'app/alarm/count.html', context)
@@ -198,7 +199,7 @@ def _statisticHistoryQuery(request):
     control_code = str(params.get("control_code", "")).strip()
     task_name = str(params.get("task_name", "")).strip()
     if not node_code or not control_code:
-        return False, "缺少节点或布控参数", []
+        return False, _("缺少节点或布控参数"), []
 
     qs = NodeStatisticHistoryModel.objects.filter(
         node_code=node_code, control_code=control_code)
@@ -265,19 +266,19 @@ def page_countHistory(request):
 
     context = {
         "settings": f_settingsReadData(),
-        "page_title": "计数历史",
+        "page_title": _("计数历史"),
         "node_code": node_code,
         "control_code": control_code,
         "task_name": task_name,
         "node_nickname": node_nickname,
-        "error": "" if (node_code and control_code) else "缺少节点或布控参数",
+        "error": "" if (node_code and control_code) else _("缺少节点或布控参数"),
     }
     return render(request, 'app/alarm/count_history.html', context)
 
 def api_openStatisticHistory(request):
     """计数历史列表（归档周期+进行中周期）。"""
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = []
     if request.method == 'GET':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -297,25 +298,25 @@ def api_openStatisticHistory(request):
 def api_openDeleteStatisticHistory(request):
     """删除单条计数历史（仅云端记录，id 形如 live_x 的进行中周期不可删）。"""
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
             params = f_parsePostParams(request)
             record_id = str(params.get("record_id", "")).strip()
             if not record_id or record_id.startswith("live_"):
-                msg = "无效的记录ID（进行中周期不可删除）"
+                msg = _("无效的记录ID（进行中周期不可删除）")
             else:
                 try:
                     obj = NodeStatisticHistoryModel.objects.filter(id=int(record_id)).first()
                     if obj is None:
-                        msg = "记录不存在"
+                        msg = _("记录不存在")
                     else:
                         obj.delete()
                         ret = True
-                        msg = "删除成功"
+                        msg = _("删除成功")
                 except Exception as e:
-                    msg = "删除失败: %s" % str(e)
+                    msg = _("删除失败") + ": %s" % str(e)
                     g_logger.error("AlarmView.openDeleteStatisticHistory() error:%s" % str(e))
         else:
             msg = __check_msg
@@ -337,7 +338,7 @@ def api_openExportStatisticHistory(request):
     if not ret:
         return f_responseJson({"code": 0, "msg": msg})
     if not rows:
-        return f_responseJson({"code": 0, "msg": "该布控暂无历史数据"})
+        return f_responseJson({"code": 0, "msg": _("该布控暂无历史数据")})
 
     node_nickname = ""
     if rows:
@@ -397,12 +398,12 @@ def api_openExportStatisticHistory(request):
         return f_responseJson({"code": 0, "msg": "缺少openpyxl库，请安装: pip install openpyxl"})
     except Exception as e:
         g_logger.error("AlarmView.openExportStatisticHistory() error:%s" % str(e))
-        return f_responseJson({"code": 0, "msg": "导出失败: %s" % str(e)})
+        return f_responseJson({"code": 0, "msg": _("导出失败") + ": %s" % str(e)})
 
 def api_openStatisticIndex(request):
     """计数告警列表（eai_node_statistic_alarm 全量，前端本地搜索）。"""
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = []
 
     __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -448,7 +449,7 @@ def api_openResetCount(request):
     边缘清零成功后云端同步清零 eai_node_statistic_alarm。
     """
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -486,7 +487,7 @@ def api_openResetCount(request):
                             ret = True
                             msg = "success"
                         else:
-                            msg = res_result.get("msg") or "边缘清零失败"
+                            msg = res_result.get("msg") or _("边缘清零失败")
                     else:
                         raise Exception("status=%d" % res.status_code)
                 except Exception as e:
@@ -506,7 +507,7 @@ def api_openResetCount(request):
     return f_responseJson(res)
 def api_openIndex(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     top_msg = ""
     data = []
@@ -660,9 +661,9 @@ def api_openIndex(request):
             "pageLabels": pageLabels
         }
         if count > 0:
-            top_msg = "总计%d条，未处理%d条" % (count,unread_count)
+            top_msg = _("总计%d条，未处理%d条") % (count, unread_count)
         else:
-            top_msg = "暂无数据"
+            top_msg = _("暂无数据")
 
         ret = True
         msg = "success"
@@ -681,7 +682,7 @@ def api_openIndex(request):
 # description: 获取报警信息
 def api_openInfo(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {}
     if request.method == 'GET':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -713,7 +714,7 @@ def api_openInfo(request):
 
 def api_openHandle(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -731,7 +732,7 @@ def api_openHandle(request):
                     msg = "success"
                     ret = True
                 else:
-                    msg = "暂无待删除数据"
+                    msg = _("暂无待删除数据")
             elif handle == "clearCache":
                 # 清理报警缓存
                 ret, msg = AlarmUtils(g_logger, g_database, g_config.storageDir).clearAlarm()
@@ -751,10 +752,10 @@ def api_openHandle(request):
                         else:
                             error_count += 1
 
-                    msg = "成功%d条，失败%d条" % (success_count, error_count)
+                    msg = _("成功%d条，失败%d条") % (success_count, error_count)
                     ret = True
                 else:
-                    msg = "请至少选择一条数据"
+                    msg = _("请至少选择一条数据")
             else:
                 # 处理告警：state 2已处理 / 3误报（新语义，仅本地改库不回传节点）
                 try:
@@ -777,12 +778,12 @@ def api_openHandle(request):
                                 success_count += 1
                             else:
                                 error_count += 1
-                        msg = "成功%d条，失败%d条" % (success_count, error_count)
+                        msg = _("成功%d条，失败%d条") % (success_count, error_count)
                         ret = True
                     else:
-                        msg = "请至少选择一条数据"
+                        msg = _("请至少选择一条数据")
                 else:
-                    msg = "不支持的操作类型"
+                    msg = _("不支持的操作类型")
         else:
             msg = __check_msg
     else:
@@ -797,7 +798,7 @@ def api_openHandle(request):
 def api_openExport(request):
     """告警导出 CSV（按当前筛选条件：分类/节点/状态/日期，与 openIndex 一致）。"""
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {}
 
     if request.method == 'POST':
@@ -852,19 +853,19 @@ def api_openExport(request):
             import io
             output = io.StringIO()
             writer = csv.writer(output)
-            writer.writerow(["告警编号", "事件ID", "所属节点", "告警分类", "算法任务", "布控编号",
-                             "告警描述", "风险等级", "状态", "处理信息", "车牌号", "告警时间"])
+            writer.writerow([_("告警编号"), _("事件ID"), _("所属节点"), _("告警分类"), _("算法任务"), _("布控编号"),
+                             _("告警描述"), _("风险等级"), _("状态"), _("处理信息"), _("车牌号"), _("告警时间")])
             for d in rows:
                 writer.writerow([
                     d.get("code", ""),
                     d.get("event_id", ""),
                     "%s(%s)" % (node_nickname_map.get(d.get("node_code", ""), d.get("node_code", "")), d.get("node_code", "")),
-                    ALARM_CATEGORY_NAMES.get(d.get("alarm_category", 0), "事件告警"),
+                    ALARM_CATEGORY_NAMES.get(d.get("alarm_category", 0), _("事件告警")),
                     d.get("task_name", "") or d.get("flow_name", ""),
                     d.get("control_code", ""),
                     d.get("desc", ""),
-                    ALARM_RISK_NAMES.get(d.get("risk_level", 0), "低风险"),
-                    ALARM_STATE_NAMES.get(d.get("state", 0), "未读"),
+                    ALARM_RISK_NAMES.get(d.get("risk_level", 0), _("低风险")),
+                    ALARM_STATE_NAMES.get(d.get("state", 0), _("未读")),
                     d.get("deal_info", "") or "",
                     d.get("main_plate_no", "") or "",
                     d.get("create_time", "") or "",
@@ -932,7 +933,7 @@ def api_openUploadFile(request):
     存储到 storage/alarm_upload/{yyyyMMdd}/，返回可访问 URL（/storage/access?filename=...）。
     """
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     url = ""
 
     if request.method == 'POST':
@@ -987,7 +988,7 @@ def api_openPush(request):
     msg_type: alarm（告警）/ statistic（计数统计）/ statistic_reset（清零通知）
     """
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         payload, raw_body = f_parsePushJsonBody(request)

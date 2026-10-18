@@ -1,6 +1,7 @@
+{% load i18n %}
 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
     <div style="display: flex; align-items: center; gap: 24px;">
-        <a href="#" style="font-size: 13px; color: #5f6368; text-decoration: none;">帮助</a>
+        <a href="#" style="font-size: 13px; color: #5f6368; text-decoration: none;">{% trans "帮助" %}</a>
     </div>
     <div style="font-size: 12px; color: #80868b;">
         {{ settings.bottom_name }}{% if settings.is_show_author == 1 %} by <a target="_blank" href="{{ settings.author_link }}" style="color: #5f6368; text-decoration: none;">{{ settings.author }}</a>{% endif %}

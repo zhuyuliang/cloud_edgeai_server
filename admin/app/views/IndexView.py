@@ -4,6 +4,7 @@ from app.utils.Settings import UserSettings
 from app.utils.Utils import gen_dateArray
 from django.shortcuts import render
 from app.utils.OSSystem import OSSystem
+from django.utils.translation import gettext as _
 
 
 def index(request):
@@ -111,7 +112,7 @@ def dashboard(request):
 
 def api_updateDashboardData(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         params = f_parsePostParams(request)
@@ -123,13 +124,13 @@ def api_updateDashboardData(request):
             if gridVideoCount > 0 and gridVideoCount == len(gridVideoUrlArray):
                 pass
             else:
-                raise Exception("请求参数不正确")
+                raise Exception(_("请求参数不正确"))
 
             user_settings = UserSettings(logger=g_logger)
             user_settings.add(user_id=f_sessionReadUserId(request),handle="dashboard",content=gridVideoUrls)
 
             ret = True
-            msg = "保存成功"
+            msg = _("保存成功")
 
         except Exception as e:
             msg = str(e)
@@ -144,7 +145,7 @@ def api_updateDashboardData(request):
 
 def api_getDashboardData(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {
     }
 
@@ -281,7 +282,7 @@ def api_getDashboardData(request):
 
 def api_getDashboardPlayerData(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {
     }
 
@@ -317,7 +318,7 @@ def api_getDashboardPlayerData(request):
 
 def api_getNewAlarm(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     info = {}
     alarm = g_database.select(
@@ -366,12 +367,12 @@ def api_getNewAlarm(request):
                 ret = True
                 msg = "success"
             except Exception as e:
-                msg = "检测报警新数据失败：" + str(e)
+                msg = _("检测报警新数据失败") + ":" + str(e)
                 g_logger.error(msg)
         else:
-            msg = "暂无新数据"
+            msg = _("暂无新数据")
     else:
-        msg = "暂无新数据"
+        msg = _("暂无新数据")
 
     res = {
         "code": 1000 if ret else 0,

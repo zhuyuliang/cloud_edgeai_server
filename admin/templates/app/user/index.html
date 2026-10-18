@@ -1,6 +1,7 @@
 {% extends "app/base_site.html" %}
+{% load i18n %}
 
-{% block title %} 用户管理 {% endblock title %}
+{% block title %} {% trans "用户管理" %} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -199,12 +200,12 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="dash-panel">
               <div class="dash-panel-head">
-                <h3><i class="fa fa-users" style="margin-right:2px"></i> 用户管理</h3>
+                <h3><i class="fa fa-users" style="margin-right:2px"></i> {% trans "用户管理" %}</h3>
                 <div class="user-page-header">
                   <button onclick="f_openAdd()" class="ctrl-btn ctrl-btn-primary">
-                    <i class="fa fa-plus"></i> 添加用户
+                    <i class="fa fa-plus"></i> {% trans "添加用户" %}
                   </button>
-                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> 加载中</span>
+                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> {% trans "加载中" %}</span>
                   <span id="top_msg">{{top_msg}}</span>
                 </div>
               </div>
@@ -215,13 +216,13 @@
                     <thead>
                       <tr class="headings">
                         <th class="column-title">ID</th>
-                        <th class="column-title">用户名</th>
-                        <th class="column-title">邮箱</th>
-                        <th class="column-title">超级管理员</th>
-                        <th class="column-title">状态</th>
-                        <th class="column-title">加入时间</th>
-                        <th class="column-title">上次登录时间</th>
-                        <th class="column-title no-link last"><span class="nobr">操作</span></th>
+                        <th class="column-title">{% trans "用户名" %}</th>
+                        <th class="column-title">{% trans "邮箱" %}</th>
+                        <th class="column-title">{% trans "超级管理员" %}</th>
+                        <th class="column-title">{% trans "状态" %}</th>
+                        <th class="column-title">{% trans "加入时间" %}</th>
+                        <th class="column-title">{% trans "上次登录时间" %}</th>
+                        <th class="column-title no-link last"><span class="nobr">{% trans "操作" %}</span></th>
                       </tr>
                     </thead>
 
@@ -233,16 +234,16 @@
                         <td>{{ d.email }}</td>
                         <td>
                           {% if d.is_superuser == 1 %}
-                            <span class="eai-badge eai-badge-info"><i class="fa fa-shield"></i> 是</span>
+                            <span class="eai-badge eai-badge-info"><i class="fa fa-shield"></i> {% trans "是" %}</span>
                           {% else %}
-                            <span class="eai-badge eai-badge-default">否</span>
+                            <span class="eai-badge eai-badge-default">{% trans "否" %}</span>
                           {% endif %}
                         </td>
                         <td>
                           {% if d.is_active == 1 %}
-                            <span class="eai-badge eai-badge-success">正常</span>
+                            <span class="eai-badge eai-badge-success">{% trans "正常" %}</span>
                           {% else %}
-                            <span class="eai-badge eai-badge-error">禁用</span>
+                            <span class="eai-badge eai-badge-error">{% trans "禁用" %}</span>
                           {% endif %}
                         </td>
                         <td>{{ d.date_joined }}</td>
@@ -250,9 +251,9 @@
                         <td>
                           <div class="action-btn-group">
                             <button onclick="f_edit('{{ d.id }}')" class="ctrl-action" type="button">
-                              <i class="fa fa-pencil"></i> 编辑
+                              <i class="fa fa-pencil"></i> {% trans "编辑" %}
                             </button>
-                            <button onclick="f_del('{{ d.id }}')" class="ctrl-action ctrl-action-danger" type="button" title="删除">
+                            <button onclick="f_del('{{ d.id }}')" class="ctrl-action ctrl-action-danger" type="button" title="{% trans '删除' %}">
                               <i class="fa fa-trash-o"></i>
                             </button>
                           </div>
@@ -272,7 +273,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="pagination-wrapper">
             <span class="pagination-info">
-              共 <strong>{{ pageData.page_num }}</strong> 页 / <strong>{{ pageData.count }}</strong> 条
+              {% trans "共" %} <strong>{{ pageData.page_num }}</strong> {% trans "页" %} / <strong>{{ pageData.count }}</strong> {% trans "条" %}
             </span>
             <ul class="pagination user-pagination">
               {% for d in pageData.pageLabels %}
@@ -293,45 +294,45 @@
            <div class="modal-content">
              <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-               <h4 class="modal-title">添加用户</h4>
+               <h4 class="modal-title">{% trans "添加用户" %}</h4>
              </div>
              <div class="modal-body">
                <form id="addUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
                  <input type="hidden" name="handle" value="add">
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">用户名</label>
+                   <label class="col-sm-3 control-label">{% trans "用户名" %}</label>
                    <div class="col-sm-9">
-                     <input type="text" name="username" required="required" class="form-control" placeholder="请输入用户名">
+                     <input type="text" name="username" required="required" class="form-control" placeholder="{% trans '请输入用户名' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">邮箱</label>
+                   <label class="col-sm-3 control-label">{% trans "邮箱" %}</label>
                    <div class="col-sm-9">
-                     <input type="email" name="email" required="required" class="form-control" placeholder="请输入邮箱">
+                     <input type="email" name="email" required="required" class="form-control" placeholder="{% trans '请输入邮箱' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">密码</label>
+                   <label class="col-sm-3 control-label">{% trans "密码" %}</label>
                    <div class="col-sm-9">
-                     <input type="password" name="password" required="required" class="form-control" placeholder="请输入密码">
+                     <input type="password" name="password" required="required" class="form-control" placeholder="{% trans '请输入密码' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">状态</label>
+                   <label class="col-sm-3 control-label">{% trans "状态" %}</label>
                    <div class="col-sm-9">
                      <div class="radio-group">
                        <div class="radio">
                          <label>
-                           <input type="radio" checked="checked" value="1" name="is_active"> 正常
+                           <input type="radio" checked="checked" value="1" name="is_active"> {% trans "正常" %}
                          </label>
                        </div>
                        <div class="radio">
                          <label>
-                           <input type="radio" value="0" name="is_active"> 禁用
+                           <input type="radio" value="0" name="is_active"> {% trans "禁用" %}
                          </label>
                        </div>
                      </div>
@@ -340,8 +341,8 @@
                </form>
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
-               <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">提交</button>
+               <button type="button" class="btn-modal-cancel" data-dismiss="modal">{% trans "取消" %}</button>
+               <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">{% trans "提交" %}</button>
              </div>
            </div>
          </div>
@@ -354,7 +355,7 @@
            <div class="modal-content">
              <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-               <h4 class="modal-title">编辑用户</h4>
+               <h4 class="modal-title">{% trans "编辑用户" %}</h4>
              </div>
              <div class="modal-body">
                <form id="editUserForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
@@ -362,45 +363,45 @@
                  <input type="hidden" name="id" value="">
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">用户名</label>
+                   <label class="col-sm-3 control-label">{% trans "用户名" %}</label>
                    <div class="col-sm-9">
-                     <input type="text" name="username" required="required" class="form-control" placeholder="请输入用户名">
+                     <input type="text" name="username" required="required" class="form-control" placeholder="{% trans '请输入用户名' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">邮箱</label>
+                   <label class="col-sm-3 control-label">{% trans "邮箱" %}</label>
                    <div class="col-sm-9">
-                     <input type="email" name="email" required="required" class="form-control" placeholder="请输入邮箱">
+                     <input type="email" name="email" required="required" class="form-control" placeholder="{% trans '请输入邮箱' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">新密码</label>
+                   <label class="col-sm-3 control-label">{% trans "新密码" %}</label>
                    <div class="col-sm-9">
-                     <input type="password" name="new_password" class="form-control" placeholder="不修改密码请留空">
+                     <input type="password" name="new_password" class="form-control" placeholder="{% trans '不修改密码请留空' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">确认新密码</label>
+                   <label class="col-sm-3 control-label">{% trans "确认新密码" %}</label>
                    <div class="col-sm-9">
-                     <input type="password" name="re_password" class="form-control" placeholder="不修改密码请留空">
+                     <input type="password" name="re_password" class="form-control" placeholder="{% trans '不修改密码请留空' %}">
                    </div>
                  </div>
 
                  <div class="form-group">
-                   <label class="col-sm-3 control-label">状态</label>
+                   <label class="col-sm-3 control-label">{% trans "状态" %}</label>
                    <div class="col-sm-9">
                      <div class="radio-group">
                        <div class="radio">
                          <label>
-                           <input type="radio" value="1" name="is_active"> 正常
+                           <input type="radio" value="1" name="is_active"> {% trans "正常" %}
                          </label>
                        </div>
                        <div class="radio">
                          <label>
-                           <input type="radio" value="0" name="is_active"> 禁用
+                           <input type="radio" value="0" name="is_active"> {% trans "禁用" %}
                          </label>
                        </div>
                      </div>
@@ -409,8 +410,8 @@
                </form>
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
-               <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">提交</button>
+               <button type="button" class="btn-modal-cancel" data-dismiss="modal">{% trans "取消" %}</button>
+               <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">{% trans "提交" %}</button>
              </div>
            </div>
          </div>
@@ -446,7 +447,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -484,7 +485,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -516,7 +517,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -542,7 +543,7 @@
                timeout: 0,
                error: function () {
                    ele_top_loading.hide();
-                   myAlert("网络异常，请确定网络正常！","error");
+                   myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                       ele_top_loading.hide();

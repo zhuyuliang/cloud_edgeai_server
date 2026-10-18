@@ -395,6 +395,7 @@
 }
 </style>
 
+{% load i18n %}
 <div class="nav_menu">
   <nav>
     <div class="nav toggle">
@@ -402,6 +403,28 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right">
+      <!-- 语言切换 -->
+      <li role="presentation" class="dropdown">
+        <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="gap:4px">
+          <i class="fa fa-globe" style="font-size:18px;line-height:1"></i>
+          <span class="fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-usermenu pull-right" style="min-width:130px">
+          {% get_current_language as LANGUAGE_CODE %}
+          <li class="{% if LANGUAGE_CODE == 'zh-hans' %}active{% endif %}">
+            <a href="javascript:;" onclick="switchLang('zh-hans')" style="display:flex;justify-content:space-between;align-items:center">
+              <span>简体中文</span>
+              {% if LANGUAGE_CODE == 'zh-hans' %}<i class="fa fa-check"></i>{% endif %}
+            </a>
+          </li>
+          <li class="{% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+            <a href="javascript:;" onclick="switchLang('en')" style="display:flex;justify-content:space-between;align-items:center">
+              <span>English</span>
+              {% if LANGUAGE_CODE == 'en' %}<i class="fa fa-check"></i>{% endif %}
+            </a>
+          </li>
+        </ul>
+      </li>
       <li class="dropdown">
         <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <img src="{% if settings.logo_url == '/static/images/user.png' %}/static/images/avatar-default.svg{% else %}{{ settings.logo_url }}?2026002{% endif %}" alt="{{ request.session.user.username }}">
@@ -411,7 +434,7 @@
         <ul class="dropdown-menu dropdown-usermenu pull-right">
           <li>
             <a href="/logout">
-              <span>注销登录</span>
+              <span>{% trans "注销登录" %}</span>
               <i class="fa fa-sign-out"></i>
             </a>
           </li>
@@ -464,7 +487,7 @@
           <li>
             <div class="text-center">
               <a>
-                <strong>查看所有报警</strong>
+                <strong>{% trans "查看所有报警" %}</strong>
                 <i class="fa fa-angle-right"></i>
               </a>
             </div>
@@ -475,3 +498,23 @@
     </ul>
   </nav>
 </div>
+
+<script>
+function switchLang(lang) {
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '{% url "set_language" %}';
+  var next = document.createElement('input');
+  next.type = 'hidden';
+  next.name = 'next';
+  next.value = window.location.pathname + window.location.search;
+  var language = document.createElement('input');
+  language.type = 'hidden';
+  language.name = 'language';
+  language.value = lang;
+  form.appendChild(next);
+  form.appendChild(language);
+  document.body.appendChild(form);
+  form.submit();
+}
+</script>

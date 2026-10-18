@@ -19,6 +19,7 @@ from app.utils.Logger import CreateLogger
 from app.utils.OSSystem import OSSystem
 from app.utils.Database import Database
 from app.models import *
+from django.utils.translation import gettext as _
 # BASE_DIR # eai_admin目录的位置
 
 g_filepath_config_json = os.path.join(BASE_DIR, "config.json")
@@ -80,7 +81,7 @@ class Services():
     def checkVersion(self, request_ip, request_port):
         __online = False
         __state = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
         __info = {
 
         }
@@ -162,7 +163,7 @@ class G_assistant():
     @staticmethod
     def __handleInstallByType(install,handle_type):
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
 
         try:
             osSystem = OSSystem()
@@ -172,11 +173,11 @@ class G_assistant():
             if systemName == "Windows":
                 # Windows重启软件
                 if not os.path.exists(os.path.join(install, "eai.exe")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if not os.path.exists(os.path.join(install, "start.bat")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if not os.path.exists(os.path.join(install, "stop.bat")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if handle_type == 0:
                     # 安装路径正常
                     pass
@@ -195,11 +196,11 @@ class G_assistant():
             elif systemName == "Linux" or systemName == "Darwin":
                 # Linux重启软件
                 if not os.path.exists(os.path.join(install, "eai")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if not os.path.exists(os.path.join(install, "start.sh")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if not os.path.exists(os.path.join(install, "stop.sh")):
-                    raise Exception("软件安装路径配置不正确")
+                    raise Exception(_("软件安装路径配置不正确"))
                 if handle_type == 0:
                     # 安装路径正常
                     pass
@@ -224,7 +225,7 @@ class G_assistant():
     @staticmethod
     def checkInstall(install):
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
         g_logger.info("checkInstall() start install:%s" % install)
         __ret, __msg = G_assistant.__handleInstallByType(install, 0)
         g_logger.info("checkInstall() end ret=%d,msg=%s" % (__ret, __msg))
@@ -233,7 +234,7 @@ class G_assistant():
     @staticmethod
     def restartApp(install):
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
         g_logger.info("restartApp() start install:%s" % install)
         __ret,__msg = G_assistant.__handleInstallByType(install,1)
         g_logger.info("restartApp() end ret=%d,msg=%s" % (__ret, __msg))
@@ -242,7 +243,7 @@ class G_assistant():
     @staticmethod
     def stopApp(install):
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
         g_logger.info("stopApp() start install:%s" % install)
         __ret,__msg = G_assistant.__handleInstallByType(install,2)
         g_logger.info("stopApp() end ret=%d,msg=%s" % (__ret, __msg))
@@ -251,7 +252,7 @@ class G_assistant():
     @staticmethod
     def restartOS():
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
         g_logger.info("restartOS() start")
         try:
             osSystem = OSSystem()
@@ -318,7 +319,7 @@ def f_sessionReadUserId(request):
 
 def f_checkRequestSafe(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     # 检查请求是否安全
     user_id = f_sessionReadUserId(request)
     if user_id:
@@ -363,22 +364,22 @@ def f_readSampleCountAndAnnotationCount(task_code):
 
 def f_checkNode(node_code):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     node = NodeModel.objects.filter(code=node_code)
     if len(node) > 0:
         node = node[0]
         if node.state == 0:
-            msg = "节点未同步"
+            msg = _("节点未同步")
         elif node.state == 1:
             ret = True
             msg = "success"
         elif node.state == 2:
-            msg = "节点离线"
+            msg = _("节点离线")
         else:
-            msg = "节点版本低于%.3f" % parseVersionToFloat(PROJECT_SUPPORT_MIN_VERSION)
+            msg = _("节点版本低于%.3f") % parseVersionToFloat(PROJECT_SUPPORT_MIN_VERSION)
     else:
-        msg = "节点不存在"
+        msg = _("节点不存在")
 
     return ret, msg, node
 
@@ -387,7 +388,7 @@ class EaiApi():
     def openDiscover(self,node):
         is_online = False
         ret = False
-        msg = "未知错误"
+        msg = _("未知错误")
         info = {}
         try:
             headers = {
@@ -427,7 +428,7 @@ class EaiApi():
     # 获取节点所有视频数据
     def getAllStreamData(self,node):
         ret = False
-        msg = "未知错误"
+        msg = _("未知错误")
         data = []
         try:
             headers = {
@@ -453,7 +454,7 @@ class EaiApi():
 
     def getAllAlgroithmFlowData(self,node):
         ret = False
-        msg = "未知错误"
+        msg = _("未知错误")
         data = []
         try:
             headers = {
@@ -588,7 +589,7 @@ def f_syncNode(code=None):
     for node in nodes:
         __is_online = False
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
 
         try:
             __is_online, __ret, __msg, __info = eai_api.openDiscover(node)
@@ -730,7 +731,7 @@ def f_syncNode(code=None):
 
 
     ret = True
-    msg = "成功%d条，失败%d条" % (success_count, error_count)
+    msg = _("成功%d条，失败%d条") % (success_count, error_count)
     print("f_syncNode() ret=%d,msg=%s"%(ret,msg))
     g_logger.info("f_syncNode() ret=%d,msg=%s"%(ret,msg))
 

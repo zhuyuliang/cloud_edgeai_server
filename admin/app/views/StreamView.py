@@ -1,6 +1,7 @@
 from app.views.ViewsBase import *
 from app.models import *
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext as _
 def index(request):
     context = {
         "settings": f_settingsReadData()
@@ -22,7 +23,7 @@ def index(request):
 
 def api_openIndex(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = []
     pageData = []
     extra = {}
@@ -88,7 +89,7 @@ def api_openIndex(request):
 
 def api_openAddStreamProxy(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:
@@ -134,7 +135,7 @@ def api_openAddStreamProxy(request):
 
 def api_openDelStreamProxy(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         params = f_parsePostParams(request)
         g_logger.info("StreamView.openDelStreamProxy() params:%s" % str(params))
@@ -175,7 +176,7 @@ def api_openDelStreamProxy(request):
     return f_responseJson(res)
 def api_openHandleAllStreamProxy(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
 
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
@@ -189,7 +190,7 @@ def api_openHandleAllStreamProxy(request):
                 try:
                     if node.version < 2:
                         raise Exception(
-                            "v3系列节点不支持该功能")
+                            _("v3系列节点不支持该功能"))
 
                     headers = {
                         "User-Agent": PROJECT_UA,
@@ -223,7 +224,7 @@ def api_openHandleAllStreamProxy(request):
     return f_responseJson(res)
 def api_openDel(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         __check_ret, __check_msg = f_checkRequestSafe(request)
         if __check_ret:

@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 import os
 import json
+from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_UA = "cloud_eai_admin"
@@ -70,7 +71,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # 多语言:语言协商(session/cookie),须位于 SessionMiddleware 之后
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -146,19 +147,28 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-#LANGUAGE_CODE = 'en-us'
-#TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
+# USE_L10N = True  # Django 4.2 已弃用(默认开启本地化格式),删除避免弃用警告
 USE_TZ = False
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# Static files (CSS, JS, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-LANGUAGE_CODE = 'zh-hans'
+LANGUAGE_CODE = 'zh-hans'  # 默认语言:简体中文
 TIME_ZONE = 'Asia/Shanghai'
+
+# 多语言支持:可用语言列表(语言名用各自语言展示,不翻译)
+LANGUAGES = [
+    ('zh-hans', _('简体中文')),
+    ('en', _('English')),
+]
+
+# 翻译文件搜索路径(BASE_DIR = admin/ 目录)
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 """ 新增配置 """
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')

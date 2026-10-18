@@ -1,6 +1,7 @@
 {% extends "app/base_site.html" %}
+{% load i18n %}
 
-{% block title %} 单屏播放器 {% endblock title %}
+{% block title %} {% trans "单屏播放器" %} {% endblock title %}
 
 {% block stylesheets %}
 {{ block.super }}
@@ -153,12 +154,12 @@
           <div class="x_panel">
             <div class="x_title">
                 <div class="xc_input_group">
-                    <input id="input_address" type="text" class="xc_input_field" placeholder="请输入播放地址（支持ws-fmp4/http-fmp4）">
+                    <input id="input_address" type="text" class="xc_input_field" placeholder="{% trans '请输入播放地址（支持ws-fmp4/http-fmp4）' %}">
                     <button class="btn btn-dark" onclick="f_clickPlayStart()">
-                        播放
+                        {% trans "播放" %}
                     </button>
                     <button class="btn btn-default" onclick="f_clickPlayStop()">
-                        停止
+                        {% trans "停止" %}
                     </button>
                 </div>
 
@@ -192,16 +193,16 @@
                             <button class="ptz-button"  onmousedown="f_openPtz(7,250)" onmouseup="f_openPtz(0,0)"  style="grid-column: 2 / 3; grid-row: 3 / 4;"><i class="fa fa-chevron-down"></i></button>
                         </div>
                         <div style="margin-top: 20px;" class="zoom-control">
-                            <button class="ptz-button"  onmousedown="f_openPtz(9,200)" onmouseup="f_openPtz(0,0)" title="调焦">Z+</button>
-                            <button class="ptz-button"  onmousedown="f_openPtz(9,-200)" onmouseup="f_openPtz(0,0)"  title="调焦">Z-</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(9,200)" onmouseup="f_openPtz(0,0)" title="{% trans '调焦' %}">Z+</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(9,-200)" onmouseup="f_openPtz(0,0)"  title="{% trans '调焦' %}">Z-</button>
                         </div>
                         <div class="zoom-control">
-                            <button class="ptz-button"  onmousedown="f_openPtz(11,200)" onmouseup="f_openPtz(0,0)"  title="聚焦">F+</button>
-                            <button class="ptz-button"  onmousedown="f_openPtz(11,-200)" onmouseup="f_openPtz(0,0)"  title="聚焦">F-</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(11,200)" onmouseup="f_openPtz(0,0)"  title="{% trans '聚焦' %}">F+</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(11,-200)" onmouseup="f_openPtz(0,0)"  title="{% trans '聚焦' %}">F-</button>
                         </div>
                        <div class="zoom-control">
-                            <button class="ptz-button"  onmousedown="f_openPtz(10,250)" onmouseup="f_openPtz(0,0)"  title="光圈">I+</button>
-                            <button class="ptz-button"  onmousedown="f_openPtz(10,-250)" onmouseup="f_openPtz(0,0)"  title="光圈">I-</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(10,250)" onmouseup="f_openPtz(0,0)"  title="{% trans '光圈' %}">I+</button>
+                            <button class="ptz-button"  onmousedown="f_openPtz(10,-250)" onmouseup="f_openPtz(0,0)"  title="{% trans '光圈' %}">I-</button>
                         </div>
 
                </div>
@@ -215,7 +216,7 @@
                         <section class="xc_protocols">
                             <h3>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                视频流支持的所有转发协议
+                                {% trans "视频流支持的所有转发协议" %}
                             </h3>
                             <ul class="xc_protocol_list">
                                 <li class="xc_protocol_item">{{ info.wsMp4Url }}</li>
@@ -255,7 +256,7 @@
             videoBufferDelay: Number(3), // 1000s 达到延迟重播(s)
             decoder: '/static/lib/easyPlayer/js/decoder-pro.js',
             isResize: true,
-            loadingText: "加载中",
+            loadingText: "{% trans "加载中" %}",
             debug: false,
             debugLevel: "debug",
             useMSE: true,
@@ -279,7 +280,7 @@
             },
             background: "/static/images/player_poster.jpg",
             timeout: 10,
-            qualityConfig: ['普清', '高清', '超清'],
+            qualityConfig: ['{% trans "普清" %}', '{% trans "高清" %}', '{% trans "超清" %}'],
             forceNoOffscreen: true,
             isNotMute: false,
             heartTimeout: Number(7),//超出时间无数据重连(s)
@@ -312,11 +313,11 @@
     };
     function f_playStart(video_url) {
         if(video_url === "" || typeof video_url === "undefined"){
-            myAlert("请输入播放地址（支持ws-fmp4/http-fmp4）！","error");
+            myAlert("{% trans "请输入播放地址（支持ws-fmp4/http-fmp4）！" %}","error");
             return false;
         }
         if(!video_url.endsWith(".mp4")){
-            myAlert("视频流地址格式不正确！","error");
+            myAlert("{% trans "视频流地址格式不正确！" %}","error");
             return false;
         }
         if(video_url.startsWith("ws://") || video_url.startsWith("http://")){
@@ -330,7 +331,7 @@
                 ePlayer.play(video_url);
             }
         }else{
-             myAlert("视频流地址格式不正确！","error");
+             myAlert("{% trans "视频流地址格式不正确！" %}","error");
              return false;
         }
     }
@@ -364,7 +365,7 @@
            dataType: "json",
            timeout: 0,
            error: function () {
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                if(1000 === res.code){

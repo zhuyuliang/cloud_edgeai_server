@@ -22,6 +22,8 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     # path(r'app/', include('app.urls')),
     path(r'', include('app.urls')),
+    # 多语言:提供 POST /i18n/setlang/ 语言切换(Django 内置视图)
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

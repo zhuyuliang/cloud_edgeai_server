@@ -1,5 +1,6 @@
 {% extends "app/base_site.html" %}
-{% block title %} 视频管理 {% endblock title %}
+{% load i18n %}
+{% block title %} {% trans "视频管理" %} {% endblock title %}
 {% block stylesheets %}
   {{ block.super }}
 <style>
@@ -36,23 +37,23 @@
       <div class="col-md-12">
         <div class="dash-panel v2-panel">
           <div class="dash-panel-head">
-            <h3><i class="fa fa-video-camera" style="margin-right:2px"></i> 视频管理</h3>
+            <h3><i class="fa fa-video-camera" style="margin-right:2px"></i> {% trans "视频管理" %}</h3>
             <div class="v2-toolbar">
-              <label class="xc_hint">节点：</label>
+              <label class="xc_hint">{% trans "节点" %}：</label>
               <select id="nodeSelect" class="eai-select">
                 {% for node in nodes %}
                 <option value="{{ node.code }}" {% if node.code == node_code %}selected{% endif %}>{{ node.nickname }}（{{ node.code }}）</option>
                 {% endfor %}
               </select>
-              <button class="ctrl-btn ctrl-btn-primary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> 刷新</button>
-              <span class="xc_hint">页面由节点实时提供（iframe 双跳），新增/编辑/转发/云台等操作直接在节点页面完成</span>
+              <button class="ctrl-btn ctrl-btn-primary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> {% trans "刷新" %}</button>
+              <span class="xc_hint">{% trans "页面由节点实时提供（iframe 双跳），新增/编辑/转发/云台等操作直接在节点页面完成" %}</span>
             </div>
           </div>
           <div class="dash-panel-body v2-frame-body">
             {% if nodes %}
             <iframe id="nodeFrame" src="/proxy/node/{{ node_code }}/stream/index?embed=1" frameborder="0"></iframe>
             {% else %}
-            <div class="empty-ph" style="padding:60px 12px;">暂无在线节点，请先在「节点管理」中添加并同步节点</div>
+            <div class="empty-ph" style="padding:60px 12px;">{% trans "暂无在线节点，请先在「节点管理」中添加并同步节点" %}</div>
             {% endif %}
           </div>
         </div>

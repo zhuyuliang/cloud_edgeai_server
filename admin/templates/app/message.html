@@ -1,6 +1,7 @@
-<html lang="zh-CN">
+{% load i18n %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
-<title>提示中</title>
+<title>{% trans "提示" %}</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- 主题令牌：独立页直接引入（eai-theme 无全局元素选择器，安全） -->
@@ -73,10 +74,10 @@
 
 <body>
     <div class="msg-card">
-        <img class="msg-icon" src="/static/lib/message/{% if is_success %}message-success{% else %}message-error{% endif %}.png"  alt="提示图片"/>
+        <img class="msg-icon" src="/static/lib/message/{% if is_success %}message-success{% else %}message-error{% endif %}.png"  alt="{% trans '提示图片' %}"/>
         <h3>{{msg}}</h3>
-        <p class="msg-tip">页面即将自动返回…</p>
-        <button class="confirm" onclick="redirect()" >返回上一页</button>
+        <p class="msg-tip">{% trans "页面即将自动返回…" %}</p>
+        <button class="confirm" onclick="redirect()" >{% trans "返回上一页" %}</button>
     </div>
 </body>
 <script>

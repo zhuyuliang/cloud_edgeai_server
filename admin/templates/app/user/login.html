@@ -1,5 +1,6 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- 主题令牌：独立页直接引入（eai-theme 无全局元素选择器，安全） -->
     <link href="/static/build/css/eai-theme.css?v=2" rel="stylesheet">
-    <title>登录 | {{ settings.name }}</title>
+    <title>{% trans "登录" %} | {{ settings.name }}</title>
     <style>
         * {
             margin: 0;
@@ -460,8 +461,14 @@
                 <circle cx="24" cy="22" r="5" fill="#fff"/>
                 <path d="M22 22l1.5 1.5 3-3" stroke="#2a80eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
-            <span class="header-title"><span>{{ settings.name }}</span> 控制台</span>
+            <span class="header-title"><span>{{ settings.name }}</span> {% trans "控制台" %}</span>
         </a>
+        <div class="header-lang">
+          {% get_current_language as LANGUAGE_CODE %}
+          <a href="javascript:;" onclick="switchLang('zh-hans')" style="font-size:13px;color:#5f6368;text-decoration:none;{% if LANGUAGE_CODE == 'zh-hans' %}font-weight:600;color:#2a80eb;{% endif %}">简体中文</a>
+          <span style="color:#dadce0">|</span>
+          <a href="javascript:;" onclick="switchLang('en')" style="font-size:13px;color:#5f6368;text-decoration:none;{% if LANGUAGE_CODE == 'en' %}font-weight:600;color:#2a80eb;{% endif %}">English</a>
+        </div>
     </header>
     
     <!-- Main Content -->
@@ -475,28 +482,28 @@
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                         </svg>
                     </div>
-                    <h2 class="hero-title">智能边缘计算<br>云端管理平台</h2>
+                    <h2 class="hero-title">{% blocktrans %}智能边缘计算<br>云端管理平台{% endblocktrans %}</h2>
                     <p class="hero-description">
-                        统一管理您的边缘设备和 AI 应用，实现高效的智能化部署与运维。
+                        {% trans "统一管理您的边缘设备和 AI 应用，实现高效的智能化部署与运维。" %}
                     </p>
                     <div class="hero-features">
                         <div class="feature-item">
                             <div class="feature-icon">
                                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                             </div>
-                            <span>实时监控设备状态与性能</span>
+                            <span>{% trans "实时监控设备状态与性能" %}</span>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">
                                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                             </div>
-                            <span>一键部署 AI 推理模型</span>
+                            <span>{% trans "一键部署 AI 推理模型" %}</span>
                         </div>
                         <div class="feature-item">
                             <div class="feature-icon">
                                 <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                             </div>
-                            <span>安全可靠的数据传输</span>
+                            <span>{% trans "安全可靠的数据传输" %}</span>
                         </div>
                     </div>
                 </div>
@@ -505,55 +512,55 @@
             <!-- Right Panel - Form -->
             <div class="form-panel">
                 <div class="form-header">
-                    <h1>登录</h1>
-                    <p>使用您的管理员账号</p>
+                    <h1>{% trans "登录" %}</h1>
+                    <p>{% trans "使用您的管理员账号" %}</p>
                 </div>
                 
                 <form id="loginForm">
                     <div class="form-group">
-                        <label class="form-label" for="username">用户名</label>
+                        <label class="form-label" for="username">{% trans "用户名" %}</label>
                         <input 
                             type="text" 
                             id="username"
                             name="username" 
                             class="form-control" 
-                            placeholder="请输入用户名"
+                            placeholder="{% trans '请输入用户名' %}"
                             autocomplete="username"
                         >
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="password">密码</label>
+                        <label class="form-label" for="password">{% trans "密码" %}</label>
                         <input 
                             type="password" 
                             id="password"
                             name="password" 
                             class="form-control" 
-                            placeholder="请输入密码"
+                            placeholder="{% trans '请输入密码' %}"
                             autocomplete="current-password"
                         >
                     </div>
                     
                     <div class="captcha-row">
                         <div class="form-group">
-                            <label class="form-label" for="captcha">验证码</label>
+                            <label class="form-label" for="captcha">{% trans "验证码" %}</label>
                             <input 
                                 type="text" 
                                 id="captcha"
                                 name="captcha" 
                                 class="form-control" 
-                                placeholder="请输入验证码"
+                                placeholder="{% trans '请输入验证码' %}"
                                 autocomplete="off"
                             >
                         </div>
                         <div class="captcha-img-wrapper">
-                            <label class="form-label">刷新</label>
-                            <img id="img_captcha" class="captcha-img" src="/static/images/loading.gif" alt="验证码" title="点击刷新验证码">
+                            <label class="form-label">{% trans "刷新" %}</label>
+                            <img id="img_captcha" class="captcha-img" src="/static/images/loading.gif" alt="{% trans '验证码' %}" title="{% trans '点击刷新验证码' %}">
                         </div>
                     </div>
                     
                     <button type="submit" class="btn-login">
-                        <span>登录</span>
+                        <span>{% trans "登录" %}</span>
                         <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
                     </button>
                 </form>
@@ -564,7 +571,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-left">
-            <a href="#" class="footer-link">帮助</a>
+            <a href="#" class="footer-link">{% trans "帮助" %}</a>
         </div>
         <div class="footer-right">
             © 2024-2025 {{ settings.name }}
@@ -607,19 +614,19 @@
             let password = elePassword.val().trim();
 
             if (username.length === 0) {
-                myAlert("请输入用户名", "error");
+                myAlert("{% trans "请输入用户名" %}", "error");
                 return false;
             }
             if (username.length < 3) {
-                myAlert("用户名格式不正确", "error");
+                myAlert("{% trans "用户名格式不正确" %}", "error");
                 return false;
             }
             if (password.length === 0) {
-                myAlert("请输入密码", "error");
+                myAlert("{% trans "请输入密码" %}", "error");
                 return false;
             }
             if (password.length < 3) {
-                myAlert("密码格式不正确", "error");
+                myAlert("{% trans "密码格式不正确" %}", "error");
                 return false;
             }
             
@@ -628,11 +635,11 @@
                 let eleCaptcha = $("input[name='captcha']");
                 captcha = eleCaptcha.val().trim();
                 if (captcha.length === 0) {
-                    myAlert("请输入验证码", "error");
+                    myAlert("{% trans "请输入验证码" %}", "error");
                     return false;
                 }
                 if (captcha.length < 4) {
-                    myAlert("验证码格式不正确", "error");
+                    myAlert("{% trans "验证码格式不正确" %}", "error");
                     return false;
                 }
             }
@@ -653,7 +660,7 @@
                 dataType: "json",
                 timeout: 0,
                 error: function() {
-                    myAlert("网络异常，请确定网络正常！", "error");
+                    myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
                 },
                 success: function(res) {
                     if (1000 === res.code) {
@@ -695,6 +702,24 @@
                     f_update_captcha();
                 }, 10);
             };
+        }
+
+        function switchLang(lang) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "set_language" %}';
+            var next = document.createElement('input');
+            next.type = 'hidden';
+            next.name = 'next';
+            next.value = window.location.pathname + window.location.search;
+            var language = document.createElement('input');
+            language.type = 'hidden';
+            language.name = 'language';
+            language.value = lang;
+            form.appendChild(next);
+            form.appendChild(language);
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </body>

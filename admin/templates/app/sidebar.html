@@ -725,13 +725,14 @@
   }
 </style>
 
+{% load i18n %}
 <div class="left_col scroll-view">
   <div class="navbar nav_title" style="border: 0;">
     <a href="/" class="site_title">
       <i class="fa fa-laptop"></i>
       <span>{{ settings.name }}</span>
     </a>
-    <button class="sidebar-close-btn" id="sidebar_close" aria-label="关闭菜单">
+    <button class="sidebar-close-btn" id="sidebar_close" aria-label="{% trans "关闭菜单" %}">
       <i class="fa fa-times"></i>
     </button>
   </div>
@@ -741,47 +742,47 @@
   <!-- 侧边栏菜单 -->
   <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
     <div class="menu_section">
-      <h3>菜单导航</h3>
+      <h3>{% trans "菜单导航" %}</h3>
       <ul class="nav side-menu">
         <li>
-          <a href="/" data-title="控制面板"><i class="fa fa-home"></i> <span>控制面板</span></a>
+          <a href="/" data-title="{% trans '控制面板' %}"><i class="fa fa-home"></i> <span>{% trans "控制面板" %}</span></a>
         </li>
         
         <li>
-          <a href="/node/index" data-title="节点管理"><i class="fa fa-database"></i> <span>节点管理</span></a>
+          <a href="/node/index" data-title="{% trans '节点管理' %}"><i class="fa fa-database"></i> <span>{% trans "节点管理" %}</span></a>
         </li>
         
         <li>
-          <a data-title="报警管理"><i class="fa fa-bullhorn"></i> <span>报警管理</span> <span class="fa fa-chevron-down"></span></a>
+          <a data-title="{% trans '报警管理' %}"><i class="fa fa-bullhorn"></i> <span>{% trans "报警管理" %}</span> <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="/alarm/event" data-title="事件告警">事件告警</a></li>
-            <li><a href="/alarm/carplate" data-title="车牌告警">车牌告警</a></li>
-            <li><a href="/alarm/face" data-title="人脸告警">人脸告警</a></li>
-            <li><a href="/alarm/count" data-title="计数告警">计数告警</a></li>
+            <li><a href="/alarm/event" data-title="{% trans '事件告警' %}">{% trans "事件告警" %}</a></li>
+            <li><a href="/alarm/carplate" data-title="{% trans '车牌告警' %}">{% trans "车牌告警" %}</a></li>
+            <li><a href="/alarm/face" data-title="{% trans '人脸告警' %}">{% trans "人脸告警" %}</a></li>
+            <li><a href="/alarm/count" data-title="{% trans '计数告警' %}">{% trans "计数告警" %}</a></li>
           </ul>
         </li>
         
         <li>
-          <a data-title="视频管理"><i class="fa fa-video-camera"></i> <span>视频管理</span> <span class="fa fa-chevron-down"></span></a>
+          <a data-title="{% trans '视频管理' %}"><i class="fa fa-video-camera"></i> <span>{% trans "视频管理" %}</span> <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="/stream/index">视频管理</a></li>
-            <li><a href="/stream/player">单屏播放器</a></li>
+            <li><a href="/stream/index">{% trans "视频管理" %}</a></li>
+            <li><a href="/stream/player">{% trans "单屏播放器" %}</a></li>
           </ul>
         </li>
         
         <li>
-          <a href="/control/index" data-title="布控管理"><i class="fa fa-cube"></i> <span>布控管理</span></a>
+          <a href="/control/index" data-title="{% trans '布控管理' %}"><i class="fa fa-cube"></i> <span>{% trans "布控管理" %}</span></a>
         </li>
         
         <li>
-          <a href="/user/index" data-title="用户管理"><i class="fa fa-user"></i> <span>用户管理</span></a>
+          <a href="/user/index" data-title="{% trans '用户管理' %}"><i class="fa fa-user"></i> <span>{% trans "用户管理" %}</span></a>
         </li>
         
         <li>
-          <a data-title="系统功能"><i class="fa fa-gear"></i> <span>系统功能</span> <span class="fa fa-chevron-down"></span></a>
+          <a data-title="{% trans '系统功能' %}"><i class="fa fa-gear"></i> <span>{% trans "系统功能" %}</span> <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="/system/config">启动配置</a></li>
-            <li><a href="/version/index">关于系统</a></li>
+            <li><a href="/system/config">{% trans "启动配置" %}</a></li>
+            <li><a href="/version/index">{% trans "关于系统" %}</a></li>
           </ul>
         </li>
       </ul>

@@ -1,5 +1,6 @@
 {% extends "app/base_site.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %} {{ page_title }} {% endblock title %}
 
@@ -88,14 +89,14 @@
               <h3><i class="fa fa-bell-o" style="margin-right:2px"></i> {{ page_title }}</h3>
               <div class="alarm-toolbar">
                 <label style="display:flex;align-items:center;gap:5px;font-weight:normal;font-size:13px;margin:0;">
-                  <input type="checkbox" id="check_all"> 全选
+                  <input type="checkbox" id="check_all"> {% trans "全选" %}
                 </label>
-                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('2')"><i class="fa fa-check"></i> 标记已处理</button>
-                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('3')"><i class="fa fa-ban"></i> 标记误报</button>
-                <button class="ctrl-btn ctrl-btn-danger" onclick="f_handle('delete')"><i class="fa fa-trash-o"></i> 批量删除</button>
-                <button class="ctrl-btn ctrl-btn-primary" onclick="f_export()"><i class="fa fa-download"></i> 导出 CSV</button>
+                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('2')"><i class="fa fa-check"></i> {% trans "标记已处理" %}</button>
+                <button class="ctrl-btn ctrl-btn-secondary" onclick="f_handle('3')"><i class="fa fa-ban"></i> {% trans "标记误报" %}</button>
+                <button class="ctrl-btn ctrl-btn-danger" onclick="f_handle('delete')"><i class="fa fa-trash-o"></i> {% trans "批量删除" %}</button>
+                <button class="ctrl-btn ctrl-btn-primary" onclick="f_export()"><i class="fa fa-download"></i> {% trans "导出 CSV" %}</button>
                 <span id="top_loading" style="display:none;">
-                  <img src="/static/images/load.gif" alt="loading">加载中
+                  <img src="/static/images/load.gif" alt="loading">{% trans "加载中" %}
                 </span>
               </div>
             </div>
@@ -103,28 +104,28 @@
               <div class="xc_filters">
                 {% if alarm_category < 0 %}
                 <div class="xc_filter-group">
-                  <label class="xc_filter-label">分类:</label>
+                  <label class="xc_filter-label">{% trans "分类" %}:</label>
                   <select id="select_category" class="eai-select">
-                    <option value="-1">选择全部</option>
-                    <option value="0">事件告警</option>
-                    <option value="1">车牌告警</option>
-                    <option value="2">人脸告警</option>
+                    <option value="-1">{% trans "选择全部" %}</option>
+                    <option value="0">{% trans "事件告警" %}</option>
+                    <option value="1">{% trans "车牌告警" %}</option>
+                    <option value="2">{% trans "人脸告警" %}</option>
                   </select>
                 </div>
                 {% endif %}
                 <div class="xc_filter-group">
-                  <label class="xc_filter-label">节点:</label>
+                  <label class="xc_filter-label">{% trans "节点" %}:</label>
                   <select id="select_node" class="eai-select">
-                    <option value="-1">选择全部</option>
+                    <option value="-1">{% trans "选择全部" %}</option>
                     {% for node in nodes %}
                     <option value="{{ node.code }}">{{ node.nickname }}</option>
                     {% endfor %}
                   </select>
                 </div>
                 <div class="xc_filter-group">
-                  <label class="xc_filter-label">状态:</label>
+                  <label class="xc_filter-label">{% trans "状态" %}:</label>
                   <select id="select_state" class="eai-select">
-                    <option value="-1">选择全部</option>
+                    <option value="-1">{% trans "选择全部" %}</option>
                     {% for s in states %}
                     <option value="{{ s.value }}">{{ s.name }}</option>
                     {% endfor %}
@@ -151,35 +152,35 @@
   <div id="alarmModal" class="eai-modal">
     <div class="eai-modal-content">
       <div class="eai-modal-header">
-        <h3 class="eai-modal-title">告警详情</h3>
+        <h3 class="eai-modal-title">{% trans "告警详情" %}</h3>
         <button class="eai-modal-close">&times;</button>
       </div>
       <div class="xc_modal-grid">
         <!-- 左：媒体展示 -->
         <div class="xc_media-col">
           <div class="xc_media-actions">
-            <button type="button" class="xc_media-action-btn" id="btnDownloadOriginal"><i class="fa fa-download"></i> 下载原图</button>
-            <button type="button" class="xc_media-action-btn" id="btnDownloadVideo" style="display:none;"><i class="fa fa-video-camera"></i> 下载视频</button>
+            <button type="button" class="xc_media-action-btn" id="btnDownloadOriginal"><i class="fa fa-download"></i> {% trans "下载原图" %}</button>
+            <button type="button" class="xc_media-action-btn" id="btnDownloadVideo" style="display:none;"><i class="fa fa-video-camera"></i> {% trans "下载视频" %}</button>
           </div>
           <div class="xc_media-display" id="modalMediaDisplay"></div>
           <div class="xc_media-thumbs" id="modalMediaThumbs" style="display:none;"></div>
         </div>
         <!-- 右：告警信息 + 处理意见 -->
         <div class="xc_info-col">
-          <h4>告警信息</h4>
+          <h4>{% trans "告警信息" %}</h4>
           <div id="modalInfo"></div>
           <div class="xc_review-section">
-            <h4>处理信息</h4>
-            <label class="xc_info-label" style="display:block;margin-bottom:4px;">处理意见：</label>
-            <textarea class="eai-textarea" id="modalDealInfo" style="min-height:76px;width:100%;" placeholder="请输入处理意见"></textarea>
+            <h4>{% trans "处理信息" %}</h4>
+            <label class="xc_info-label" style="display:block;margin-bottom:4px;">{% trans "处理意见" %}：</label>
+            <textarea class="eai-textarea" id="modalDealInfo" style="min-height:76px;width:100%;" placeholder="{% trans '请输入处理意见' %}"></textarea>
           </div>
         </div>
       </div>
       <!-- 底部操作条 -->
       <div class="xc_modal-footer">
-        <button type="button" class="ctrl-btn xc_footer-reset" id="btnModalReset"><i class="fa fa-refresh"></i> 重置</button>
-        <button type="button" class="ctrl-btn xc_footer-false" id="btnModalFalseAlarm"><i class="fa fa-ban"></i> 误报</button>
-        <button type="button" class="ctrl-btn xc_footer-confirm" id="btnModalConfirm"><i class="fa fa-check"></i> 已处理</button>
+        <button type="button" class="ctrl-btn xc_footer-reset" id="btnModalReset"><i class="fa fa-refresh"></i> {% trans "重置" %}</button>
+        <button type="button" class="ctrl-btn xc_footer-false" id="btnModalFalseAlarm"><i class="fa fa-ban"></i> {% trans "误报" %}</button>
+        <button type="button" class="ctrl-btn xc_footer-confirm" id="btnModalConfirm"><i class="fa fa-check"></i> {% trans "已处理" %}</button>
       </div>
     </div>
   </div>
@@ -191,12 +192,12 @@
   <script src="/static/lib/jquery/daterangepicker/jquery.daterangepicker.js"></script>
   <script>
     let ALARM_CATEGORY = {{ alarm_category }};   // -1=历史全量
-    let RISK_NAMES = {0: '低风险', 1: '中风险', 2: '高风险'};
+    let RISK_NAMES = {0: '{% trans "低风险" %}', 1: '{% trans "中风险" %}', 2: '{% trans "高风险" %}'};
     let STATE_BADGES = {
-        0: '<span class="eai-badge eai-badge-info">未读</span>',
-        1: '<span class="eai-badge eai-badge-warning">未处理</span>',
-        2: '<span class="eai-badge eai-badge-success">已处理</span>',
-        3: '<span class="eai-badge eai-badge-error">误报</span>',
+        0: '<span class="eai-badge eai-badge-info">{% trans "未读" %}</span>',
+        1: '<span class="eai-badge eai-badge-warning">{% trans "未处理" %}</span>',
+        2: '<span class="eai-badge eai-badge-success">{% trans "已处理" %}</span>',
+        3: '<span class="eai-badge eai-badge-error">{% trans "误报" %}</span>',
     };
     let temp_cur_page = 1, temp_cur_page_size = 12;
     const eleData = $("#data"), elePageData = $("#pageData");
@@ -207,7 +208,7 @@
 
     // 提示性反馈：xcAlert/myAlert 由全局 toast.js 提供
 
-    function f_stateBadge(s) { return STATE_BADGES[s] || '<span class="eai-badge eai-badge-default">未知</span>'; }
+    function f_stateBadge(s) { return STATE_BADGES[s] || '<span class="eai-badge eai-badge-default">{% trans "未知" %}</span>'; }
 
     function f_openIndex(page, page_size) {
       eleCheckAll.prop("checked", false);
@@ -225,23 +226,23 @@
           dateRange: $("#input_dateRange").val(),
         },
         dataType: "json",
-        error: function () { $("#top_loading").hide(); myAlert("网络异常！", "error"); },
+        error: function () { $("#top_loading").hide(); myAlert("{% trans "网络异常！" %}", "error"); },
         success: function (res) {
           $("#top_loading").hide();
           if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
           let data = res.data;
-          if (!data.length) { eleData.html("<div class='empty-ph' style='grid-column:1/-1;'>暂无告警数据</div>"); elePageData.html(""); return; }
+          if (!data.length) { eleData.html("<div class='empty-ph' style='grid-column:1/-1;'>{% trans "暂无告警数据" %}</div>"); elePageData.html(""); return; }
           let html = "";
           for (let d of data) {
-            let title = d["task_name"] || d["flow_name"] || d["desc"] || ("告警#" + d["id"]);
+            let title = d["task_name"] || d["flow_name"] || d["desc"] || ("{% trans "告警" %}#" + d["id"]);
             let risk = parseInt(d["risk_level"] || 0);
             let hasVideo = (parseInt(d["video_count"] || 0) > 0) && d["videoUrl"];
             html += `<div class="xc_video-card">`;
             html += `<div class="xc_video-thumbnail" onclick='f_edit("${d["code"]}")'>`;
             html += `<img src="${d["imageUrl"]}" onerror="this.src='/static/images/720p.jpg'">`;
             if (hasVideo) html += `<div class="xc_play-button"></div>`;
-            html += `<span class="xc_media-tag${hasVideo ? " video" : ""}">${hasVideo ? "视频" : "图片"}</span>`;
-            if (parseInt(d["state"]) === 0) html += `<span class="xc_unread-dot" title="未读"></span>`;
+            html += `<span class="xc_media-tag${hasVideo ? " video" : ""}">${hasVideo ? "{% trans "视频" %}" : "{% trans "图片" %}"}</span>`;
+            if (parseInt(d["state"]) === 0) html += `<span class="xc_unread-dot" title="{% trans "未读" %}"></span>`;
             html += `</div><div class="xc_video-info">`;
             html += `<div class="xc_video-title"><label style="flex-shrink:0;"><input type="checkbox" class="check_item" value="${d["id"]}"></label><span class="xc_risk-badge xc_risk-${risk}">${RISK_NAMES[risk]}</span><span class="xc_title-text" title="${title}">${title}</span></div>`;
             html += `<div class="xc_video-meta"><span>${d["node_nickname"]} · ${d["create_time_str"]}</span>${f_stateBadge(d["state"])}</div>`;
@@ -255,12 +256,12 @@
 
     function f_show_pageData(pageData) {
       let html = "";
-      if (pageData.page > 1) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page - 1},${pageData.page_size})">上一页</div>`;
+      if (pageData.page > 1) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page - 1},${pageData.page_size})">{% trans "上一页" %}</div>`;
       for (let l of pageData.pageLabels || []) {
         html += `<div class="xc_page-btn" onclick="f_openIndex(${l.page},${pageData.page_size})">${l.name}</div>`;
       }
-      if (pageData.page < pageData.page_num) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page + 1},${pageData.page_size})">下一页</div>`;
-      html += `<div style="font-size:12px;color:var(--eai-text-secondary);align-self:center;">共${pageData.count}条</div>`;
+      if (pageData.page < pageData.page_num) html += `<div class="xc_page-btn" onclick="f_openIndex(${pageData.page + 1},${pageData.page_size})">{% trans "下一页" %}</div>`;
+      html += `<div style="font-size:12px;color:var(--eai-text-secondary);align-self:center;">{% trans "共" %}${pageData.count}{% trans "条" %}</div>`;
       elePageData.html(html);
     }
 
@@ -268,14 +269,14 @@
       if (handle === "delete") {
         let ids = [];
         $(".check_item:checked").each(function () { ids.push($(this).val()); });
-        if (!ids.length) { myAlert("请至少选择一条数据", "warning"); return; }
-        if (!confirm("确认删除选中的告警？")) return;
+        if (!ids.length) { myAlert("{% trans "请至少选择一条数据" %}", "warning"); return; }
+        if (!confirm("{% trans "确认删除选中的告警？" %}")) return;
         $.post("/alarm/openHandle", { alarm_ids_str: ids.join(","), handle: "delete" }, f_handleDone, "json");
       } else {
         let ids = [];
         $(".check_item:checked").each(function () { ids.push($(this).val()); });
-        if (!ids.length) { myAlert("请至少选择一条数据", "warning"); return; }
-        let deal_info = prompt("处理信息（可选）：", "") || "";
+        if (!ids.length) { myAlert("{% trans "请至少选择一条数据" %}", "warning"); return; }
+        let deal_info = prompt("{% trans "处理信息（可选）" %}：", "") || "";
         $.post("/alarm/openHandle", { alarm_ids_str: ids.join(","), handle: handle, deal_info: deal_info }, f_handleDone, "json");
       }
     }
@@ -293,9 +294,9 @@
         dateRange: $("#input_dateRange").val(),
       }, function (res) {
         if (1000 !== res.code) { myAlert(res.msg, "error"); return; }
-        if (!res.info.count) { myAlert("当前筛选条件下无数据", "warning"); return; }
+        if (!res.info.count) { myAlert("{% trans "当前筛选条件下无数据" %}", "warning"); return; }
         window.open(res.info.url, "_blank");
-        myAlert("已导出 " + res.info.count + " 条", "success");
+        myAlert("{% trans "已导出" %} " + res.info.count + " {% trans "条" %}", "success");
       }, "json");
     }
 
@@ -306,15 +307,15 @@
         f_editing_id = info.id;
         f_editing_info = info;
         $("#modalInfo").html(`
-          <div class="xc_info-item"><span class="xc_info-label">状态</span><span class="xc_info-value">${f_stateBadge(info.state)}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">所属节点</span><span class="xc_info-value">${info.node_nickname || info.node_code || ''}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">风险等级</span><span class="xc_info-value">${RISK_NAMES[info.risk_level != null ? info.risk_level : 0]}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">算法任务</span><span class="xc_info-value">${info.task_name || info.flow_name || ''}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">告警编号</span><span class="xc_info-value">${info.code}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">布控编号</span><span class="xc_info-value">${info.control_code || ''}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">检测时间</span><span class="xc_info-value">${info.create_time_str || ''}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">告警描述</span><span class="xc_info-value">${info.desc || ''}</span></div>
-          <div class="xc_info-item"><span class="xc_info-label">处理信息</span><span class="xc_info-value">${info.deal_info || '未填写'}</span></div>`);
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "状态" %}</span><span class="xc_info-value">${f_stateBadge(info.state)}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "所属节点" %}</span><span class="xc_info-value">${info.node_nickname || info.node_code || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "风险等级" %}</span><span class="xc_info-value">${RISK_NAMES[info.risk_level != null ? info.risk_level : 0]}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "算法任务" %}</span><span class="xc_info-value">${info.task_name || info.flow_name || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "告警编号" %}</span><span class="xc_info-value">${info.code}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "布控编号" %}</span><span class="xc_info-value">${info.control_code || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "检测时间" %}</span><span class="xc_info-value">${info.create_time_str || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "告警描述" %}</span><span class="xc_info-value">${info.desc || ''}</span></div>
+          <div class="xc_info-item"><span class="xc_info-label">{% trans "处理信息" %}</span><span class="xc_info-value">${info.deal_info || '{% trans "未填写" %}'}</span></div>`);
         f_modalLoadMedia(info);
         $("#modalDealInfo").val(info.deal_info || "");
         $("#alarmModal").show();
@@ -334,7 +335,7 @@
       if (modal_media_list.length > 1) {
         $thumbs.show().html(modal_media_list.map((m, i) => `
           <div class="xc_thumb" data-index="${i}">
-            ${m.type === "video" ? '<span class="xc_thumb-tag">视频</span>' : ''}
+            ${m.type === "video" ? '<span class="xc_thumb-tag">{% trans "视频" %}</span>' : ''}
             <img src="${m.poster || m.url}" onerror="this.src='/static/images/720p.jpg'">
           </div>`).join(""));
       } else { $thumbs.hide().empty(); }
@@ -352,7 +353,7 @@
       let $display = $("#modalMediaDisplay");
       $("#modalMediaThumbs .xc_thumb").removeClass("active").filter(`[data-index="${index}"]`).addClass("active");
       if (!m) {
-        $display.html(`<div class="xc_media-empty"><i class="fa fa-picture-o" style="font-size:40px;color:#555;"></i><span>暂无媒体文件</span></div>`);
+        $display.html(`<div class="xc_media-empty"><i class="fa fa-picture-o" style="font-size:40px;color:#555;"></i><span>{% trans "暂无媒体文件" %}</span></div>`);
         return;
       }
       if (m.type === "video") {
@@ -377,9 +378,9 @@
 
     // 底部操作条：已处理 / 误报 / 重置（替代原 radio + 提交按钮）
     function f_modalHandle(state) {
-      if (!f_editing_id) { myAlert("告警数据未加载", "warning"); return; }
+      if (!f_editing_id) { myAlert("{% trans "告警数据未加载" %}", "warning"); return; }
       $.post("/alarm/openHandle", { alarm_ids_str: f_editing_id, handle: state, deal_info: $("#modalDealInfo").val() }, function (res) {
-        if (1000 === res.code) { myAlert("处理成功", "success"); $("#alarmModal").hide(); f_openIndex(temp_cur_page, temp_cur_page_size); }
+        if (1000 === res.code) { myAlert("{% trans "处理成功" %}", "success"); $("#alarmModal").hide(); f_openIndex(temp_cur_page, temp_cur_page_size); }
         else myAlert(res.msg, "error");
       }, "json");
     }
@@ -387,7 +388,7 @@
     $(document).on("click", "#btnModalFalseAlarm", function () { f_modalHandle(3); });
     $(document).on("click", "#btnModalReset", function () {
       if (f_editing_info) { $("#modalDealInfo").val(f_editing_info.deal_info || ""); }
-      myAlert("已重置处理意见", "info");
+      myAlert("{% trans "已重置处理意见" %}", "info");
     });
 
     $(".eai-modal-close").click(function () { $("#alarmModal").hide(); });

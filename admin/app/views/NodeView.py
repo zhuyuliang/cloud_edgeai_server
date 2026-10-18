@@ -3,6 +3,7 @@ import time
 
 from app.views.ViewsBase import *
 from app.models import *
+from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect
 from app.utils.Utils import buildPageLabels, gen_random_code_s
 from app.utils.UploadUtils import UploadUtils
@@ -62,7 +63,7 @@ def index(request):
 def add(request):
     if "POST" == request.method:
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
 
         # 直接从request.POST获取参数，因为f_parsePostParams无法处理FormData
         handle = request.POST.get("handle", "")
@@ -138,7 +139,7 @@ def add(request):
 
             node.save()
             # f_syncNode(code=node.code)
-            __msg = "添加成功"
+            __msg = _("添加成功")
             __ret = True
 
         except Exception as e:
@@ -181,7 +182,7 @@ def add(request):
 def edit(request):
     if "POST" == request.method:
         __ret = False
-        __msg = "未知错误"
+        __msg = _("未知错误")
 
         # 直接从request.POST获取参数，因为f_parsePostParams无法处理FormData
         handle = request.POST.get("handle", "")
@@ -233,7 +234,7 @@ def edit(request):
                 node.last_update_time = datetime.now()
                 node.save()
 
-                __msg = "编辑成功"
+                __msg = _("编辑成功")
                 __ret = True
             else:
                 __msg = "the data does not exist"
@@ -274,13 +275,13 @@ def edit(request):
                 return render(request, 'app/node/add.html', context)
             else:
                 return render(request, 'app/message.html',
-                              {"msg": "该节点不存在", "is_success": False, "redirect_url": "/node/index"})
+                              {"msg": _("该节点不存在"), "is_success": False, "redirect_url": "/node/index"})
         else:
             return redirect("/node/index")
 
 def api_openDel(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         # 直接从request.POST获取参数
         code = request.POST.get("code")
@@ -310,7 +311,7 @@ def api_openDel(request):
 
 def api_openSync(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         g_logger.info("NodeView.openSync() called")
         ret,msg = f_syncNode()
@@ -325,7 +326,7 @@ def api_openSync(request):
     return f_responseJson(res)
 def api_openInfo(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {
 
     }
@@ -356,7 +357,7 @@ def api_openInfo(request):
 # 获取节点详情API
 def api_openNodeDetail(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     data = {}
     if request.method == 'GET':
         # 直接从request.GET获取参数
@@ -395,7 +396,7 @@ def api_openNodeDetail(request):
 def api_openImportUpdate(request):
     # 导入升级包
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     if request.method == 'POST':
         # 直接从request.POST获取参数
         node_code = str(request.POST.get('node_code', "")).strip()
@@ -449,7 +450,7 @@ def api_openImportUpdate(request):
                     time.sleep(10)
                     f_syncNode(code=node.code)
                     ret = True
-                    raise Exception("更新完成")
+                    raise Exception(_("更新完成"))
 
             except Exception as e:
                 msg = str(e)

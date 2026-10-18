@@ -25,6 +25,7 @@ class SimpleMiddleware(MiddlewareMixin):
         else:
             # 未登录状态，仍需要放开的路由
             if path.startswith("login") or path.startswith("captcha") \
+                    or path.startswith("i18n/") \
                     or path.startswith("open/") \
                     or path.startswith("node/open") \
                     or path.startswith("alarm/open") \

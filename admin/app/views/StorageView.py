@@ -1,11 +1,12 @@
 from app.views.ViewsBase import *
 from app.utils.Utils import get_folder_size
 from django.utils.encoding import escape_uri_path
+from django.utils.translation import gettext as _
 import os
 
 def info(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {}
     t1 = time.time()
     if request.method == 'GET':

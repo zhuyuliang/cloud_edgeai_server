@@ -1,5 +1,6 @@
 {% extends "app/base_site.html" %}
-{% block title %} {{ page_title|default:"节点页面" }} {% endblock title %}
+{% load i18n %}
+{% block title %} {{ page_title|default:_("节点页面") }} {% endblock title %}
 {% block stylesheets %}
   {{ block.super }}
 <style>
@@ -36,13 +37,13 @@
       <div class="col-md-12">
         <div class="dash-panel v2-panel">
           <div class="dash-panel-head">
-            <h3><i class="fa fa-external-link" style="margin-right:2px"></i> {{ page_title|default:"节点页面" }}</h3>
+            <h3><i class="fa fa-external-link" style="margin-right:2px"></i> {{ page_title|default:_("节点页面") }}</h3>
             <div class="v2-toolbar">
-              <label class="xc_hint">节点：</label>
+              <label class="xc_hint">{% trans "节点" %}：</label>
               <span class="v2-node-name">{{ node_nickname|default:node_code }}（{{ node_code }}）</span>
-              <button class="ctrl-btn ctrl-btn-secondary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> 刷新</button>
-              <button class="ctrl-btn ctrl-btn-primary" onclick="f_goBack()"><i class="fa fa-list"></i> 返回列表</button>
-              <span class="xc_hint">页面由节点实时提供（iframe 双跳），操作结果与边缘本地一致</span>
+              <button class="ctrl-btn ctrl-btn-secondary" onclick="f_reloadFrame()"><i class="fa fa-refresh"></i> {% trans "刷新" %}</button>
+              <button class="ctrl-btn ctrl-btn-primary" onclick="f_goBack()"><i class="fa fa-list"></i> {% trans "返回列表" %}</button>
+              <span class="xc_hint">{% trans "页面由节点实时提供（iframe 双跳），操作结果与边缘本地一致" %}</span>
             </div>
           </div>
           <div class="dash-panel-body v2-frame-body">

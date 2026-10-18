@@ -1,6 +1,7 @@
 {% extends "app/base_site.html" %}
+{% load i18n %}
 
-{% block title %} 节点管理 {% endblock title %}
+{% block title %} {% trans "节点管理" %} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -223,15 +224,15 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="dash-panel">
               <div class="dash-panel-head">
-                <h3><i class="fa fa-server" style="margin-right:2px"></i> 节点管理</h3>
+                <h3><i class="fa fa-server" style="margin-right:2px"></i> {% trans "节点管理" %}</h3>
                 <div class="node-page-header">
                   <button onclick="f_openSync()" class="ctrl-btn ctrl-btn-secondary">
-                    <i class="fa fa-refresh"></i> 全量同步节点
+                    <i class="fa fa-refresh"></i> {% trans "全量同步节点" %}
                   </button>
                   <button onclick="f_openAdd()" class="ctrl-btn ctrl-btn-primary">
-                    <i class="fa fa-plus"></i> 添加节点
+                    <i class="fa fa-plus"></i> {% trans "添加节点" %}
                   </button>
-                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> 加载中</span>
+                  <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading"> {% trans "加载中" %}</span>
                   <span id="top_msg">{{top_msg}}</span>
                 </div>
               </div>
@@ -242,13 +243,13 @@
                     <thead>
                       <tr class="headings">
                         <th class="column-title">ID</th>
-                        <th class="column-title">序号</th>
-                        <th class="column-title">编号</th>
-                        <th class="column-title">昵称</th>
-                        <th class="column-title">节点地址</th>
-                        <th class="column-title">节点信息</th>
-                        <th class="column-title">更新时间</th>
-                        <th class="column-title no-link last"><span class="nobr">操作</span></th>
+                        <th class="column-title">{% trans "序号" %}</th>
+                        <th class="column-title">{% trans "编号" %}</th>
+                        <th class="column-title">{% trans "昵称" %}</th>
+                        <th class="column-title">{% trans "节点地址" %}</th>
+                        <th class="column-title">{% trans "节点信息" %}</th>
+                        <th class="column-title">{% trans "更新时间" %}</th>
+                        <th class="column-title no-link last"><span class="nobr">{% trans "操作" %}</span></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -258,34 +259,34 @@
                         <td>{{ d.sort }}</td>
                         <td>{{ d.code }}</td>
                         <td>{{ d.nickname }}</td>
-                        <td><a target="_blank" class="eai-link" title="前往节点地址" href="{{ d.address }}">{{ d.address }}</a></td>
+                        <td><a target="_blank" class="eai-link" title="{% trans '前往节点地址' %}" href="{{ d.address }}">{{ d.address }}</a></td>
                         <td class="node-info">
                           <div class="node-status">
                             {% if d.state == 0 %}
-                              <span class="eai-badge eai-badge-warning">未同步</span>
+                              <span class="eai-badge eai-badge-warning">{% trans "未同步" %}</span>
                             {% elif d.state == 1 %}
-                              <span class="eai-badge eai-badge-success">在线</span>
+                              <span class="eai-badge eai-badge-success">{% trans "在线" %}</span>
                               {% if d.version > 4 %}
                                 {% if d.is_auth == 1 %}
                                   <span class="eai-badge eai-badge-info">
                                     {% if d.is_multi_process == 1 %}
-                                      高级版({{ d.max_count }})路
+                                      {% blocktrans with max_count=d.max_count %}高级版({{ max_count }})路{% endblocktrans %}
                                     {% else %}
-                                      普通版
+                                      {% trans "普通版" %}
                                     {% endif %}
                                   </span>
                                 {% else %}
-                                  <span class="eai-badge eai-badge-error">未授权</span>
+                                  <span class="eai-badge eai-badge-error">{% trans "未授权" %}</span>
                                 {% endif %}
                               {% endif %}
                             {% elif d.state == 2 %}
-                              <span class="eai-badge eai-badge-error">离线</span>
+                              <span class="eai-badge eai-badge-error">{% trans "离线" %}</span>
                             {% elif d.state == 3 %}
-                              <span class="eai-badge eai-badge-error">节点版本不支持</span>
+                              <span class="eai-badge eai-badge-error">{% trans "节点版本不支持" %}</span>
                             {% elif d.state == 4 %}
-                              <span class="eai-badge eai-badge-error">读取节点信息失败</span>
+                              <span class="eai-badge eai-badge-error">{% trans "读取节点信息失败" %}</span>
                             {% else %}
-                              <span class="eai-badge eai-badge-error">未知错误</span>
+                              <span class="eai-badge eai-badge-error">{% trans "未知错误" %}</span>
                             {% endif %}
                           </div>
                           <div class="node-details">
@@ -305,13 +306,13 @@
                         <td>
                           <div class="node-action-group">
                             <button onclick="f_edit('{{ d.code }}')" class="ctrl-action" type="button">
-                              <i class="fa fa-pencil"></i> 编辑
+                              <i class="fa fa-pencil"></i> {% trans "编辑" %}
                             </button>
                             <button onclick="f_importUpdate('{{ d.code }}')" class="ctrl-action" type="button">
-                              <i class="fa fa-upload"></i> 更新版本
+                              <i class="fa fa-upload"></i> {% trans "更新版本" %}
                             </button>
                             <button onclick="f_openDel('{{ d.code }}')" class="ctrl-action ctrl-action-danger" type="button">
-                              <i class="fa fa-trash-o"></i> 删除
+                              <i class="fa fa-trash-o"></i> {% trans "删除" %}
                             </button>
                           </div>
                         </td>
@@ -330,7 +331,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="pagination-wrapper">
             <span class="pagination-info">
-              共 <strong>{{ pageData.page_num }}</strong> 页 / <strong>{{ pageData.count }}</strong> 条
+              {% trans "共" %} <strong>{{ pageData.page_num }}</strong> {% trans "页" %} / <strong>{{ pageData.count }}</strong> {% trans "条" %}
             </span>
             <ul class="pagination node-pagination">
               {% for d in pageData.pageLabels %}
@@ -351,27 +352,27 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">节点更新版本</h4>
+            <h4 class="modal-title">{% trans "节点更新版本" %}</h4>
           </div>
           <div class="modal-body">
             <form class="form-horizontal" role="form">
               <div class="form-group">
-                <label class="col-sm-3 control-label">节点编号</label>
+                <label class="col-sm-3 control-label">{% trans "节点编号" %}</label>
                 <div class="col-sm-9">
                   <span id="import_version_dialog_node_code"></span>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">升级版本</label>
+                <label class="col-sm-3 control-label">{% trans "升级版本" %}</label>
                 <div class="col-sm-9">
-                  <input type="file" class="form-control" accept=".xcupdate" name="xcupdate_file" placeholder="浏览升级安装包">
+                  <input type="file" class="form-control" accept=".xcupdate" name="xcupdate_file" placeholder="{% trans '浏览升级安装包' %}">
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
-            <button type="button" onclick="f_openImportUpdate()" class="btn-modal-submit">提交</button>
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">{% trans "取消" %}</button>
+            <button type="button" onclick="f_openImportUpdate()" class="btn-modal-submit">{% trans "提交" %}</button>
           </div>
         </div>
       </div>
@@ -384,46 +385,46 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">添加节点</h4>
+            <h4 class="modal-title">{% trans "添加节点" %}</h4>
           </div>
           <div class="modal-body">
             <form id="addNodeForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
               <input type="hidden" name="handle" value="add">
               <div class="form-group">
-                <label class="col-sm-3 control-label">序号</label>
+                <label class="col-sm-3 control-label">{% trans "序号" %}</label>
                 <div class="col-sm-9">
-                  <input type="number" name="sort" class="form-control" placeholder="请输入序号">
+                  <input type="number" name="sort" class="form-control" placeholder="{% trans '请输入序号' %}">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">节点昵称</label>
+                <label class="col-sm-3 control-label">{% trans "节点昵称" %}</label>
                 <div class="col-sm-9">
-                  <input type="text" name="nickname" required="required" class="form-control" placeholder="请输入节点昵称">
+                  <input type="text" name="nickname" required="required" class="form-control" placeholder="{% trans '请输入节点昵称' %}">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">节点地址</label>
+                <label class="col-sm-3 control-label">{% trans "节点地址" %}</label>
                 <div class="col-sm-9">
-                  <input type="text" name="address" required="required" class="form-control" placeholder="请输入节点地址">
+                  <input type="text" name="address" required="required" class="form-control" placeholder="{% trans '请输入节点地址' %}">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 control-label">eai_safe</label>
                 <div class="col-sm-9">
-                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="请输入eai_safe">
+                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="{% trans '请输入' %}eai_safe">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 control-label">media_secret</label>
                 <div class="col-sm-9">
-                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="请输入media_secret">
+                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="{% trans '请输入' %}media_secret">
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
-            <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">提交</button>
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">{% trans "取消" %}</button>
+            <button type="button" onclick="f_openAddSubmit()" class="btn-modal-submit">{% trans "提交" %}</button>
           </div>
         </div>
       </div>
@@ -436,53 +437,53 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">编辑节点</h4>
+            <h4 class="modal-title">{% trans "编辑节点" %}</h4>
           </div>
           <div class="modal-body">
             <form id="editNodeForm" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
               <input type="hidden" name="handle" value="edit">
               <input type="hidden" name="code" value="">
               <div class="form-group">
-                <label class="col-sm-3 control-label">编号</label>
+                <label class="col-sm-3 control-label">{% trans "编号" %}</label>
                 <div class="col-sm-9">
                   <input type="text" name="code_display" class="form-control" disabled="disabled">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">序号</label>
+                <label class="col-sm-3 control-label">{% trans "序号" %}</label>
                 <div class="col-sm-9">
-                  <input type="number" name="sort" class="form-control" placeholder="请输入序号">
+                  <input type="number" name="sort" class="form-control" placeholder="{% trans '请输入序号' %}">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">节点昵称</label>
+                <label class="col-sm-3 control-label">{% trans "节点昵称" %}</label>
                 <div class="col-sm-9">
-                  <input type="text" name="nickname" required="required" class="form-control" placeholder="请输入节点昵称">
+                  <input type="text" name="nickname" required="required" class="form-control" placeholder="{% trans '请输入节点昵称' %}">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label">节点地址</label>
+                <label class="col-sm-3 control-label">{% trans "节点地址" %}</label>
                 <div class="col-sm-9">
-                  <input type="text" name="address" required="required" class="form-control" placeholder="请输入节点地址">
+                  <input type="text" name="address" required="required" class="form-control" placeholder="{% trans '请输入节点地址' %}">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 control-label">eai_safe</label>
                 <div class="col-sm-9">
-                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="请输入eai_safe">
+                  <input type="text" name="eai_safe" required="required" class="form-control" placeholder="{% trans '请输入' %}eai_safe">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-3 control-label">media_secret</label>
                 <div class="col-sm-9">
-                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="请输入media_secret">
+                  <input type="text" name="media_secret" required="required" class="form-control" placeholder="{% trans '请输入' %}media_secret">
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn-modal-cancel" data-dismiss="modal">取消</button>
-            <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">提交</button>
+            <button type="button" class="btn-modal-cancel" data-dismiss="modal">{% trans "取消" %}</button>
+            <button type="button" onclick="f_openEditSubmit()" class="btn-modal-submit">{% trans "提交" %}</button>
           </div>
         </div>
       </div>
@@ -513,7 +514,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -545,7 +546,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -570,7 +571,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -606,7 +607,7 @@
                 timeout: 0,
                 error: function () {
                     ele_top_loading.hide();
-                    myAlert("网络异常，请确定网络正常！", "error");
+                    myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
                 },
                 success: function (res) {
                     ele_top_loading.hide();
@@ -620,7 +621,7 @@
                 }
             });
         } else {
-            myAlert("请选择升级包文件！", "error");
+            myAlert("{% trans "请选择升级包文件！" %}", "error");
         }
     }
 
@@ -642,7 +643,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();
@@ -671,7 +672,7 @@
             timeout: 0,
             error: function () {
                 ele_top_loading.hide();
-                myAlert("网络异常，请确定网络正常！", "error");
+                myAlert("{% trans "网络异常，请确定网络正常！" %}", "error");
             },
             success: function (res) {
                 ele_top_loading.hide();

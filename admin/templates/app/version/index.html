@@ -1,6 +1,7 @@
 {% extends "app/base_site.html" %}
+{% load i18n %}
 
-{% block title %} 关于系统 {% endblock title %}
+{% block title %} {% trans "关于系统" %} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -16,9 +17,9 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="dash-panel">
             <div class="dash-panel-head">
-             <h3><i class="fa fa-info-circle" style="margin-right:2px"></i> 关于系统</h3>
+             <h3><i class="fa fa-info-circle" style="margin-right:2px"></i> {% trans "关于系统" %}</h3>
              <div class="settings-toolbar">
-                 <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading">加载中</span>
+                 <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading">{% trans "加载中" %}</span>
                  <span id="top_msg">{{top_msg}}</span>
              </div>
             </div>
@@ -26,7 +27,7 @@
               <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
                 <h3>{{ settings.name }}</h3>
                         <div style="margin-top: 6px;"  class="col-md-12 col-sm-12">
-                          <span>软件版本：</span><span style="color: var(--eai-success);font-size: 15px ;margin-right: 10px;">{{ project_version }}</span>
+                          <span>{% trans "软件版本" %}：</span><span style="color: var(--eai-success);font-size: 15px ;margin-right: 10px;">{{ project_version }}</span>
                       </div>
 
 {% if settings.is_show_author == 1 %}
@@ -36,7 +37,7 @@
 {% endif %}
                 <div style="margin-top: 20px;"  class="col-md-12 col-sm-12">
                          <button onclick="f_getCheckVersion()" class="ctrl-btn ctrl-btn-primary">
-                            <i class="fa fa-refresh"></i> 检测新版本
+                            <i class="fa fa-refresh"></i> {% trans "检测新版本" %}
                         </button>
                 </div>
               </div>
@@ -45,7 +46,7 @@
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                   <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"  >版本检测结果</a>
+                        <a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"  >{% trans "版本检测结果" %}</a>
                     </li>
 
                   </ul>
@@ -123,7 +124,7 @@
                timeout: 0,
                error: function () {
                    ele_top_loading.hide();
-                   myAlert("网络异常，请确定网络正常！","error");
+                   myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                    ele_top_loading.hide();
@@ -147,7 +148,7 @@
                             item_html +="<p class=\"month\">"+pubdate+"</p>";
                           item_html +="</div>";
                           item_html +="<div class=\"message_wrapper\">";
-                            item_html +="<h4 class=\"heading\">发现新版本：v"+version+"</h4>";
+                            item_html +="<h4 class=\"heading\">{% trans "发现新版本" %}: v"+version+"</h4>";
                            for (let i = 0; i < updateContent.length; i++) {
                                    item_html +="<blockquote class=\"message\">"+updateContent[i]+"</blockquote>";
                            }
@@ -155,8 +156,8 @@
                             item_html +="<br>";
                             item_html +="<p class=\"url\">";
                               item_html +="<span class=\"fs1 text-info\" aria-hidden=\"true\" data-icon=\"\"></span>";
-                             item_html +=" <a href=\""+historyVersionUrl+"\" target='_blank'><i class=\"fa fa-download\"></i> 历史版本 </a>";
-                             item_html +=" &nbsp;<a href=\""+url+"\" target='_blank'><i class=\"fa fa-download\"></i> 新版本 </a>";
+                             item_html +=" <a href=\""+historyVersionUrl+"\" target='_blank'><i class=\"fa fa-download\"></i> {% trans "历史版本" %} </a>";
+                             item_html +=" &nbsp;<a href=\""+url+"\" target='_blank'><i class=\"fa fa-download\"></i> {% trans "新版本" %} </a>";
                            item_html +=" </p>";
                           item_html +="</div>";
                        item_html +=" </li>";
@@ -170,7 +171,7 @@
                             item_html+="<h4 class=\"heading\">"+res.msg+"</h4>";
                             item_html+="<p class=\"url\">";
                               item_html+="<span class=\"fs1 text-info\" aria-hidden=\"true\" data-icon=\"\"></span>";
-                           item_html +=" <a href=\""+historyVersionUrl+"\" target='_blank'><i class=\"fa fa-download\"></i> 历史版本 </a>";
+                           item_html +=" <a href=\""+historyVersionUrl+"\" target='_blank'><i class=\"fa fa-download\"></i> {% trans "历史版本" %} </a>";
                             item_html+="</p>";
                           item_html+="</div>";
                         item_html+="</li>";

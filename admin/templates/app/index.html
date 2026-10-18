@@ -1,6 +1,7 @@
 {% extends "app/base_site.html" %}
+{% load i18n %}
 
-{% block title %} 控制面板 {% endblock title %}
+{% block title %} {% trans "控制面板" %} {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -15,7 +16,7 @@
           <div class="kpi-card kpi-info">
             <div class="kpi-icon"><i class="fa fa-server"></i></div>
             <div class="kpi-main">
-              <div class="kpi-label">节点总数</div>
+              <div class="kpi-label">{% trans "节点总数" %}</div>
               <div class="kpi-value" id="kpi_node_total">--</div>
             </div>
           </div>
@@ -24,7 +25,7 @@
           <div class="kpi-card kpi-purple">
             <div class="kpi-icon"><i class="fa fa-video-camera"></i></div>
             <div class="kpi-main">
-              <div class="kpi-label">视频流总数</div>
+              <div class="kpi-label">{% trans "视频流总数" %}</div>
               <div class="kpi-value" id="kpi_stream_total">--</div>
             </div>
           </div>
@@ -33,7 +34,7 @@
           <div class="kpi-card kpi-danger">
             <div class="kpi-icon"><i class="fa fa-bell-o"></i></div>
             <div class="kpi-main">
-              <div class="kpi-label">今日告警</div>
+              <div class="kpi-label">{% trans "今日告警" %}</div>
               <div class="kpi-value" id="kpi_alarm_total">--</div>
             </div>
           </div>
@@ -42,7 +43,7 @@
           <div class="kpi-card kpi-warning">
             <div class="kpi-icon"><i class="fa fa-exclamation-circle"></i></div>
             <div class="kpi-main">
-              <div class="kpi-label">今日未处理</div>
+              <div class="kpi-label">{% trans "今日未处理" %}</div>
               <div class="kpi-value" id="kpi_alarm_unhandle">--</div>
             </div>
           </div>
@@ -54,7 +55,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel dash-cpu">
             <div class="dash-panel-head">
-              <h3>CPU利用率</h3>
+              <h3>{% trans "CPU利用率" %}</h3>
               <span class="dash-metric" id="metric_cpu">0%</span>
             </div>
             <div class="dash-panel-body">
@@ -65,7 +66,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel dash-mem">
             <div class="dash-panel-head">
-              <h3>内存利用率</h3>
+              <h3>{% trans "内存利用率" %}</h3>
               <span class="dash-metric" id="metric_mem">0%</span>
             </div>
             <div class="dash-panel-body">
@@ -76,7 +77,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel dash-disk">
             <div class="dash-panel-head">
-              <h3>存储利用率</h3>
+              <h3>{% trans "存储利用率" %}</h3>
               <span class="dash-metric" id="metric_disk">0%</span>
             </div>
             <div class="dash-panel-body">
@@ -91,17 +92,17 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel">
             <div class="dash-panel-head">
-              <h3>流媒体服务器</h3>
+              <h3>{% trans "流媒体服务器" %}</h3>
             </div>
             <div class="dash-panel-body">
               <table class="table table-hover">
                 <tbody>
                  <tr>
-                    <th scope="row">进程状态</th>
-                    <th scope="row" id="zlm_process_state">离线</th>
+                    <th scope="row">{% trans "进程状态" %}</th>
+                    <th scope="row" id="zlm_process_state">{% trans "离线" %}</th>
                   </tr>
                  <tr>
-                    <th scope="row">在线视频</th>
+                    <th scope="row">{% trans "在线视频" %}</th>
                     <th scope="row" id="zlm_total_media_count">0</th>
                   </tr>
 
@@ -115,7 +116,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel">
             <div class="dash-panel-head">
-                <h3>系统信息</h3>
+                <h3>{% trans "系统信息" %}</h3>
             </div>
             <div class="dash-panel-body">
               <table class="table table-hover">
@@ -123,17 +124,17 @@
 
 
                   <tr>
-                    <th scope="row">机器</th>
+                    <th scope="row">{% trans "机器" %}</th>
                     <th scope="row" id="os_machine_node">Machine</th>
                   </tr>
 
                   <tr>
-                    <th scope="row">系统</th>
+                    <th scope="row">{% trans "系统" %}</th>
                     <th scope="row" id="os_system_name">System</th>
                   </tr>
 
                   <tr>
-                    <th scope="row">运行</th>
+                    <th scope="row">{% trans "运行" %}</th>
                     <th scope="row" id="os_run_date_str">00:00:00</th>
                   </tr>
                     <tr>
@@ -142,12 +143,12 @@
                   </tr>
 
                   <tr>
-                    <th scope="row">内存</th>
+                    <th scope="row">{% trans "内存" %}</th>
                     <th scope="row" id="os_virtual_mem_used_rate">0%</th>
                   </tr>
 
                    <tr>
-                    <th scope="row">存储</th>
+                    <th scope="row">{% trans "存储" %}</th>
                     <th scope="row" id="os_disk_used_rate">0%</th>
                   </tr>
                 </tbody>
@@ -160,13 +161,13 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <div class="dash-panel">
             <div class="dash-panel-head">
-                <h3>版本信息</h3>
+                <h3>{% trans "版本信息" %}</h3>
             </div>
             <div class="dash-panel-body">
               <table class="table table-hover">
                 <tbody>
                   <tr>
-                    <th scope="row">版本</th>
+                    <th scope="row">{% trans "版本" %}</th>
                     <th scope="row" id="project_version">Version</th>
                   </tr>
                 </tbody>
@@ -185,16 +186,16 @@
 
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" >发现新版本</h4>
+                  <h4 class="modal-title" >{% trans "发现新版本" %}</h4>
               </div>
               <div class="modal-body">
                 <div style="padding: 5px 20px;">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                          <th>版本号</th>
-                        <th>更新时间</th>
-                        <th>更新内容</th>
+                          <th>{% trans "版本号" %}</th>
+                        <th>{% trans "更新时间" %}</th>
+                        <th>{% trans "更新内容" %}</th>
                       </tr>
                     </thead>
                     <tbody id="checkVersionData">
@@ -205,8 +206,8 @@
 
               </div>
                <div class="modal-footer">
-                    <button type="button"  class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" onclick="f_downloadNewVersion()" class="btn btn-primary">下载新版本</button>
+                    <button type="button"  class="btn btn-default" data-dismiss="modal">{% trans "取消" %}</button>
+                    <button type="button" onclick="f_downloadNewVersion()" class="btn btn-primary">{% trans "下载新版本" %}</button>
                   </div>
 
             </div>
@@ -295,7 +296,7 @@
                     enabled: false //隐藏底部类别名称
             },
             series: [{
-                    name: 'CPU利用率',
+                    name: '{% trans "CPU利用率" %}',
                     color: '#2a80eb',
                     data: (function () {
                             // 生成随机值
@@ -354,7 +355,7 @@
                     enabled: false
             },
             series: [{
-                    name: '内存利用率',
+                    name: '{% trans "内存利用率" %}',
                     color: '#faad14',
                     data: (function () {
                             // 生成随机值
@@ -416,7 +417,7 @@
                     enabled: false
             },
             series: [{
-                    name: '磁盘利用率',
+                    name: '{% trans "磁盘利用率" %}',
                     color: '#389e0d',
                     data: (function () {
                             // 生成随机值
@@ -459,7 +460,7 @@
                dataType: "json",
                timeout: 0,
                error: function () {
-                    myAlert("网络异常，请确定网络正常！","error");
+                    myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                    if(res.code === 1000){
@@ -522,7 +523,7 @@
                dataType: "json",
                timeout: 0,
                error: function () {
-                    myAlert("网络异常，请确定网络正常！","error");
+                    myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                     let info = res["info"];
@@ -530,9 +531,9 @@
                     let total_media_count = parseInt(info["total_media_count"]);
 
                     if(process_state===1){
-                        eleZlmProcessState.html("<span class='ctrl-state-on'>在线</span>");
+                        eleZlmProcessState.html("<span class='ctrl-state-on'>{% trans "在线" %}</span>");
                     }else{
-                        eleZlmProcessState.html("<span class='ctrl-state-off'>离线</span>");
+                        eleZlmProcessState.html("<span class='ctrl-state-off'>{% trans "离线" %}</span>");
                     }
                     eleZlmTotalMediaCount.html(total_media_count);
                }
@@ -553,7 +554,7 @@
                dataType: "json",
                timeout: 0,
                error: function () {
-                    myAlert("网络异常，请确定网络正常！","error");
+                    myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                    if(res.code === 1000){
@@ -603,7 +604,7 @@
                dataType: "json",
                timeout: 0,
                error: function () {
-                   myAlert("网络异常，请确定网络正常！","error");
+                   myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
                },
                success: function (res) {
                   let info = res.info;

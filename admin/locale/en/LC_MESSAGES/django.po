@@ -1,0 +1,1075 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cloud_eai_admin\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "16分屏"
+msgstr "16 Splits"
+
+msgid "1分屏"
+msgstr "1 Split"
+
+msgid "4分屏"
+msgstr "4 Splits"
+
+msgid "9分屏"
+msgstr "9 Splits"
+
+msgid "CPU利用率"
+msgstr "CPU Usage"
+
+msgid "HTTP端口"
+msgstr "HTTP Port"
+
+msgid "request method not supported！"
+msgstr "Request method not supported!"
+
+msgid "RTSP端口"
+msgstr "RTSP Port"
+
+msgid "v3系列节点不支持该功能"
+msgstr "This feature is not supported by v3 series nodes"
+
+msgid "一键部署 AI 推理模型"
+msgstr "Deploy AI inference models with one click"
+
+msgid "上一页"
+msgstr "Previous"
+
+msgid "上传目录"
+msgstr "Upload Directory"
+
+msgid "上次清零"
+msgstr "Last Reset"
+
+msgid "上次登录时间"
+msgstr "Last Sign-in"
+
+msgid "下一页"
+msgstr "Next"
+
+msgid "下载原图"
+msgstr "Download Image"
+
+msgid "下载新版本"
+msgstr "Download New Version"
+
+msgid "下载视频"
+msgstr "Download Video"
+
+msgid "不修改密码请留空"
+msgstr "Leave blank to keep current password"
+
+msgid "不支持的操作类型"
+msgstr "Unsupported operation type"
+
+msgid "两次输入的密码不一致"
+msgstr "The two passwords do not match"
+
+msgid "中风险"
+msgstr "Medium Risk"
+
+msgid "主机地址"
+msgstr "Host Address"
+
+msgid "事件ID"
+msgstr "Event ID"
+
+msgid "事件告警"
+msgstr "Event Alarms"
+
+msgid "人脸告警"
+msgstr "Face Alarms"
+
+msgid "今日告警"
+msgstr "Today's Alarms"
+
+msgid "今日告警总数"
+msgstr "Total Alarms Today"
+
+msgid "今日已处理"
+msgstr "Handled Today"
+
+msgid "今日未处理"
+msgstr "Unhandled Today"
+
+msgid "任务"
+msgstr "Task"
+
+msgid "任务名"
+msgstr "Task Name"
+
+msgid "任务名称"
+msgstr "Task Name"
+
+msgid "低风险"
+msgstr "Low Risk"
+
+msgid "使用您的管理员账号"
+msgstr "Use your administrator account"
+
+msgid "保存失败"
+msgstr "Save failed"
+
+msgid "保存成功"
+msgstr "Saved successfully"
+
+msgid "保存配置"
+msgstr "Save Settings"
+
+msgid "保存配置成功"
+msgstr "Settings saved successfully"
+
+msgid "停止"
+msgstr "Stop"
+
+msgid "停止播放"
+msgstr "Stop"
+
+msgid "光圈"
+msgstr "Iris"
+
+msgid "全屏播放"
+msgstr "Fullscreen"
+
+msgid "全选"
+msgstr "Select All"
+
+msgid "全量同步节点"
+msgstr "Sync All Nodes"
+
+msgid "共"
+msgstr "Total"
+
+msgid "关于系统"
+msgstr "About"
+
+msgid "关闭"
+msgstr "Close"
+
+msgid "关闭声音"
+msgstr "Mute"
+
+msgid "关闭菜单"
+msgstr "Close Menu"
+
+msgid "内存"
+msgstr "Memory"
+
+msgid "内存利用率"
+msgstr "Memory Usage"
+
+msgid "分类"
+msgstr "Category"
+
+msgid "删除"
+msgstr "Delete"
+
+msgid "删除失败"
+msgstr "Delete failed"
+
+msgid "删除失败！"
+msgstr "Delete failed!"
+
+msgid "删除成功"
+msgstr "Deleted successfully"
+
+msgid "删除此记录"
+msgstr "Delete this record"
+
+msgid "刷新"
+msgstr "Refresh"
+
+msgid "前往节点地址"
+msgstr "Go to Node"
+
+msgid "加入时间"
+msgstr "Joined"
+
+msgid "加载中"
+msgstr "Loading"
+
+msgid "升级版本"
+msgstr "Upgrade Version"
+
+msgid "单屏播放器"
+msgstr "Single Player"
+
+msgid "历史"
+msgstr "History"
+
+msgid "历史版本"
+msgstr "Version History"
+
+msgid "历史记录"
+msgstr "History Records"
+
+msgid "参数不合法"
+msgstr "Invalid parameters"
+
+msgid "发现"
+msgstr "Discover"
+
+msgid "发现新版本"
+msgstr "New version found"
+
+msgid "取消"
+msgstr "Cancel"
+
+msgid "否"
+msgstr "No"
+
+msgid "启动配置"
+msgstr "Startup Settings"
+
+msgid "启用登录验证码"
+msgstr "Enable login captcha"
+
+msgid "告警"
+msgstr "Alarm"
+
+msgid "告警信息"
+msgstr "Alarm Information"
+
+msgid "告警分类"
+msgstr "Alarm Category"
+
+msgid "告警描述"
+msgstr "Alarm Description"
+
+msgid "告警数据未加载"
+msgstr "Alarm data not loaded"
+
+msgid "告警时间"
+msgstr "Alarm Time"
+
+msgid "告警编号"
+msgstr "Alarm No."
+
+msgid "告警详情"
+msgstr "Alarm Details"
+
+msgid "周期开始"
+msgstr "Cycle Start"
+
+msgid "周期结束"
+msgstr "Cycle End"
+
+msgid "图片"
+msgstr "Image"
+
+msgid "在线"
+msgstr "Online"
+
+msgid "在线数量/总数量"
+msgstr "Online/Total"
+
+msgid "在线视频"
+msgstr "Online Videos"
+
+msgid "基本配置"
+msgstr "General Settings"
+
+msgid "处理信息"
+msgstr "Handling Info"
+
+msgid "处理信息（可选）"
+msgstr "Handling Info (optional)"
+
+msgid "处理意见"
+msgstr "Handling Comment"
+
+msgid "处理成功"
+msgstr "Handled successfully"
+
+msgid "大屏管理"
+msgstr "Large Screen"
+
+msgid "媒体服务密钥"
+msgstr "Media Service Secret"
+
+msgid "媒体服务配置"
+msgstr "Media Service Settings"
+
+msgid "字体文件路径"
+msgstr "Font File Path"
+
+msgid "存储"
+msgstr "Storage"
+
+msgid "存储利用率"
+msgstr "Storage Usage"
+
+msgid "存储目录"
+msgstr "Storage Directory"
+
+msgid "安全可靠的数据传输"
+msgstr "Secure and reliable data transmission"
+
+msgid "安全配置"
+msgstr "Security Settings"
+
+msgid "安装路径"
+msgstr "Install Path"
+
+msgid "实时监控设备状态与性能"
+msgstr "Monitor device status and performance in real time"
+
+msgid "密码"
+msgstr "Password"
+
+msgid "密码格式不正确"
+msgstr "Invalid password format"
+
+msgid "密码的长度需满足6-16位"
+msgstr "Password must be 6-16 characters long"
+
+msgid "密码错误，连续失败第%d次"
+msgstr "Wrong password, %d consecutive failed attempt(s)"
+
+msgid "密码错误，连续失败第%d次，账号锁定"
+msgstr "Wrong password, %d consecutive failed attempt(s), account locked"
+
+msgid "导出 CSV"
+msgstr "Export CSV"
+
+msgid "导出Excel"
+msgstr "Export to Excel"
+
+msgid "导出失败"
+msgstr "Export failed"
+
+msgid "导出成功"
+msgstr "Exported successfully"
+
+msgid "导出日志"
+msgstr "Export Logs"
+
+msgid "导出日志成功"
+msgstr "Logs exported successfully"
+
+msgid "导出日志，提供给开发者排查问题"
+msgstr "Export logs to help developers troubleshoot"
+
+msgid "已处理"
+msgstr "Handled"
+
+msgid "已导出"
+msgstr "Exported"
+
+msgid "已归档"
+msgstr "Archived"
+
+msgid "已重置处理意见"
+msgstr "Handling comment reset"
+
+msgid "布控"
+msgstr "Surveillance"
+
+msgid "布控代码"
+msgstr "Surveillance Code"
+
+msgid "布控管理"
+msgstr "Surveillance Tasks"
+
+msgid "布控编号"
+msgstr "Surveillance ID"
+
+msgid "布控编号/名称"
+msgstr "Surveillance ID / Name"
+
+msgid "帮助"
+msgstr "Help"
+
+msgid "序号"
+msgstr "No."
+
+msgid "开启声音"
+msgstr "Unmute"
+
+msgid "开启日志调试"
+msgstr "Enable log debugging"
+
+msgid "开始播放"
+msgstr "Play"
+
+msgid "张"
+msgstr "image(s)"
+
+msgid "当前筛选条件下无数据"
+msgstr "No data under current filters"
+
+msgid "当前计数"
+msgstr "Current Count"
+
+msgid "快照"
+msgstr "Snapshot"
+
+msgid "快照详情"
+msgstr "Snapshot Details"
+
+msgid "总计"
+msgstr "Total"
+
+msgid "总计%d条，未处理%d条"
+msgstr "Total %d, unhandled %d"
+
+msgid "成功%d条，失败%d条"
+msgstr "%d succeeded, %d failed"
+
+msgid "所属节点"
+msgstr "Node"
+
+msgid "手动清零"
+msgstr "Manual Reset"
+
+msgid "批量删除"
+msgstr "Batch Delete"
+
+msgid "报警"
+msgstr "Alarm"
+
+msgid "报警数量"
+msgstr "Alarm Count"
+
+msgid "报警管理"
+msgstr "Alarms"
+
+msgid "接入视频"
+msgstr "Video Access"
+
+msgid "控制台"
+msgstr "Console"
+
+msgid "控制面板"
+msgstr "Dashboard"
+
+msgid "提交"
+msgstr "Submit"
+
+msgid "提示"
+msgstr "Notice"
+
+msgid "提示图片"
+msgstr "Notice Image"
+
+msgid "播放"
+msgstr "Play"
+
+msgid "操作"
+msgstr "Actions"
+
+msgid "数量"
+msgstr "Count"
+
+msgid "新增布控"
+msgstr "Add Surveillance"
+
+msgid "新密码"
+msgstr "New Password"
+
+msgid "新密码不能为空"
+msgstr "New password cannot be empty"
+
+msgid "新密码的长度需满足6-16位"
+msgstr "New password must be 6-16 characters long"
+
+msgid "新版本"
+msgstr "New Version"
+
+msgid "新用户名已经存在！"
+msgstr "New username already exists!"
+
+msgid "无效的记录ID（进行中周期不可删除）"
+msgstr "Invalid record ID (running cycles cannot be deleted)"
+
+msgid "无权限"
+msgstr "Permission denied"
+
+msgid "无法联网检测新版本"
+msgstr "Unable to check for updates (network error)"
+
+msgid "日志"
+msgstr "Logs"
+
+msgid "日志调试模式"
+msgstr "Log Debug Mode"
+
+msgid "时间"
+msgstr "Time"
+
+msgid "是"
+msgstr "Yes"
+
+msgid "昵称"
+msgstr "Nickname"
+
+msgid "普清"
+msgstr "SD"
+
+msgid "普通版"
+msgstr "Standard"
+
+msgid "暂无告警数据"
+msgstr "No alarm data"
+
+msgid "暂无在线节点，请先在「节点管理」中添加并同步节点"
+msgstr "No nodes online. Please add and sync nodes in \"Nodes\" first"
+
+msgid "暂无媒体文件"
+msgstr "No media files"
+
+msgid "暂无待删除数据"
+msgstr "No data to delete"
+
+msgid "暂无数据"
+msgstr "No Data"
+
+msgid "暂无新数据"
+msgstr "No new data"
+
+msgid "暂无视频流"
+msgstr "No streams"
+
+msgid "暂无计数数据"
+msgstr "No counting data"
+
+msgid "更新内容"
+msgstr "Release Notes"
+
+msgid "更新完成"
+msgstr "Update completed"
+
+msgid "更新时间"
+msgstr "Updated"
+
+msgid "更新版本"
+msgstr "Update Version"
+
+msgid "最新告警"
+msgstr "Latest Alarms"
+
+msgid "最近7日告警类型排行"
+msgstr "Alarm Category Ranking (Last 7 Days)"
+
+msgid "最近7日告警趋势"
+msgstr "Alarm Trend (Last 7 Days)"
+
+msgid "未发现新版本"
+msgstr "No new version found"
+
+msgid "未发现验证码信息"
+msgstr "Captcha information not found"
+
+msgid "未同步"
+msgstr "Not Synced"
+
+msgid "未填写"
+msgstr "Not Filled"
+
+msgid "未处理"
+msgstr "Unhandled"
+
+msgid "未授权"
+msgstr "Unauthorized"
+
+msgid "未登录"
+msgstr "Not signed in"
+
+msgid "未知"
+msgstr "Unknown"
+
+msgid "未知错误"
+msgstr "Unknown error"
+
+msgid "未读"
+msgstr "Unread"
+
+msgid "机器"
+msgstr "Machine"
+
+msgid "条"
+msgstr "item(s)"
+
+msgid "条新的报警"
+msgstr "new alarm(s)"
+
+msgid "查看所有报警"
+msgstr "View All Alarms"
+
+msgid "查看报警详情"
+msgstr "View Alarm Details"
+
+msgid "查看详情"
+msgstr "View Details"
+
+msgid "标记已处理"
+msgstr "Mark as Handled"
+
+msgid "标记误报"
+msgstr "Mark as False Alarm"
+
+msgid "检测报警新数据失败"
+msgstr "Failed to check for new alarms"
+
+msgid "检测新版本"
+msgstr "Check for Updates"
+
+msgid "检测时间"
+msgstr "Check Time"
+
+msgid "正常"
+msgstr "Normal"
+
+msgid "每周清零"
+msgstr "Weekly Reset"
+
+msgid "每小时清零"
+msgstr "Hourly Reset"
+
+msgid "每日清零"
+msgstr "Daily Reset"
+
+msgid "每月清零"
+msgstr "Monthly Reset"
+
+msgid "注销登录"
+msgstr "Sign Out"
+
+msgid "流媒体服务器"
+msgstr "Streaming Server"
+
+msgid "浏览升级安装包"
+msgstr "Browse upgrade package"
+
+msgid "浏览器不支持音频播放"
+msgstr "Your browser does not support audio playback"
+
+msgid "添加失败"
+msgstr "Add failed"
+
+msgid "添加成功"
+msgstr "Added successfully"
+
+msgid "添加用户"
+msgstr "Add User"
+
+msgid "添加节点"
+msgstr "Add Node"
+
+msgid "清零"
+msgstr "Reset"
+
+msgid "清零成功"
+msgstr "Reset successfully"
+
+msgid "清零策略"
+msgstr "Reset Strategy"
+
+msgid "点击刷新验证码"
+msgstr "Click to refresh captcha"
+
+msgid "点击查看大图"
+msgstr "Click to view full size"
+
+msgid "版本"
+msgstr "Version"
+
+msgid "版本信息"
+msgstr "Version Information"
+
+msgid "版本号"
+msgstr "Version No."
+
+msgid "版本检测结果"
+msgstr "Version Check Result"
+
+msgid "状态"
+msgstr "Status"
+
+msgid "用户名"
+msgstr "Username"
+
+msgid "用户名不能为空"
+msgstr "Username cannot be empty"
+
+msgid "用户名已存在"
+msgstr "Username already exists"
+
+msgid "用户名未注册"
+msgstr "Username not registered"
+
+msgid "用户名格式不正确"
+msgstr "Invalid username format"
+
+msgid "用户管理"
+msgstr "Users"
+
+msgid "登录"
+msgstr "Sign In"
+
+msgid "登录成功"
+msgstr "Signed in successfully"
+
+msgid "登录验证码"
+msgstr "Login Captcha"
+
+msgid "确定要删除这条历史记录吗？此操作不可恢复（仅删除云端记录）。"
+msgstr ""
+"Delete this history record? This cannot be undone (cloud records only)."
+
+msgid "确认删除选中的告警？"
+msgstr "Delete the selected alarms?"
+
+msgid "确认将计数清零？"
+msgstr "Reset the count to zero?"
+
+msgid "确认新密码"
+msgstr "Confirm New Password"
+
+msgid "确认新密码不能为空"
+msgstr "Confirm password cannot be empty"
+
+msgid "磁盘利用率"
+msgstr "Disk Usage"
+
+msgid "禁用"
+msgstr "Disabled"
+
+msgid "离开"
+msgstr "Leave"
+
+msgid "离开数"
+msgstr "Leave Count"
+
+msgid "离线"
+msgstr "Offline"
+
+msgid "算法任务"
+msgstr "Algorithm Task"
+
+msgid "管理端口"
+msgstr "Admin Port"
+
+msgid "类型"
+msgstr "Type"
+
+msgid "系统"
+msgstr "System"
+
+msgid "系统信息"
+msgstr "System Information"
+
+msgid "系统功能"
+msgstr "System"
+
+msgid "系统安全密钥"
+msgstr "System Security Secret"
+
+msgid "累计总量"
+msgstr "Total Accumulation"
+
+msgid "统一管理您的边缘设备和 AI 应用，实现高效的智能化部署与运维。"
+msgstr ""
+"Manage your edge devices and AI applications centrally for efficient "
+"intelligent deployment and operations."
+
+msgid "编号"
+msgstr "ID"
+
+msgid "编辑"
+msgstr "Edit"
+
+msgid "编辑布控"
+msgstr "Edit Surveillance"
+
+msgid "编辑成功"
+msgstr "Updated successfully"
+
+msgid "编辑用户"
+msgstr "Edit User"
+
+msgid "编辑节点"
+msgstr "Edit Node"
+
+msgid "缺少节点或布控参数"
+msgstr "Missing node or surveillance parameters"
+
+msgid "网络异常！"
+msgstr "Network error!"
+
+msgid "网络异常，请确定网络正常！"
+msgstr "Network error, please check your network!"
+
+msgid "聚焦"
+msgstr "Focus"
+
+msgid "节点"
+msgstr "Node"
+
+msgid "节点不存在"
+msgstr "Node does not exist"
+
+msgid "节点信息"
+msgstr "Node Information"
+
+msgid "节点地址"
+msgstr "Node Address"
+
+msgid "节点总数"
+msgstr "Total Nodes"
+
+msgid "节点昵称"
+msgstr "Node Nickname"
+
+msgid "节点更新版本"
+msgstr "Update Node Version"
+
+msgid "节点未同步"
+msgstr "Node not synced"
+
+msgid "节点版本不支持"
+msgstr "Node version not supported"
+
+msgid "节点版本低于%.3f"
+msgstr "Node version is below %.3f"
+
+msgid "节点离线"
+msgstr "Node offline"
+
+msgid "节点管理"
+msgstr "Nodes"
+
+msgid "节点编号"
+msgstr "Node ID"
+
+msgid "菜单导航"
+msgstr "Menu Navigation"
+
+msgid "视频"
+msgstr "Video"
+
+msgid "视频流地址格式不正确！"
+msgstr "Invalid stream URL format!"
+
+msgid "视频流总数"
+msgstr "Total Streams"
+
+msgid "视频流支持的所有转发协议"
+msgstr "All forwarding protocols supported by the stream"
+
+msgid "视频管理"
+msgstr "Streams"
+
+msgid "计数历史"
+msgstr "Counting History"
+
+msgid "计数历史记录"
+msgstr "Counting History"
+
+msgid "计数告警"
+msgstr "Counting Alarms"
+
+msgid "计数趋势图（按清零周期）"
+msgstr "Counting Trend (by Reset Cycle)"
+
+msgid "记录不存在"
+msgstr "Record does not exist"
+
+msgid "该布控暂无历史数据"
+msgstr "No history data for this surveillance"
+
+msgid "该布控暂无历史记录"
+msgstr "No history records for this surveillance"
+
+msgid "该数据不存在！"
+msgstr "The data does not exist!"
+
+msgid "该用户不存在"
+msgstr "User does not exist"
+
+msgid "该节点不存在"
+msgstr "Node does not exist"
+
+msgid "误报"
+msgstr "False Alarm"
+
+msgid "请求参数不合法"
+msgstr "Invalid request parameters"
+
+msgid "请求参数不正确"
+msgstr "Incorrect request parameters"
+
+msgid "请求参数缺少验证码"
+msgstr "Captcha missing in request parameters"
+
+msgid "请至少选择一条数据"
+msgstr "Please select at least one record"
+
+msgid "请输入"
+msgstr "Enter "
+
+msgid "请输入处理意见"
+msgstr "Enter handling comment"
+
+msgid "请输入密码"
+msgstr "Enter password"
+
+msgid "请输入序号"
+msgstr "Enter No."
+
+msgid "请输入播放地址（支持ws-fmp4/http-fmp4）"
+msgstr "Enter a playback URL (ws-fmp4/http-fmp4 supported)"
+
+msgid "请输入播放地址（支持ws-fmp4/http-fmp4）！"
+msgstr "Enter a playback URL (ws-fmp4/http-fmp4 supported)!"
+
+msgid "请输入用户名"
+msgstr "Enter username"
+
+msgid "请输入节点地址"
+msgstr "Enter node address"
+
+msgid "请输入节点昵称"
+msgstr "Enter node nickname"
+
+msgid "请输入邮箱"
+msgstr "Enter email"
+
+msgid "请输入验证码"
+msgstr "Enter captcha"
+
+msgid "请选中一个窗口！"
+msgstr "Please select a window!"
+
+msgid "请选择升级包文件！"
+msgstr "Please select an upgrade package file!"
+
+msgid "请选择视频流"
+msgstr "Select a stream"
+
+msgid "读取节点信息失败"
+msgstr "Failed to read node information"
+
+msgid "调焦"
+msgstr "Zoom"
+
+msgid "账号已锁定"
+msgstr "Account is locked"
+
+msgid "超清"
+msgstr "UHD"
+
+msgid "超级管理员"
+msgstr "Super Admin"
+
+msgid "超级管理员不允许删除自己的账号"
+msgstr "Super admin cannot delete their own account"
+
+msgid "超级管理员不允许被删除！"
+msgstr "Super admin cannot be deleted!"
+
+msgid "路径配置"
+msgstr "Path Settings"
+
+msgid "车牌号"
+msgstr "Plate No."
+
+msgid "车牌告警"
+msgstr "Plate Alarms"
+
+msgid "软件安装路径配置不正确"
+msgstr "Software install path is misconfigured"
+
+msgid "软件版本"
+msgstr "Software Version"
+
+msgid "边缘清零失败"
+msgstr "Edge reset failed"
+
+msgid "运行"
+msgstr "Running"
+
+msgid "返回"
+msgstr "Back"
+
+msgid "返回上一页"
+msgstr "Go Back"
+
+msgid "返回列表"
+msgstr "Back to List"
+
+msgid "进入"
+msgstr "Enter"
+
+msgid "进入数"
+msgstr "Enter Count"
+
+msgid "进程状态"
+msgstr "Process Status"
+
+msgid "进行中"
+msgstr "Running"
+
+msgid "进行中周期不可删除"
+msgstr "Running cycles cannot be deleted"
+
+msgid "选择全部"
+msgstr "Select All"
+
+msgid "邮箱"
+msgstr "Email"
+
+msgid "邮箱不能为空"
+msgstr "Email cannot be empty"
+
+msgid "重置"
+msgstr "Reset"
+
+msgid "页"
+msgstr "page(s)"
+
+msgid "页面即将自动返回…"
+msgstr "The page will return automatically…"
+
+msgid "页面由节点实时提供（iframe 双跳），操作结果与边缘本地一致"
+msgstr ""
+"This page is served by the node in real time (iframe proxy). Results are "
+"identical to the node's local UI"
+
+msgid "页面由节点实时提供（iframe 双跳），新增/编辑/转发/云台等操作直接在节点页面完成"
+msgstr ""
+"This page is served by the node in real time (iframe proxy). "
+"Add/edit/forward/PTZ operations are performed on the node page directly"
+
+msgid "页面由节点实时提供（iframe 双跳），添加/编辑/启停/删除布控等操作直接在节点页面完成"
+msgstr ""
+"This page is served by the node in real time (iframe proxy). "
+"Add/edit/start/stop/delete operations are performed on the node page "
+"directly"
+
+msgid "风险等级"
+msgstr "Risk Level"
+
+msgid "验证码"
+msgstr "Captcha"
+
+msgid "验证码不正确"
+msgstr "Incorrect captcha"
+
+msgid "验证码格式不正确"
+msgstr "Invalid captcha format"
+
+msgid "验证码超过5分钟,已失效"
+msgstr "Captcha expired after 5 minutes"
+
+msgid "高清"
+msgstr "HD"
+
+msgid "高风险"
+msgstr "High Risk"

@@ -9,6 +9,7 @@ from app.utils.TarUtils import TarUtils
 from app.utils.UploadUtils import UploadUtils
 from app.utils.OSSystem import OSSystem
 from framework.settings import PROJECT_VERSION,PROJECT_ADMIN_START_TIMESTAMP
+from django.utils.translation import gettext as _
 
 def settings(request):
     # 系统设置
@@ -35,7 +36,7 @@ def settings(request):
 def api_postExportLogs(request):
     # 导出日志
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {
 
     }
@@ -101,7 +102,7 @@ def api_postExportLogs(request):
 
         info["export_filename"] = export_filename
         ret = True
-        msg = "导出日志成功"
+        msg = _("导出日志成功")
 
     else:
         msg = "request method not supported"
@@ -125,7 +126,7 @@ def api_postExportLogs(request):
 def api_postSaveSettings(request):
     # 保存系统配置
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {}
     
     if request.method == 'POST':
@@ -153,9 +154,9 @@ def api_postSaveSettings(request):
                 json.dump(config_data, f, indent=4, ensure_ascii=False)
             
             ret = True
-            msg = "保存配置成功"
+            msg = _("保存配置成功")
         except Exception as e:
-            msg = f"保存失败：{str(e)}"
+            msg = _("保存失败") + f"：{str(e)}"
             g_logger.error(f"SystemView.api_postSaveSettings() error: {str(e)}")
     else:
         msg = "request method not supported"

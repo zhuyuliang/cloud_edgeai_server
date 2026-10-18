@@ -87,9 +87,9 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="dash-panel">
             <div class="dash-panel-head">
-              <h3><i class="fa fa-cog" style="margin-right:2px"></i> 启动配置</h3>
+              <h3><i class="fa fa-cog" style="margin-right:2px"></i> {% trans "启动配置" %}</h3>
               <div class="settings-toolbar">
-                <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading">加载中</span>
+                <span id="top_loading"><img class="top_loading_img" src="/static/images/load.gif" alt="loading">{% trans "加载中" %}</span>
                 <span id="top_msg">{{top_msg}}</span>
               </div>
             </div>
@@ -99,10 +99,10 @@
                 <form id="settingsForm" class="form-horizontal form-label-left">
                   <!-- 基本配置 -->
                   <div class="config-section">
-                    <h4>基本配置</h4>
+                    <h4>{% trans "基本配置" %}</h4>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">主机地址 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="host">{% trans "主机地址" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="host" name="host" value="{{config.host}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -110,7 +110,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="adminPort">管理端口 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="adminPort">{% trans "管理端口" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="number" id="adminPort" name="adminPort" value="{{config.adminPort}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -118,12 +118,12 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="logDebug">日志调试模式
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="logDebug">{% trans "日志调试模式" %}
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="checkbox">
                           <label>
-                            <input type="checkbox" id="logDebug" name="logDebug" {% if config.logDebug %}checked{% endif %} class="flat"> 开启日志调试
+                            <input type="checkbox" id="logDebug" name="logDebug" {% if config.logDebug %}checked{% endif %} class="flat"> {% trans "开启日志调试" %}
                           </label>
                         </div>
                       </div>
@@ -132,10 +132,10 @@
                   
                   <!-- 媒体服务配置 -->
                   <div class="config-section">
-                    <h4>媒体服务配置</h4>
+                    <h4>{% trans "媒体服务配置" %}</h4>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaRtspPort">RTSP端口 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaRtspPort">{% trans "RTSP端口" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="number" id="mediaRtspPort" name="mediaRtspPort" value="{{config.mediaRtspPort}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -143,7 +143,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaHttpPort">HTTP端口 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaHttpPort">{% trans "HTTP端口" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="number" id="mediaHttpPort" name="mediaHttpPort" value="{{config.mediaHttpPort}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -151,7 +151,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaSecret">媒体服务密钥 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mediaSecret">{% trans "媒体服务密钥" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="mediaSecret" name="mediaSecret" value="{{config.mediaSecret}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -161,10 +161,10 @@
                   
                   <!-- 安全配置 -->
                   <div class="config-section">
-                    <h4>安全配置</h4>
+                    <h4>{% trans "安全配置" %}</h4>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="eaiSafe">系统安全密钥 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="eaiSafe">{% trans "系统安全密钥" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="eaiSafe" name="eaiSafe" value="{{config.eaiSafe}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -172,12 +172,12 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isEnableLoginCaptcha">登录验证码
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="isEnableLoginCaptcha">{% trans "登录验证码" %}
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="checkbox">
                           <label>
-                            <input type="checkbox" id="isEnableLoginCaptcha" name="isEnableLoginCaptcha" {% if config.isEnableLoginCaptcha %}checked{% endif %} class="flat"> 启用登录验证码
+                            <input type="checkbox" id="isEnableLoginCaptcha" name="isEnableLoginCaptcha" {% if config.isEnableLoginCaptcha %}checked{% endif %} class="flat"> {% trans "启用登录验证码" %}
                           </label>
                         </div>
                       </div>
@@ -186,10 +186,10 @@
                   
                   <!-- 路径配置 -->
                   <div class="config-section">
-                    <h4>路径配置</h4>
+                    <h4>{% trans "路径配置" %}</h4>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="install">安装路径 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="install">{% trans "安装路径" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="install" name="install" value="{{config.install}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -197,7 +197,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fontPath">字体文件路径 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fontPath">{% trans "字体文件路径" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="fontPath" name="fontPath" value="{{config.fontPath}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -205,7 +205,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="uploadDir">上传目录 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="uploadDir">{% trans "上传目录" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="uploadDir" name="uploadDir" value="{{config.uploadDir}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -213,7 +213,7 @@
                     </div>
                     
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="storageDir">存储目录 <span class="required">*</span>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="storageDir">{% trans "存储目录" %} <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" id="storageDir" name="storageDir" value="{{config.storageDir}}" required="required" class="form-control col-md-7 col-xs-12">
@@ -225,7 +225,7 @@
                   <div class="ln_solid"></div>
                   <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-md-offset-3">
-                      <button type="button" onclick="f_saveSettings()" class="ctrl-btn ctrl-btn-primary" style="padding:8px 20px">保存配置</button>
+                      <button type="button" onclick="f_saveSettings()" class="ctrl-btn ctrl-btn-primary" style="padding:8px 20px">{% trans "保存配置" %}</button>
                     </div>
                   </div>
                 </form>
@@ -235,8 +235,8 @@
               <div class="ln_solid"></div>
               <div class="form-group" style="margin-bottom: 30px;">
                 <div class="col-md-6 col-sm-6 col-md-offset-3">
-                  <h4 style="font-weight: bold">日志</h4>
-                  <button type="button" onclick="f_exportLogs()" class="ctrl-btn ctrl-btn-secondary" style="padding:8px 20px">导出日志</button> 导出日志，提供给开发者排查问题
+                  <h4 style="font-weight: bold">{% trans "日志" %}</h4>
+                  <button type="button" onclick="f_exportLogs()" class="ctrl-btn ctrl-btn-secondary" style="padding:8px 20px">{% trans "导出日志" %}</button> {% trans "导出日志，提供给开发者排查问题" %}
                 </div>
               </div>
 
@@ -267,7 +267,7 @@
            timeout: 0,
            error: function () {
                ele_top_loading.hide();
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                ele_top_loading.hide();
@@ -309,7 +309,7 @@
            timeout: 0,
            error: function () {
                ele_top_loading.hide();
-               myAlert("网络异常，请确定网络正常！","error");
+               myAlert("{% trans "网络异常，请确定网络正常！" %}","error");
            },
            success: function (res) {
                ele_top_loading.hide();

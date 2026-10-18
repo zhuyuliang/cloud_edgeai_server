@@ -1,6 +1,7 @@
 from app.views.ViewsBase import *
 from django.shortcuts import render
 from framework.settings import PROJECT_VERSION, PROJECT_FLAG
+from django.utils.translation import gettext as _
 def index(request):
     context = {
         "settings": f_settingsReadData(),
@@ -12,7 +13,7 @@ def index(request):
 # 检查服务端最新版本
 def api_getCheckVersion(request):
     ret = False
-    msg = "未知错误"
+    msg = _("未知错误")
     info = {
         "historyVersionUrl": g_settings.check_version_download_url
     }
@@ -31,9 +32,9 @@ def api_getCheckVersion(request):
             ret = True
             msg = "success"
         else:
-            msg = "未发现新版本"
+            msg = _("未发现新版本")
     else:
-        msg = "无法联网检测新版本"
+        msg = _("无法联网检测新版本")
 
     res = {
         "code": 1000 if ret else 0,
