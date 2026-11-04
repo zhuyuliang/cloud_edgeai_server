@@ -1,6 +1,6 @@
 # cloud_eai_server — 边缘 AI 视频分析集群管理平台（云智 eai）
 
-> **产品标识**：`cloud_eai_admin` ｜ **版本**：v2.7 ｜ **构建日期**：2025/12/04
+> **产品标识**：`cloud_eai_admin` ｜ **版本**：v2.7 ｜ **构建日期**：2025/12/04 ｜ **最近更新**：2026/10/18（新增中/英多语言切换）
 > **最低支持节点版本**：v2.3.6
 > **官方站点**：https://www.yunzhieai.com/
 
@@ -66,7 +66,7 @@ cloud_eai_server/
 │   ├── .db.json                  # MySQL 连接配置
 │   ├── framework/                # Django 项目配置（settings / urls / wsgi）
 │   ├── app/                      # 业务应用
-│   │   ├── models.py             # 数据模型（6 张业务表）
+│   │   ├── models.py             # 数据模型（8 张业务表，另有 eai_log 走原生 SQL）
 │   │   ├── urls.py               # 路由（含集群平台对接接口）
 │   │   ├── middleware.py         # 登录拦截 + 会话中间件
 │   │   ├── views/                # 视图（按业务模块拆分）
@@ -111,7 +111,8 @@ cloud_eai_server/
 | **报警管理** | 按分类分页：事件告警/车牌告警/人脸告警/计数告警；支持处理（已处理/误报）、审核备注、导出、深链详情；计数告警支持清零与周期历史（ECharts 趋势图 + 导出） |
 | **系统配置** | 系统名称、Logo、作者信息等展示配置，日志导出 |
 | **版本管理** | 对接云服务在线检查版本与更新 |
-| **开放接口** | 供 Web 云平台/集群平台对接：设备发现、数据同步、流/布控管理（见 `集群管理平台对接接口.md`） |
+| **开放接口** | 供 Web 云平台/集群平台对接：设备发现、数据同步、流/布控管理（见 `docs/集群管理平台对接接口.md`） |
+| **多语言** | 中/英双语界面一键切换（Django i18n，默认简体中文，翻译文件位于 `admin/locale/`） |
 
 ---
 
@@ -147,6 +148,7 @@ cloud_eai_server/
 | 图像处理 | OpenCV（opencv-python） | 图片编解码/缩放 |
 | 静态文件 | whitenoise | 生产环境静态资源 |
 | 系统监控 | psutil | 进程/系统信息采集 |
+| 国际化 | Django i18n | 中/英双语（默认 zh-hans，翻译目录 `admin/locale/`） |
 | 部署 | Docker Compose | MySQL 容器化 |
 
 依赖清单见 `admin/requirements.txt` 与 `admin/requirements-linux.txt`。
@@ -166,7 +168,7 @@ cloud_eai_server/
 
 ### 6.2 关键配置文件
 
-- **`admin/config.json`**：`host`、`adminPort`、`mediaRtspPort`、`mediaHttpPort`、`mediaSecret`（ZLM 密钥）、`edgeaiSafe`（集群密钥）、`isEnableLoginCaptcha`（登录验证码）、`fontPath`、`uploadDir`、`storageDir` 等。
+- **`admin/config.json`**：`host`、`adminPort`、`mediaRtspPort`、`mediaHttpPort`、`mediaSecret`（ZLM 密钥）、`edgeaiSafe`（集群/开放接口密钥）、`pushSecret`（报警推送签名校验密钥，留空则跳过验证）、`isEnableLoginCaptcha`（登录验证码）、`logDebug`（调试日志开关）、`install`（安装根目录）、`fontPath`、`uploadDir`、`storageDir` 等。
 - **`admin/settings.json`**：系统名称、欢迎语、Logo、底部信息、作者、是否在线更新等展示配置。
 - **`admin/.db.json`**：MySQL（`eaihub`）的连接信息。
 - **`admin/framework/settings.py`**：Django 核心配置（数据库、会话、中间件、国际化等）。
@@ -230,7 +232,7 @@ python manage.py runserver 0.0.0.0:9824
 | 系统 | `/system/*` | 配置保存、日志导出 |
 | 版本 | `/version/*` | 版本检查 |
 
-> 集群平台对接的详细接口文档（设备发现、流代理、布控、数据同步等）见 **[`集群管理平台对接接口.md`](./集群管理平台对接接口.md)**。
+> 集群平台对接的详细接口文档（设备发现、流代理、布控、数据同步等）见 **[`docs/集群管理平台对接接口.md`](./docs/集群管理平台对接接口.md)**。
 
 ---
 
@@ -245,12 +247,13 @@ python manage.py runserver 0.0.0.0:9824
 
 ## 10. 相关文档
 
-- [`admin/README.md`](./admin/README.md) — Admin 模块详细说明
-- [`集群管理平台对接接口.md`](./集群管理平台对接接口.md) — 集群平台开放接口 API 文档
-- [`admin/docker/DOCKER_README.md`](./admin/docker/DOCKER_README.md) — Docker 部署说明
-
-admin admin123
-
-http://192.168.88.203:9824/api
-你的edgeaiSafe集群密钥
-node1
+| 文档 | 说明 |
+| --- | --- |
+| [`admin/README.md`](./admin/README.md) | Admin 模块详细说明与开发日志 |
+| [`admin/docker/DOCKER_README.md`](./admin/docker/DOCKER_README.md) | Docker 部署说明 |
+| [`docs/功能清单.md`](./docs/功能清单.md) | 按侧边栏菜单梳理的界面功能清单 |
+| [`docs/集群管理平台对接接口.md`](./docs/集群管理平台对接接口.md) | Web 云平台/集群平台开放接口 API 文档 |
+| [`docs/节点管理接口.md`](./docs/节点管理接口.md) | 节点管理接口文档（集群平台/云平台管理端） |
+| [`docs/多语言支持实施方案.md`](./docs/多语言支持实施方案.md) | 中/英双语实施方案（V1，2026-10-18） |
+| [`docs/UI对齐修改方案.md`](./docs/UI对齐修改方案.md) / [`docs/UI对齐修改实施方案-V2.md`](./docs/UI对齐修改实施方案-V2.md) | 云端界面与边缘端 UI 对齐方案（V1 / V2 实施版） |
+| [`docs/云端告警布控逻辑对齐方案.md`](./docs/云端告警布控逻辑对齐方案.md) / [`docs/云端告警布控逻辑对齐方案-V2.md`](./docs/云端告警布控逻辑对齐方案-V2.md) | 云端告警/布控与边缘端逻辑对齐方案（V1 / V2） |
