@@ -1,0 +1,10 @@
+{
+    "mysql": {
+        "ENGINE": "django.db.backends.mysql",
+        "USER": "eaihub",
+        "PASSWORD": "请替换为数据库密码",
+        "HOST": "127.0.0.1",
+        "PORT": 3306,
+        "NAME": "eaihub"
+    }
+}

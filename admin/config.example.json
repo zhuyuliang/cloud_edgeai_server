@@ -1,0 +1,16 @@
+{
+    "host": "192.168.1.100",
+    "logDebug": false,
+    "adminPort": 9824,
+    "mediaRtspPort": 9854,
+    "mediaHttpPort": 9826,
+    "mediaSecret": "请替换为强随机字符串",
+    "edgeaiSafe": "请替换为强随机字符串",
+    "pushSecret": "请替换为强随机字符串",
+    "install": "/opt/cloud_eai_server/admin",
+    "isEnableLoginCaptcha": true,
+
+    "fontPath": "/opt/cloud_eai_server/admin/static/upload/fonts/tsimhei.ttf",
+    "uploadDir": "/opt/cloud_eai_server/admin/static/upload",
+    "storageDir": "/opt/cloud_eai_server/admin/static/storage"
+}

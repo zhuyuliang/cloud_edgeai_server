@@ -161,11 +161,10 @@ sudo systemctl status zlmediakit
 | ------------------- | ----------------- | ----------------- |
 | HTTP API 端口       | `[http] port=9826`    | `mediaHttpPort=9826`    |
 | RTSP 端口           | `[rtsp] port=9854`    | `mediaRtspPort=9854`    |
-| 安全校验 secret     | `[api] secret=请替换为与config.ini一致的强随机secret` | `mediaSecret=请替换为与config.ini一致的强随机secret` |
+| 安全校验 secret     | `[api] secret=你的secret` | `mediaSecret=你的secret` |
 
-> ⚠️ **注意**：当前仓库中 `config.ini` 的 `[api] secret` 与 `admin/config.json`
-> 的 `mediaSecret` **不一致**（分别为 `请替换为与config.ini一致的强随机secret` 与
-> `请替换为与config.ini一致的强随机secret`）。部署前请将两处统一为同一个值，否则 admin 中
+> ⚠️ **注意**：`config.ini` 的 `[api] secret` 与 `admin/config.json`
+> 的 `mediaSecret` **必须一致**。部署前请将两处统一为同一个值，否则 admin 中
 > 流媒体状态显示离线/流列表获取失败。
 
 ---

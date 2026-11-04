@@ -28,7 +28,11 @@ TIMEOUT = 30
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o(am*2x=@ynuv5w*&$*yc-(1cjsku-b2@$x*t9!swd+n0-eai_admin'
+# 生产环境请通过环境变量 DJANGO_SECRET_KEY 覆盖，切勿在代码库中硬编码真实密钥
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    'django-insecure-o(am*2x=@ynuv5w*&$*yc-(1cjsku-b2@$x*t9!swd+n0-eai_admin',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
